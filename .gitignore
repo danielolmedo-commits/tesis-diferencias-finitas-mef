@@ -1,0 +1,17 @@
+# Entornos virtuales y cachés de Python
+.venv/
+__pycache__/
+*.py[cod]
+.uv_cache/
+
+# Archivos temporales de construcción de Manim / audio intermedio
+# (Se versionan únicamente los scripts .py y los videos .mp4 finales en videos/)
+videos/_build_series/
+videos/_build_*/
+media/
+
+# Archivos temporales de Office y del sistema
+~$*.docx
+~$*.xlsx
+.DS_Store
+Thumbs.db

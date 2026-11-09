@@ -1,0 +1,2080 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tesis de Grado: Cátedra Virtual Interactiva FEM 1D</title>
+    <!-- Plotly para gráficos interactivos -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- MathJax para fórmulas matemáticas -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --sidebar-bg: #ffffff;
+            --player-bg: #090d16;
+            --header-bg: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* HEADER SUPERIOR ESTILO UDEMY / COURSERA */
+        header {
+            background-color: var(--header-bg);
+            color: #ffffff;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1e293b;
+            z-index: 50;
+            min-height: 56px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, #2563eb, #38bdf8);
+            color: white;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .course-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .course-title span {
+            color: #94a3b8;
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .progress-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .progress-bar-container {
+            width: 140px;
+            height: 8px;
+            background-color: #334155;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            width: 5.88%; /* 1 de 17 */
+            transition: width 0.3s ease;
+        }
+
+        .header-btn {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            background: #334155;
+            color: #ffffff;
+            border-color: #475569;
+        }
+
+        .header-btn.youtube-btn {
+            background: #dc2626;
+            border-color: #ef4444;
+            color: white;
+        }
+
+        .header-btn.youtube-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* CONTENEDOR PRINCIPAL: ÁREA CENTRAL Y SIDEBAR */
+        .app-layout {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 56px);
+            overflow: hidden;
+        }
+
+        /* ZONA PRINCIPAL DE CONTENIDO (IZQUIERDA / CENTRO) */
+        .main-stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: #f8fafc;
+        }
+
+        /* SECCIÓN DEL REPRODUCTOR DE VIDEO (ARRIBA) */
+        .video-cinema {
+            background-color: var(--player-bg);
+            padding: 16px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+            position: relative;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid #1e293b;
+            position: relative;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* BARRA DE NAVEGACIÓN Y METADATOS DEL VIDEO ACTUAL */
+        .video-control-bar {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #f1f5f9;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .video-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .video-badge {
+            font-size: 0.75rem;
+            color: #38bdf8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .current-video-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .video-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background: #334155;
+            border-color: #64748b;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .action-btn.primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .action-btn.primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        .btn-complete {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #475569;
+        }
+
+        .btn-complete.completed {
+            background: #065f46;
+            color: #34d399;
+            border-color: #059669;
+        }
+
+        /* PESTAÑAS DE CONTENIDO INFERIOR (ESTILO COURSERA / UDEMY) */
+        .tabs-header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            display: flex;
+            gap: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .tab-btn {
+            padding: 14px 4px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.72rem;
+            padding: 2px 6px;
+            border-radius: 99px;
+            font-weight: 700;
+        }
+
+        /* CUERPO DE LAS PESTAÑAS (ABAJO) */
+        .tab-content {
+            display: none;
+            padding: 24px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* PESTAÑA 1: LABORATORIO INTERACTIVO (FEM ENGINE) */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 310px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* PANEL DE CONTROLES FÍSICOS */
+        .params-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .control-item {
+            margin-bottom: 18px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .control-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .metrics-banner {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.85rem;
+            color: #166534;
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .metrics-banner strong {
+            color: #14532d;
+        }
+
+        /* ÁREA DE SALIDA INTERACTIVA (HERRAMIENTAS VINCULADAS) */
+        .output-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .topic-selector-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topic-chip {
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .topic-chip:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .topic-chip.active {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .sim-view {
+            display: none;
+        }
+
+        .sim-view.active {
+            display: block;
+        }
+
+        .view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .view-header h3 {
+            font-size: 1.2rem;
+            color: #0f172a;
+        }
+
+        .view-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .math-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin: 14px 0;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-left-width: 4px;
+        }
+
+        .plot-container {
+            width: 100%;
+            height: 360px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        /* BARRA TÉRMICA FÍSICA */
+        .thermal-bar-container {
+            margin-top: 15px;
+            padding: 16px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .thermal-bar-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .thermal-gradient-bar {
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .nodes-marker-track {
+            position: relative;
+            height: 14px;
+            margin-top: 4px;
+        }
+
+        .node-pin {
+            position: absolute;
+            top: 0;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 10px;
+            background: #0f172a;
+        }
+
+        .node-pin-label {
+            position: absolute;
+            top: 12px;
+            transform: translateX(-50%);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        /* TABLA DE CONECTIVIDAD */
+        table.fem-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        table.fem-table th, table.fem-table td {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+        }
+
+        table.fem-table th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        table.fem-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* VISUALIZADOR DE MATRIZ GLOBAL (VIDEOS 12 & 13) */
+        .matrix-table {
+            border-collapse: collapse;
+            margin: 15px auto;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .matrix-table td {
+            width: 55px;
+            height: 45px;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            transition: background 0.2s;
+        }
+
+        .matrix-table td.diagonal {
+            background: #e0f2fe;
+            font-weight: bold;
+            color: #0369a1;
+        }
+
+        .matrix-table td.coupled {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .matrix-table td.boundary-fixed {
+            background: #fee2e2;
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        .matrix-table td.zero {
+            color: #94a3b8;
+        }
+
+        /* TOOLTIP EDUCATIVO */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            color: var(--primary);
+            border-bottom: 1px dashed var(--primary);
+            cursor: help;
+            font-weight: 600;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 280px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 10px 14px;
+            position: absolute;
+            z-index: 100;
+            bottom: 130%;
+            left: 50%;
+            margin-left: -140px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.82rem;
+            font-weight: normal;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            line-height: 1.4;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* PESTAÑA DE CÓDIGO PYTHON */
+        .code-container {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.88rem;
+            overflow-x: auto;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+        }
+
+        /* SIDEBAR DERECHO: CURRÍCULO DEL CURSO (17 VIDEOS / 6 MÓDULOS) */
+        .curriculum-sidebar {
+            width: 400px;
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: width 0.3s ease, transform 0.3s ease;
+        }
+
+        .curriculum-sidebar.collapsed {
+            width: 0;
+            overflow: hidden;
+            border-left: none;
+        }
+
+        .sidebar-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .sidebar-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .playlist-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        /* MÓDULOS DEL CURSO (ACORDEÓN) */
+        .module-group {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .module-header {
+            padding: 12px 18px;
+            background: #f8fafc;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .module-header:hover {
+            background: #f1f5f9;
+        }
+
+        .module-header .arrow {
+            transition: transform 0.2s;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .module-group.collapsed .module-content {
+            display: none;
+        }
+
+        .module-group.collapsed .module-header .arrow {
+            transform: rotate(-90deg);
+        }
+
+        .lesson-list {
+            list-style: none;
+        }
+
+        .lesson-item {
+            padding: 12px 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 0.88rem;
+            position: relative;
+        }
+
+        .lesson-item:hover {
+            background-color: #f8fafc;
+        }
+
+        .lesson-item.active {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding-left: 14px;
+        }
+
+        .lesson-item.active .lesson-title {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .lesson-checkbox {
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--success);
+        }
+
+        .lesson-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .lesson-title {
+            font-weight: 500;
+            color: #1e293b;
+            line-height: 1.3;
+        }
+
+        .lesson-sub {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .duration-tag {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .interactive-tag {
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* BOTÓN FLOTANTE PARA EXPANDIR SIDEBAR */
+        .sidebar-toggle-btn {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: #334155;
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+            .curriculum-sidebar {
+                position: absolute;
+                right: 0;
+                top: 56px;
+                bottom: 0;
+                z-index: 100;
+                box-shadow: -4px 0 15px rgba(0,0,0,0.15);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABECERA PRINCIPAL (PLATAFORMA EDUCATIVA - ESTILO COURSERA / UDEMY) -->
+    <header>
+        <div class="header-left">
+            <span class="brand-badge">TESIS DE GRADO</span>
+            <div class="course-title">
+                Cátedra Virtual Interactiva: Método de los Elementos Finitos (FEM 1D)
+                <span>• Poisson & Transferencia de Calor</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="progress-box">
+                <span>Tu Progreso:</span>
+                <div class="progress-bar-container">
+                    <div id="courseProgressBar" class="progress-bar-fill"></div>
+                </div>
+                <strong id="courseProgressText">1 / 17 (6%)</strong>
+            </div>
+            <a href="https://www.youtube.com/playlist?list=PLlS9WNYGhTpOCQZJbhm5DBs7HEioF99JI" target="_blank" rel="noopener noreferrer" class="header-btn youtube-btn" title="Ver lista de reproducción original en YouTube">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                Lista en YouTube
+            </a>
+            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Mostrar/Ocultar currículo">
+                ☰
+            </button>
+        </div>
+    </header>
+
+    <!-- DISPOSICIÓN PRINCIPAL -->
+    <div class="app-layout">
+        
+        <!-- ESCENARIO CENTRAL (MAIN STAGE) -->
+        <div class="main-stage">
+            
+            <!-- SECCIÓN DEL REPRODUCTOR DE VIDEO (ARRIBA) -->
+            <div class="video-cinema">
+                <div class="video-container">
+                    <iframe id="videoIframe" src="https://www.youtube-nocookie.com/embed/ado7u7pOPSE?rel=0&enablejsapi=1" title="Reproductor de Clase FEM 1D" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+                
+                <!-- BARRA DE INFORMACIÓN Y NAVEGACIÓN DE LA CLASE -->
+                <div class="video-control-bar">
+                    <div class="video-info">
+                        <div id="videoModuleBadge" class="video-badge">Módulo 1: Discretización y Malla</div>
+                        <h1 id="videoTitleText" class="current-video-title">Clase 1: Discretización del Dominio en 1D</h1>
+                    </div>
+                    <div class="video-actions">
+                        <button id="btnPrevVideo" class="action-btn" onclick="navigateLesson(-1)" disabled>
+                            ◀ Clase Anterior
+                        </button>
+                        <button id="btnNextVideo" class="action-btn primary" onclick="navigateLesson(1)">
+                            Siguiente Clase ▶
+                        </button>
+                        <button id="btnToggleComplete" class="action-btn btn-complete" onclick="toggleCurrentCompleted()">
+                            ✓ Marcar como Completada
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑAS ACADÉMICAS INFERIORES -->
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchMainTab('simulador')">
+                    🔬 Laboratorio & Simulador FEM
+                    <span class="tab-badge">Interactivo</span>
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('teoria')">
+                    📐 Formulación Teórica & Deducción
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('codigo')">
+                    💻 Código de la Tesis (Python)
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('tesis')">
+                    📖 Resumen de Tesis & Referencias
+                </button>
+            </div>
+
+            <!-- CUERPO DE PESTAÑAS (ABAJO) -->
+            
+            <!-- PESTAÑA 1: LABORATORIO INTERACTIVO FEM -->
+            <div id="tab-simulador" class="tab-content active">
+                <div class="workspace-grid">
+                    
+                    <!-- COLUMNA IZQUIERDA: PARÁMETROS DEL PROBLEMA FÍSICO -->
+                    <div class="params-card">
+                        <h2 class="card-title">
+                            ⚙️ Parámetros Físicos
+                        </h2>
+                        
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Longitud de Barra ($L$)</span>
+                                <span class="control-value" id="valL">1.0 m</span>
+                            </div>
+                            <input type="range" id="paramL" min="0.2" max="5.0" step="0.1" value="1.0" oninput="runFEMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Número de Elementos ($n_e$)</span>
+                                <span class="control-value" id="valNe">4</span>
+                            </div>
+                            <input type="range" id="paramNe" min="1" max="10" step="1" value="4" oninput="runFEMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Temp. Extremo Izq. ($T_1$)</span>
+                                <span class="control-value" id="valT1">100 °C</span>
+                            </div>
+                            <input type="range" id="paramT1" min="0" max="250" step="5" value="100" oninput="runFEMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Temp. Extremo Der. ($T_n$)</span>
+                                <span class="control-value" id="valTn">30 °C</span>
+                            </div>
+                            <input type="range" id="paramTn" min="0" max="250" step="5" value="30" oninput="runFEMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Conductividad Térmica ($k$)</span>
+                                <span class="control-value" id="valK">1.5 W/m·K</span>
+                            </div>
+                            <input type="range" id="paramK" min="0.1" max="10.0" step="0.1" value="1.5" oninput="runFEMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Fuente de Calor ($Q$)</span>
+                                <span class="control-value" id="valQ">50 W/m</span>
+                            </div>
+                            <input type="range" id="paramQ" min="0" max="200" step="5" value="50" oninput="runFEMCalculation()">
+                        </div>
+
+                        <!-- MÉTRICAS CALCULADAS -->
+                        <div class="metrics-banner">
+                            <div><strong>Nodos Totales ($n_n$):</strong> <span id="metricNodos">5</span></div>
+                            <div><strong>Longitud Elemento ($l_e$):</strong> <span id="metricLe">0.250</span> m</div>
+                            <div><strong>Temp. Máxima Calculada:</strong> <span id="metricTmax">100.0</span> °C</div>
+                            <div><strong>Solución Exacta:</strong> <span id="metricNormError">0.00%</span> error nodal</div>
+                        </div>
+
+                        <!-- EVALUACIÓN PUNTUAL LOCAL -->
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border);">
+                            <div class="control-label">
+                                <span>Evaluar punto local $x_{local} \in [0, l_e]$:</span>
+                                <span class="control-value" id="valXlocal">0.125 m</span>
+                            </div>
+                            <input type="range" id="paramXlocal" min="0" max="100" step="1" value="50" oninput="updateLocalInterpolation()">
+                            <div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">
+                                $N_1 = $ <span id="evalN1">0.50</span>, $N_2 = $ <span id="evalN2">0.50</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUMNA DERECHA: HERRAMIENTAS Y GRÁFICOS SINCRONIZADOS -->
+                    <div class="output-card">
+                        
+                        <!-- BARRA DE SELECCIÓN DE VISTAS INTERACTIVAS -->
+                        <div class="topic-selector-bar">
+                            <button class="topic-chip active" id="chip-mesh" onclick="switchSimView('mesh')">1. Malla & Nodos</button>
+                            <button class="topic-chip" id="chip-connectivity" onclick="switchSimView('connectivity')">2. Tabla Conectividad</button>
+                            <button class="topic-chip" id="chip-shape" onclick="switchSimView('shape')">3-4. Funciones Forma</button>
+                            <button class="topic-chip" id="chip-weak" onclick="switchSimView('weak')">6-11. Residuos & Forma Débil</button>
+                            <button class="topic-chip" id="chip-matrix" onclick="switchSimView('matrix')">12-14. Ensamblaje Matriz Global</button>
+                            <button class="topic-chip" id="chip-solution" onclick="switchSimView('solution')">15-17. Solución Final & Barra Térmica</button>
+                        </div>
+
+                        <!-- VISTA 1: MALLA & NODOS -->
+                        <div id="view-mesh" class="sim-view active">
+                            <div class="view-header">
+                                <h3>Malla Unidimensional y Discretización Nodal</h3>
+                            </div>
+                            <p class="view-desc">
+                                El dominio continuo $[0, L]$ se divide en $n_e$ elementos lineales de igual longitud $l_e = L / n_e$. Los puntos de unión representan los $n_n = n_e + 1$ nodos donde se calcularán las temperaturas incógnita.
+                            </p>
+                            <div class="math-box">
+                                $$l_e = \frac{L}{n_e}, \quad x_i = i \cdot l_e \quad (i = 0, 1, \dots, n_e)$$
+                            </div>
+                            <div id="plot-mesh" class="plot-container"></div>
+                        </div>
+
+                        <!-- VISTA 2: TABLA DE CONECTIVIDAD -->
+                        <div id="view-connectivity" class="sim-view">
+                            <div class="view-header">
+                                <h3>Tabla de Conectividad Elemento - Nodo</h3>
+                            </div>
+                            <p class="view-desc">
+                                Mapea la numeración local $(1, 2)$ de cada elemento finito a los índices globales en toda la barra. Es la estructura de datos medular para el ensamblaje computacional en Python / C++.
+                            </p>
+                            <div id="table-connectivity-container"></div>
+                        </div>
+
+                        <!-- VISTA 3: FUNCIONES DE FORMA & INTERPOLACIÓN -->
+                        <div id="view-shape" class="sim-view">
+                            <div class="view-header">
+                                <h3>Funciones de Forma de Lagrange e Interpolación</h3>
+                            </div>
+                            <p class="view-desc">
+                                Dentro de cada elemento, la temperatura se interpola linealmente mediante dos funciones base: $N_1(x_{loc}) = 1 - \frac{x_{loc}}{l_e}$ y $N_2(x_{loc}) = \frac{x_{loc}}{l_e}$. Cumplen la propiedad delta de Kronecker y partición de la unidad ($N_1 + N_2 = 1$).
+                            </p>
+                            <div class="math-box">
+                                $$T^{(e)}(x_{loc}) = N_1(x_{loc}) \cdot T_1^{(e)} + N_2(x_{loc}) \cdot T_2^{(e)}$$
+                            </div>
+                            <div id="plot-shape" class="plot-container"></div>
+                            <div id="interpolation-result" style="margin-top: 10px; font-weight: 600; color: var(--primary);"></div>
+                        </div>
+
+                        <!-- VISTA 4: RESIDUOS Y FORMULACIÓN DÉBIL -->
+                        <div id="view-weak" class="sim-view">
+                            <div class="view-header">
+                                <h3>Formulación Débil (Galerkin) e Integración por Partes</h3>
+                            </div>
+                            <p class="view-desc">
+                                Partiendo de la ecuación diferencial fuerte de calor $-k \frac{d^2T}{dx^2} = Q$, al sustituir una aproximación discreta se produce un residuo no nulo $R(x)$. El método de Galerkin exige que la proyección ponderada del residuo sea cero usando las funciones de forma como pesos ($w_i = N_i$).
+                            </p>
+                            <div class="math-box">
+                                $$\text{Formulación Fuerte: } -k \frac{d^2T}{dx^2} - Q = 0 \quad (\text{Requiere } C^2)$$
+                                $$\text{Integración por partes: } \int_{0}^{l_e} k \frac{dT}{dx} \frac{dw}{dx} dx = \int_{0}^{l_e} Q w \, dx + \left[ k \frac{dT}{dx} w \right]_{0}^{l_e} \quad (\text{Requiere sólo } C^0)$$
+                            </div>
+                            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; font-size: 0.88rem; line-height: 1.6;">
+                                <strong>💡 Clave Pedagógica para la Tesis:</strong>
+                                Al integrar por partes, rebajamos la derivada de orden 2 a orden 1. Esto permite usar funciones de interpolación lineales muy sencillas y garantiza que el sistema matricial resultante sea simétrico y definido positivo.
+                            </div>
+                        </div>
+
+                        <!-- VISTA 5: ENSAMBLAJE GLOBAL Y FRONTERAS -->
+                        <div id="view-matrix" class="sim-view">
+                            <div class="view-header">
+                                <h3>Matriz de Rigidez Global Ensamblada $[K]$</h3>
+                            </div>
+                            <p class="view-desc">
+                                Cada elemento genera una submatriz local $K^{(e)} = \frac{k}{l_e}\begin{bmatrix}1 & -1 \\ -1 & 1\end{bmatrix}$. Estas submatrices se superponen en los nodos compartidos, generando la estructura tridiagonal global. Las filas 1 y $n$ se modifican para imponer las temperaturas Dirichlet.
+                            </p>
+                            <div style="overflow-x: auto; text-align: center;">
+                                <div id="matrix-display-container"></div>
+                            </div>
+                            <div style="font-size: 0.8rem; color: #64748b; margin-top: 10px; display: flex; justify-content: center; gap: 15px;">
+                                <span><span style="display:inline-block;width:12px;height:12px;background:#fee2e2;border:1px solid #b91c1c;margin-right:4px;"></span> Fila con Condición Dirichlet</span>
+                                <span><span style="display:inline-block;width:12px;height:12px;background:#e0f2fe;border:1px solid #0369a1;margin-right:4px;"></span> Diagonal Acoplada ($2k/l_e$)</span>
+                                <span><span style="display:inline-block;width:12px;height:12px;background:#fef3c7;border:1px solid #b45309;margin-right:4px;"></span> Acoplamiento Fuera de Diagonal</span>
+                            </div>
+                        </div>
+
+                        <!-- VISTA 6: SOLUCIÓN FINAL Y BARRA TÉRMICA -->
+                        <div id="view-solution" class="sim-view">
+                            <div class="view-header">
+                                <h3>Solución del Sistema y Distribución Térmica $T(x)$</h3>
+                            </div>
+                            <p class="view-desc">
+                                Tras resolver el sistema algebraico $[K]\{T\} = \{F\}$, obtenemos el vector de temperaturas nodales. Con $Q > 0$ se observa la concavidad parabólica exacta del perfil de calor.
+                            </p>
+                            <div id="plot-solution" class="plot-container"></div>
+                            
+                            <!-- REPRESENTACIÓN FÍSICA DE LA BARRA -->
+                            <div class="thermal-bar-container">
+                                <div class="thermal-bar-label">
+                                    <span>Mapa Térmico Continuo en la Barra 1D ($x=0$ a $x=L$):</span>
+                                    <span id="bar-extremes">T1 = 100°C ➔ Tn = 30°C</span>
+                                </div>
+                                <div id="thermalGradientBar" class="thermal-gradient-bar"></div>
+                                <div id="nodesTrack" class="nodes-marker-track"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 2: TEORÍA Y ECUACIONES -->
+            <div id="tab-teoria" class="tab-content">
+                <div style="max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; border: 1px solid var(--border); line-height: 1.7;">
+                    <h2 style="color: #0f172a; border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin-bottom: 20px;">
+                        Fundamento Matemático del Método de Elementos Finitos en 1D
+                    </h2>
+
+                    <h3 style="color: #1e293b; margin-top: 20px;">1. Ecuación de Gobierno (Forma Fuerte)</h3>
+                    <p>La transferencia de calor unidimensional en estado estacionario con conductividad uniforme $k$ y generación interna distribuida $Q(x)$ está regida por la ecuación de Poisson:</p>
+                    <div class="math-box">
+                        $$-k \frac{d^2 T(x)}{dx^2} = Q(x), \quad x \in [0, L]$$
+                        $$\text{Sujeta a: } T(0) = T_1, \quad T(L) = T_n$$
+                    </div>
+
+                    <h3 style="color: #1e293b; margin-top: 25px;">2. Deducción de la Forma Débil (Método de Galerkin)</h3>
+                    <p>Para relajar el requisito de doble derivabilidad continua, multiplicamos por una función de prueba $v(x) \in H_0^1$ e integramos sobre un elemento arbitrario $[x_1, x_2]$ de longitud $l_e$:</p>
+                    <div class="math-box">
+                        $$\int_{x_1}^{x_2} \left( -k \frac{d^2 T}{dx^2} - Q \right) v(x) \, dx = 0$$
+                    </div>
+                    <p>Aplicando integración por partes al término de segundo orden:</p>
+                    <div class="math-box">
+                        $$\int_{x_1}^{x_2} k \frac{dT}{dx} \frac{dv}{dx} \, dx = \int_{x_1}^{x_2} Q v \, dx + \left[ k \frac{dT}{dx} v \right]_{x_1}^{x_2}$$
+                    </div>
+
+                    <h3 style="color: #1e293b; margin-top: 25px;">3. Discretización con Funciones de Forma Lineales</h3>
+                    <p>Aproximamos la temperatura y la función de prueba mediante la misma base (Formulación de Galerkin Estándar):</p>
+                    <div class="math-box">
+                        $$T^{(e)}(x) = \sum_{j=1}^{2} N_j(x) T_j^{(e)}, \quad v(x) = \sum_{i=1}^{2} N_i(x) v_i$$
+                    </div>
+                    <p>Sustituyendo en la forma débil, se obtienen las matrices elementales:</p>
+                    <div class="math-box">
+                        $$K_{ij}^{(e)} = \int_{0}^{l_e} k \frac{dN_i}{dx} \frac{dN_j}{dx} dx \implies K^{(e)} = \frac{k}{l_e} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix}$$
+                        $$F_i^{(e)} = \int_{0}^{l_e} Q N_i \, dx \implies F^{(e)} = \frac{Q l_e}{2} \begin{bmatrix} 1 \\ 1 \end{bmatrix}$$
+                    </div>
+
+                    <h3 style="color: #1e293b; margin-top: 25px;">4. Ensamblaje Global y Solución Exacta de Validación</h3>
+                    <p>Para $Q = \text{cte}$, la solución analítica exacta contra la cual validamos el simulador es:</p>
+                    <div class="math-box">
+                        $$T_{\text{exacta}}(x) = T_1 + \frac{x}{L}(T_n - T_1) + \frac{Q}{2k} x (L - x)$$
+                    </div>
+                    <p>Un resultado clásico y notable del FEM 1D con elementos lineales es que en los nodos la solución numérica coincide <strong>exactamente</strong> con la analítica (propiedad de mejor aproximación en norma de energía).</p>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 3: CÓDIGO PYTHON (fem_1d.py) -->
+            <div id="tab-codigo" class="tab-content">
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                        <h3 style="color:#0f172a;">Implementación Modular en Python (<a href="file:///c:/tesis/fem%201dimension/fem_1d.py" style="color:var(--primary);text-decoration:none;">fem_1d.py</a>)</h3>
+                        <button class="copy-btn" onclick="copyPythonCode()">📋 Copiar Código</button>
+                    </div>
+                    <pre class="code-container"><code id="pythonCodeBlock">"""
+Módulo de Elemento Finito (FEM) en 1D para Transferencia de Calor (Poisson)
+Código desarrollado en la Tesis de Grado.
+Basado en la cátedra de Enmanuel Araujo ING.
+"""
+
+from typing import List, Tuple
+
+class Mesh1D:
+    def __init__(self, L: float, ne: int, one_based: bool = True):
+        self.L = float(L)
+        self.ne = ne
+        self.nn = ne + 1
+        self.le = self.L / self.ne
+        self.one_based = one_based
+        self.nodes = [i * self.le for i in range(self.nn)]
+        offset = 1 if self.one_based else 0
+        self.connectivity = [[e + offset, e + 1 + offset] for e in range(self.ne)]
+
+    def get_element_coordinates(self, elem_idx: int) -> Tuple[float, float]:
+        return self.nodes[elem_idx], self.nodes[elem_idx + 1]
+
+def linear_shape_functions(x_local: float, le: float) -> Tuple[float, float]:
+    n1 = 1.0 - (x_local / le)
+    n2 = x_local / le
+    return n1, n2
+
+def interpolate_temperature(T1: float, T2: float, x_local: float, le: float) -> float:
+    n1, n2 = linear_shape_functions(x_local, le)
+    return n1 * T1 + n2 * T2
+
+def element_stiffness_matrix(k: float, le: float):
+    c = k / le
+    return [[c, -c], [-c, c]]
+
+def element_load_vector(Q: float, le: float):
+    c = Q * le / 2.0
+    return [c, c]
+</code></pre>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 4: DETALLES DE TESIS & REFERENCIAS -->
+            <div id="tab-tesis" class="tab-content">
+                <div style="max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; border: 1px solid var(--border); line-height: 1.7;">
+                    <h2 style="color: #0f172a; margin-bottom: 12px;">Proyecto de Tesis de Grado</h2>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">
+                        <strong>Título:</strong> Desarrollo de una Plataforma Web Interactiva para la Enseñanza y Aprendizaje del Método de los Elementos Finitos (FEM) en Una Dimensión.
+                    </p>
+                    
+                    <div style="margin: 25px 0; padding: 18px; background: #eff6ff; border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <h4 style="color: #1e40af; margin-bottom: 6px;">Origen y Reconocimiento de Fuentes Audiovisuales:</h4>
+                        <p style="font-size: 0.9rem; color: #1e3a8a;">
+                            El diseño didáctico y la estructura temática de los 17 hitos del curso se basan directamente en la serie tutorial de <strong>Enmanuel Araujo ING</strong>:
+                            <br>
+                            🔗 <a href="https://www.youtube.com/watch?v=ado7u7pOPSE&list=PLlS9WNYGhTpOCQZJbhm5DBs7HEioF99JI" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: bold;">
+                                Finite Element Method - 1D - Heat Transfer (Lista Completa en YouTube)
+                            </a>
+                        </p>
+                    </div>
+
+                    <h3 style="color: #1e293b; margin-top: 25px;">Referencias Bibliográficas Fundamentales</h3>
+                    <ul style="padding-left: 20px; font-size: 0.9rem; color: #334155;">
+                        <li><strong>Hughes, T. J. R.</strong> (2000). <em>The Finite Element Method: Linear Static and Dynamic Finite Element Analysis</em>. Dover Publications.</li>
+                        <li><strong>Reddy, J. N.</strong> (2019). <em>Introduction to the Finite Element Method</em> (4th ed.). McGraw-Hill Education.</li>
+                        <li><strong>Zienkiewicz, O. C., Taylor, R. L., & Zhu, J. Z.</strong> (2013). <em>The Finite Element Method: Its Basis and Fundamentals</em> (7th ed.). Butterworth-Heinemann.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SIDEBAR DERECHO: CURRÍCULO DEL CURSO (17 VIDEOS DISTRIBUIDOS) -->
+        <aside id="curriculumSidebar" class="curriculum-sidebar">
+            <div class="sidebar-header">
+                <div>
+                    <h2>Contenido del Curso</h2>
+                    <div class="sidebar-meta" id="sidebarMetaCount">17 lecciones • 1 h 48 min</div>
+                </div>
+                <button class="sidebar-toggle-btn" onclick="toggleSidebar()" style="color: #475569;" title="Cerrar panel">
+                    ✕
+                </button>
+            </div>
+            
+            <div class="playlist-scroll" id="modulesContainer">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- SCRIPT DE CONTROL Y MOTOR NUMÉRICO FEM -->
+    <script>
+        // LISTA DE LOS 17 VIDEOS DE LA PLAYLIST Y SU DISTRIBUCIÓN POR MÓDULOS
+        const courseData = [
+            {
+                module: "Módulo 1: Discretización y Malla",
+                lessons: [
+                    {
+                        index: 1,
+                        id: "ado7u7pOPSE",
+                        title: "1. Discretización del Dominio en 1D",
+                        origTitle: "Domain Discretization in 1D",
+                        duration: "06:57",
+                        focusView: "mesh",
+                        desc: "Subdivisión del dominio continuo en elementos y nodos discretos."
+                    },
+                    {
+                        index: 2,
+                        id: "2ooaV_HdGg8",
+                        title: "2. Localización y Conectividad",
+                        origTitle: "Localization and Interpolation",
+                        duration: "12:17",
+                        focusView: "connectivity",
+                        desc: "Mapeo de numeración local (nodos 1 y 2) a coordenadas globales."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 2: Funciones de Forma e Interpolación",
+                lessons: [
+                    {
+                        index: 3,
+                        id: "IdAxVBQkyIk",
+                        title: "3. Funciones de Forma de Lagrange",
+                        origTitle: "Shape Functions",
+                        duration: "04:40",
+                        focusView: "shape",
+                        desc: "Deducción matemática de los polinomios de interpolación $N_1$ y $N_2$."
+                    },
+                    {
+                        index: 4,
+                        id: "bVNRZ0Ro1Uw",
+                        title: "4. Funciones de Forma como Interpolación",
+                        origTitle: "Shape Functions as means of Interpolation",
+                        duration: "04:26",
+                        focusView: "shape",
+                        desc: "Reconstrucción del campo de temperaturas en cualquier punto interior."
+                    },
+                    {
+                        index: 5,
+                        id: "XwFO6kPJCW4",
+                        title: "5. Aproximación del Modelo Continuo",
+                        origTitle: "Model Approximation",
+                        duration: "06:33",
+                        focusView: "shape",
+                        desc: "Aproximación por tramos $C^0$ a lo largo de toda la longitud de la barra."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 3: Residuos Ponderados y Galerkin",
+                lessons: [
+                    {
+                        index: 6,
+                        id: "r6aogFfaE24",
+                        title: "6. Residuos Numéricos",
+                        origTitle: "Residuals",
+                        duration: "03:18",
+                        focusView: "weak",
+                        desc: "Concepto de error residual $R(x)$ cuando la función no es la solución exacta."
+                    },
+                    {
+                        index: 7,
+                        id: "fAHxId5lKpo",
+                        title: "7. Residuos con Funciones de Peso",
+                        origTitle: "Residuals with Weights",
+                        duration: "05:39",
+                        focusView: "weak",
+                        desc: "Introducción de la ponderación integral $\\int w_i R(x) dx = 0$."
+                    },
+                    {
+                        index: 8,
+                        id: "v0g-wtOexUo",
+                        title: "8. Método de Residuos Ponderados (MWR)",
+                        origTitle: "Weighted Residual Method",
+                        duration: "06:02",
+                        focusView: "weak",
+                        desc: "Familia de métodos aproximados: colocación, subdominios y Galerkin."
+                    },
+                    {
+                        index: 9,
+                        id: "NU6vc-rlWvA",
+                        title: "9. Método de Galerkin",
+                        origTitle: "Galerkin Method",
+                        duration: "05:59",
+                        focusView: "weak",
+                        desc: "Selección de pesos iguales a las funciones de forma ($w_i = N_i$)."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 4: Formulación Débil e Integración por Partes",
+                lessons: [
+                    {
+                        index: 10,
+                        id: "xz9e7HRFSTw",
+                        title: "10. Integración por Partes",
+                        origTitle: "Integration by Parts",
+                        duration: "04:11",
+                        focusView: "weak",
+                        desc: "Traslado de derivadas para reducir la continuidad requerida de $C^2$ a $C^0$."
+                    },
+                    {
+                        index: 11,
+                        id: "c1c0tGibzLM",
+                        title: "11. Forma Fuerte vs Débil & SEL",
+                        origTitle: "Strong Form, Weak Form & SLE",
+                        duration: "05:31",
+                        focusView: "weak",
+                        desc: "Deducción de la forma variacional débil y planteamiento matricial."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 5: Matrices del Sistema y Ensamblaje",
+                lessons: [
+                    {
+                        index: 12,
+                        id: "8PSRMouFfSc",
+                        title: "12. Ensamblaje de la Matriz Global",
+                        origTitle: "Assembly",
+                        duration: "13:29",
+                        focusView: "matrix",
+                        desc: "Superposición de rigideces elementales en los nodos compartidos."
+                    },
+                    {
+                        index: 13,
+                        id: "Rh4cQfztGw4",
+                        title: "13. Condiciones de Frontera",
+                        origTitle: "Boundary Conditions",
+                        duration: "11:45",
+                        focusView: "matrix",
+                        desc: "Tratamiento de fronteras esenciales (Dirichlet) y naturales (Neumann)."
+                    },
+                    {
+                        index: 14,
+                        id: "4jW6RdvkbDk",
+                        title: "14. Definición de Componentes Matriciales",
+                        origTitle: "Defining Matrix Components",
+                        duration: "08:36",
+                        focusView: "matrix",
+                        desc: "Cálculo analítico de los coeficientes de rigidez y vector de carga."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 6: Síntesis, Validación y Animación",
+                lessons: [
+                    {
+                        index: 15,
+                        id: "lpVIhF3-wvY",
+                        title: "15. Síntesis y Resumen FEM 1D",
+                        origTitle: "Summary",
+                        duration: "03:06",
+                        focusView: "solution",
+                        desc: "Flujo general de cálculo del método de elementos finitos."
+                    },
+                    {
+                        index: 16,
+                        id: "j2PIuqURmNw",
+                        title: "16. Ejemplo Práctico de Aplicación",
+                        origTitle: "Another Example",
+                        duration: "05:50",
+                        focusView: "solution",
+                        desc: "Simulación de barra con fuentes volumétricas internas y enfriamiento."
+                    },
+                    {
+                        index: 17,
+                        id: "P8RiMqr--ys",
+                        title: "17. Visión General Animada de Transferencia 1D",
+                        origTitle: "Finite Element Method - Heat Transfer Animated Overview",
+                        duration: "10:15",
+                        focusView: "solution",
+                        desc: "Comportamiento del flujo térmico, gradientes y distribución espacial continua."
+                    }
+                ]
+            }
+        ];
+
+        // Aplanar todas las lecciones para navegación directa 1 a 17
+        const allLessons = [];
+        courseData.forEach(mod => {
+            mod.lessons.forEach(les => {
+                allLessons.push({
+                    ...les,
+                    moduleName: mod.module
+                });
+            });
+        });
+
+        let currentLessonIndex = 0; // 0-based (Lección 1 = 0)
+        let completedSet = new Set();
+
+        // Recuperar progreso de localStorage
+        try {
+            const saved = localStorage.getItem('fem1d_completed');
+            if (saved) {
+                JSON.parse(saved).forEach(idx => completedSet.add(idx));
+            }
+        } catch(e) {}
+
+        // Inicialización de la Interfaz
+        function initCurriculumUI() {
+            const container = document.getElementById('modulesContainer');
+            container.innerHTML = '';
+
+            courseData.forEach((mod, modIdx) => {
+                const group = document.createElement('div');
+                group.className = 'module-group';
+                group.id = `mod-group-${modIdx}`;
+
+                const header = document.createElement('div');
+                header.className = 'module-header';
+                header.onclick = () => toggleModuleAccordion(modIdx);
+                header.innerHTML = `
+                    <span>${mod.module}</span>
+                    <span class="arrow">▼</span>
+                `;
+
+                const content = document.createElement('div');
+                content.className = 'module-content';
+
+                const ul = document.createElement('ul');
+                ul.className = 'lesson-list';
+
+                mod.lessons.forEach(lesson => {
+                    const globalIdx = lesson.index - 1;
+                    const li = document.createElement('li');
+                    li.className = 'lesson-item';
+                    li.id = `lesson-item-${globalIdx}`;
+                    li.onclick = (e) => {
+                        if (e.target.tagName !== 'INPUT') {
+                            selectLesson(globalIdx);
+                        }
+                    };
+
+                    const isChecked = completedSet.has(globalIdx);
+
+                    li.innerHTML = `
+                        <input type="checkbox" class="lesson-checkbox" id="chk-${globalIdx}" ${isChecked ? 'checked' : ''} onchange="toggleComplete(${globalIdx}, event)">
+                        <div class="lesson-details">
+                            <div class="lesson-title">${lesson.title}</div>
+                            <div class="lesson-sub">
+                                <span class="duration-tag">⏱ ${lesson.duration}</span>
+                                <span class="interactive-tag">⚡ Laboratorio</span>
+                            </div>
+                        </div>
+                    `;
+                    ul.appendChild(li);
+                });
+
+                content.appendChild(ul);
+                group.appendChild(header);
+                group.appendChild(content);
+                container.appendChild(group);
+            });
+
+            updateProgressUI();
+            selectLesson(0, false);
+        }
+
+        function toggleModuleAccordion(modIdx) {
+            const group = document.getElementById(`mod-group-${modIdx}`);
+            group.classList.toggle('collapsed');
+        }
+
+        function selectLesson(index, autoFocusView = true) {
+            if (index < 0 || index >= allLessons.length) return;
+            
+            // Remover activo previo
+            const prevActive = document.getElementById(`lesson-item-${currentLessonIndex}`);
+            if (prevActive) prevActive.classList.remove('active');
+
+            currentLessonIndex = index;
+            const lesson = allLessons[index];
+
+            // Marcar nuevo activo
+            const newActive = document.getElementById(`lesson-item-${currentLessonIndex}`);
+            if (newActive) newActive.classList.add('active');
+
+            // Actualizar iframe de YouTube
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = `https://www.youtube-nocookie.com/embed/${lesson.id}?rel=0&enablejsapi=1`;
+
+            // Actualizar encabezados
+            document.getElementById('videoModuleBadge').innerText = lesson.moduleName;
+            document.getElementById('videoTitleText').innerText = lesson.title;
+
+            // Actualizar botones de navegación
+            document.getElementById('btnPrevVideo').disabled = currentLessonIndex === 0;
+            document.getElementById('btnNextVideo').disabled = currentLessonIndex === allLessons.length - 1;
+
+            // Actualizar botón de completado
+            updateCompleteButtonState();
+
+            // Cambiar la vista del laboratorio correspondiente
+            if (autoFocusView && lesson.focusView) {
+                switchSimView(lesson.focusView);
+                // Asegurar que estemos en la pestaña de simulador
+                switchMainTab('simulador');
+            }
+        }
+
+        function navigateLesson(direction) {
+            selectLesson(currentLessonIndex + direction, true);
+        }
+
+        function toggleComplete(index, event) {
+            if (event) event.stopPropagation();
+            if (completedSet.has(index)) {
+                completedSet.delete(index);
+            } else {
+                completedSet.add(index);
+            }
+            saveCompleted();
+            updateProgressUI();
+            updateCompleteButtonState();
+        }
+
+        function toggleCurrentCompleted() {
+            toggleComplete(currentLessonIndex);
+            const chk = document.getElementById(`chk-${currentLessonIndex}`);
+            if (chk) chk.checked = completedSet.has(currentLessonIndex);
+        }
+
+        function updateCompleteButtonState() {
+            const btn = document.getElementById('btnToggleComplete');
+            if (completedSet.has(currentLessonIndex)) {
+                btn.classList.add('completed');
+                btn.innerHTML = '✓ Completada';
+            } else {
+                btn.classList.remove('completed');
+                btn.innerHTML = 'Marcar como Completada';
+            }
+        }
+
+        function saveCompleted() {
+            try {
+                localStorage.setItem('fem1d_completed', JSON.stringify(Array.from(completedSet)));
+            } catch(e) {}
+        }
+
+        function updateProgressUI() {
+            const count = completedSet.size;
+            const total = allLessons.length;
+            const pct = Math.round((count / total) * 100);
+
+            document.getElementById('courseProgressBar').style.width = `${pct}%`;
+            document.getElementById('courseProgressText').innerText = `${count} / ${total} (${pct}%)`;
+        }
+
+        function toggleSidebar() {
+            document.getElementById('curriculumSidebar').classList.toggle('collapsed');
+        }
+
+        function switchMainTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+            if (tabName === 'simulador') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('tab-simulador').classList.add('active');
+                runFEMCalculation();
+            } else if (tabName === 'teoria') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('tab-teoria').classList.add('active');
+            } else if (tabName === 'codigo') {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                document.getElementById('tab-codigo').classList.add('active');
+            } else if (tabName === 'tesis') {
+                document.querySelectorAll('.tab-btn')[3].classList.add('active');
+                document.getElementById('tab-tesis').classList.add('active');
+            }
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        function switchSimView(viewKey) {
+            document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.sim-view').forEach(v => v.classList.remove('active'));
+
+            const chip = document.getElementById(`chip-${viewKey}`);
+            if (chip) chip.classList.add('active');
+
+            const view = document.getElementById(`view-${viewKey}`);
+            if (view) view.classList.add('active');
+
+            runFEMCalculation();
+        }
+
+        // ==========================================
+        // MOTOR NUMÉRICO FEM EN 1D (RESOLUTOR FÍSICO)
+        // ==========================================
+        let currentFEMResults = null;
+
+        function runFEMCalculation() {
+            const L = parseFloat(document.getElementById('paramL').value);
+            const ne = parseInt(document.getElementById('paramNe').value);
+            const T1 = parseFloat(document.getElementById('paramT1').value);
+            const Tn = parseFloat(document.getElementById('paramTn').value);
+            const k = parseFloat(document.getElementById('paramK').value);
+            const Q = parseFloat(document.getElementById('paramQ').value);
+
+            // Actualizar etiquetas de valores
+            document.getElementById('valL').innerText = L.toFixed(1) + " m";
+            document.getElementById('valNe').innerText = ne;
+            document.getElementById('valT1').innerText = T1.toFixed(0) + " °C";
+            document.getElementById('valTn').innerText = Tn.toFixed(0) + " °C";
+            document.getElementById('valK').innerText = k.toFixed(1) + " W/m·K";
+            document.getElementById('valQ').innerText = Q.toFixed(0) + " W/m";
+
+            const nn = ne + 1;
+            const le = L / ne;
+
+            document.getElementById('metricNodos').innerText = nn;
+            document.getElementById('metricLe').innerText = le.toFixed(3);
+
+            // Arreglo de coordenadas nodales globales
+            const nodes_x = [];
+            for (let i = 0; i < nn; i++) {
+                nodes_x.push(i * le);
+            }
+
+            // Construcción de la matriz global K y vector de carga F
+            const K_global = Array.from({ length: nn }, () => Array(nn).fill(0));
+            const F_global = Array(nn).fill(0);
+
+            // Coeficientes elementales
+            const ke_val = k / le;
+            const fe_val = (Q * le) / 2.0;
+
+            for (let e = 0; e < ne; e++) {
+                const n1 = e;
+                const n2 = e + 1;
+
+                // Sumar rigidez local a la global
+                K_global[n1][n1] += ke_val;
+                K_global[n1][n2] += -ke_val;
+                K_global[n2][n1] += -ke_val;
+                K_global[n2][n2] += ke_val;
+
+                // Sumar vector de carga térmico
+                F_global[n1] += fe_val;
+                F_global[n2] += fe_val;
+            }
+
+            // Copia para visualización previa a condiciones de frontera
+            const K_assembled_raw = K_global.map(row => [...row]);
+
+            // Imposición de Condiciones de Frontera Dirichlet (T(0) = T1, T(L) = Tn)
+            // Nodo 0:
+            for (let j = 0; j < nn; j++) K_global[0][j] = 0;
+            K_global[0][0] = 1.0;
+            F_global[0] = T1;
+
+            // Nodo nn-1:
+            for (let j = 0; j < nn; j++) K_global[nn - 1][j] = 0;
+            K_global[nn - 1][nn - 1] = 1.0;
+            F_global[nn - 1] = Tn;
+
+            // Resolución del sistema lineal K * T = F (Eliminación Gaussiana con pivoteo parcial)
+            const nodes_T = solveLinearSystem(K_global, F_global);
+
+            // Solución analítica exacta para comparación:
+            // T_exact(x) = T1 + (x/L)*(Tn - T1) + (Q / (2*k)) * x * (L - x)
+            const T_exact_nodes = nodes_x.map(x => T1 + (x / L) * (Tn - T1) + (Q / (2 * k)) * x * (L - x));
+            
+            // Error relativo promedio en nodos
+            let maxDiff = 0;
+            for (let i = 0; i < nn; i++) {
+                maxDiff = Math.max(maxDiff, Math.abs(nodes_T[i] - T_exact_nodes[i]));
+            }
+            document.getElementById('metricNormError').innerText = (maxDiff < 1e-4) ? "0.00% (Exacto)" : maxDiff.toFixed(4) + " °C";
+
+            const maxT = Math.max(...nodes_T);
+            document.getElementById('metricTmax').innerText = maxT.toFixed(1) + " °C";
+
+            currentFEMResults = {
+                L, ne, nn, le, k, Q, T1, Tn,
+                nodes_x, nodes_T, T_exact_nodes,
+                K_assembled_raw, K_global
+            };
+
+            // Renderizar la vista que esté activa en este momento
+            renderActiveSimView();
+            updateLocalInterpolation();
+        }
+
+        // Eliminación Gaussiana simple y robusta para sistemas lineales 1D
+        function solveLinearSystem(A_orig, b_orig) {
+            const n = b_orig.length;
+            const A = A_orig.map(row => [...row]);
+            const b = [...b_orig];
+
+            for (let i = 0; i < n; i++) {
+                let maxRow = i;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) {
+                        maxRow = k;
+                    }
+                }
+                const tmpRow = A[i]; A[i] = A[maxRow]; A[maxRow] = tmpRow;
+                const tmpB = b[i]; b[i] = b[maxRow]; b[maxRow] = tmpB;
+
+                for (let k = i + 1; k < n; k++) {
+                    const factor = A[k][i] / A[i][i];
+                    for (let j = i; j < n; j++) {
+                        A[k][j] -= factor * A[i][j];
+                    }
+                    b[k] -= factor * b[i];
+                }
+            }
+
+            const x = Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                let sum = 0;
+                for (let j = i + 1; j < n; j++) {
+                    sum += A[i][j] * x[j];
+                }
+                x[i] = (b[i] - sum) / A[i][i];
+            }
+            return x;
+        }
+
+        function renderActiveSimView() {
+            if (!currentFEMResults) return;
+            const { L, ne, nn, le, nodes_x, nodes_T, T_exact_nodes, K_assembled_raw, T1, Tn, Q, k } = currentFEMResults;
+
+            // 1. Malla
+            if (document.getElementById('view-mesh').classList.contains('active')) {
+                const traceMesh = {
+                    x: nodes_x,
+                    y: Array(nn).fill(0),
+                    mode: 'lines+markers',
+                    marker: { size: 14, color: '#ef4444', symbol: 'circle', line: { color: 'white', width: 2 } },
+                    line: { color: '#64748b', width: 4 },
+                    name: 'Malla 1D'
+                };
+                const layout = {
+                    title: false,
+                    xaxis: { range: [-0.05 * L, L * 1.05], title: 'Posición $x$ [m]' },
+                    yaxis: { visible: false, range: [-1, 1] },
+                    margin: { t: 20, b: 50, l: 30, r: 30 },
+                    plot_bgcolor: '#f8fafc',
+                    paper_bgcolor: '#ffffff'
+                };
+                Plotly.newPlot('plot-mesh', [traceMesh], layout, { displayModeBar: false, responsive: true });
+            }
+
+            // 2. Conectividad
+            if (document.getElementById('view-connectivity').classList.contains('active')) {
+                let html = `<table class="fem-table"><tr><th>Elemento ($e$)</th><th>Nodo Local 1</th><th>Nodo Local 2</th><th>Coord. Local $x_1$</th><th>Coord. Local $x_2$</th><th>Longitud $l_e$</th></tr>`;
+                for (let e = 0; e < ne; e++) {
+                    html += `<tr>
+                        <td><strong>Elemento ${e + 1}</strong></td>
+                        <td>${e + 1}</td>
+                        <td>${e + 2}</td>
+                        <td>${nodes_x[e].toFixed(2)} m</td>
+                        <td>${nodes_x[e + 1].toFixed(2)} m</td>
+                        <td>${le.toFixed(3)} m</td>
+                    </tr>`;
+                }
+                html += `</table>`;
+                document.getElementById('table-connectivity-container').innerHTML = html;
+            }
+
+            // 3. Funciones de Forma
+            if (document.getElementById('view-shape').classList.contains('active')) {
+                const samplePts = 50;
+                const x_local_vals = [];
+                const N1_vals = [];
+                const N2_vals = [];
+                for (let i = 0; i <= samplePts; i++) {
+                    const xl = (i / samplePts) * le;
+                    x_local_vals.push(xl);
+                    N1_vals.push(1 - (xl / le));
+                    N2_vals.push(xl / le);
+                }
+
+                const traceN1 = { x: x_local_vals, y: N1_vals, mode: 'lines', name: '$N_1(x) = 1 - x/l_e$', line: { color: '#ef4444', width: 3 } };
+                const traceN2 = { x: x_local_vals, y: N2_vals, mode: 'lines', name: '$N_2(x) = x/l_e$', line: { color: '#2563eb', width: 3 } };
+
+                const layoutShape = {
+                    xaxis: { title: 'Coordenada Local $x_{local}$ [m]', range: [0, le] },
+                    yaxis: { title: 'Valor de $N(x)$', range: [-0.05, 1.05] },
+                    margin: { t: 20, b: 50, l: 50, r: 20 },
+                    plot_bgcolor: '#f8fafc',
+                    paper_bgcolor: '#ffffff'
+                };
+                Plotly.newPlot('plot-shape', [traceN1, traceN2], layoutShape, { displayModeBar: false, responsive: true });
+            }
+
+            // 5. Matriz Global (Ensamblaje y Fronteras)
+            if (document.getElementById('view-matrix').classList.contains('active')) {
+                let mHtml = `<table class="matrix-table">`;
+                for (let i = 0; i < nn; i++) {
+                    mHtml += `<tr>`;
+                    for (let j = 0; j < nn; j++) {
+                        let val = K_assembled_raw[i][j];
+                        let cellClass = "zero";
+                        let displayVal = val === 0 ? "0" : val.toFixed(1);
+
+                        if (i === j) {
+                            if (i === 0 || i === nn - 1) {
+                                cellClass = "diagonal boundary-fixed";
+                            } else {
+                                cellClass = "diagonal";
+                            }
+                        } else if (Math.abs(i - j) === 1) {
+                            cellClass = "coupled";
+                        }
+                        mHtml += `<td class="${cellClass}" title="Fila ${i+1}, Columna ${j+1}">${displayVal}</td>`;
+                    }
+                    mHtml += `</tr>`;
+                }
+                mHtml += `</table>`;
+                document.getElementById('matrix-display-container').innerHTML = mHtml;
+            }
+
+            // 6. Solución Final y Barra Térmica
+            if (document.getElementById('view-solution').classList.contains('active')) {
+                // Curva analítica suave
+                const exact_x = [];
+                const exact_T = [];
+                const numFine = 100;
+                for (let i = 0; i <= numFine; i++) {
+                    const x = (i / numFine) * L;
+                    exact_x.push(x);
+                    exact_T.push(T1 + (x / L) * (Tn - T1) + (Q / (2 * k)) * x * (L - x));
+                }
+
+                const traceExact = {
+                    x: exact_x,
+                    y: exact_T,
+                    mode: 'lines',
+                    name: 'Solución Analítica Exacta',
+                    line: { color: '#94a3b8', width: 2, dash: 'dash' }
+                };
+
+                const traceFEM = {
+                    x: nodes_x,
+                    y: nodes_T,
+                    mode: 'lines+markers',
+                    name: 'Solución Numérica FEM 1D',
+                    line: { color: '#2563eb', width: 3 },
+                    marker: { color: '#ef4444', size: 10, symbol: 'circle' }
+                };
+
+                const layoutSol = {
+                    xaxis: { title: 'Posición a lo largo de la barra $x$ [m]', range: [-0.02 * L, L * 1.02] },
+                    yaxis: { title: 'Temperatura $T(x)$ [°C]' },
+                    margin: { t: 20, b: 50, l: 60, r: 20 },
+                    plot_bgcolor: '#f8fafc',
+                    paper_bgcolor: '#ffffff'
+                };
+                Plotly.newPlot('plot-solution', [traceExact, traceFEM], layoutSol, { displayModeBar: false, responsive: true });
+
+                // Renderizar barra térmica continua
+                renderThermalBar(nodes_T, nodes_x, L);
+            }
+
+            // Disparar render de MathJax para cualquier LaTeX insertado dinámicamente
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().catch(() => {});
+            }
+        }
+
+        function renderThermalBar(nodes_T, nodes_x, L) {
+            const minT = Math.min(...nodes_T);
+            const maxT = Math.max(...nodes_T);
+            const rangeT = (maxT - minT) || 1;
+
+            // Construir stops de gradiente CSS
+            const stops = nodes_T.map((t, i) => {
+                const norm = (t - minT) / rangeT; // 0 (frío) a 1 (caliente)
+                const color = getTemperatureColor(norm);
+                const pct = (nodes_x[i] / L) * 100;
+                return `${color} ${pct.toFixed(1)}%`;
+            });
+
+            document.getElementById('thermalGradientBar').style.background = `linear-gradient(to right, ${stops.join(', ')})`;
+            document.getElementById('bar-extremes').innerText = `T(0) = ${nodes_T[0].toFixed(1)}°C ➔ T(L) = ${nodes_T[nodes_T.length - 1].toFixed(1)}°C | T_max = ${maxT.toFixed(1)}°C`;
+
+            // Marcadores de nodos
+            const track = document.getElementById('nodesTrack');
+            track.innerHTML = '';
+            nodes_x.forEach((x, i) => {
+                const pct = (x / L) * 100;
+                const pin = document.createElement('div');
+                pin.className = 'node-pin';
+                pin.style.left = `${pct}%`;
+
+                const label = document.createElement('div');
+                label.className = 'node-pin-label';
+                label.style.left = `${pct}%`;
+                label.innerText = `N${i+1}`;
+
+                track.appendChild(pin);
+                track.appendChild(label);
+            });
+        }
+
+        function getTemperatureColor(norm) {
+            // Colormap Turbo/Jet aproximado: Azul -> Cian -> Verde -> Amarillo -> Rojo
+            const r = Math.min(255, Math.max(0, Math.round(255 * (1.5 - Math.abs(norm * 4 - 3)))));
+            const g = Math.min(255, Math.max(0, Math.round(255 * (1.5 - Math.abs(norm * 4 - 2)))));
+            const b = Math.min(255, Math.max(0, Math.round(255 * (1.5 - Math.abs(norm * 4 - 1)))));
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function updateLocalInterpolation() {
+            if (!currentFEMResults) return;
+            const pct = parseFloat(document.getElementById('paramXlocal').value) / 100;
+            const le = currentFEMResults.le;
+            const xl = pct * le;
+
+            document.getElementById('valXlocal').innerText = xl.toFixed(3) + " m";
+
+            const n1 = 1 - (xl / le);
+            const n2 = xl / le;
+            document.getElementById('evalN1').innerText = n1.toFixed(2);
+            document.getElementById('evalN2').innerText = n2.toFixed(2);
+
+            // Interpolación de ejemplo en el primer elemento
+            const T1_elem = currentFEMResults.nodes_T[0];
+            const T2_elem = currentFEMResults.nodes_T[1];
+            const T_interp = n1 * T1_elem + n2 * T2_elem;
+
+            const resDiv = document.getElementById('interpolation-result');
+            if (resDiv) {
+                resDiv.innerText = `En Elemento 1: Para x_local = ${xl.toFixed(3)} m, T_aprox = ${T_interp.toFixed(2)} °C (T1=${T1_elem.toFixed(1)}°C, T2=${T2_elem.toFixed(1)}°C)`;
+            }
+        }
+
+        function copyPythonCode() {
+            const code = document.getElementById('pythonCodeBlock').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Código copiado al portapapeles con éxito.");
+            });
+        }
+
+        // Cargar todo al inicio
+        window.addEventListener('DOMContentLoaded', () => {
+            initCurriculumUI();
+            runFEMCalculation();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+[project]
+name = "tesis-mdf-videos"
+version = "0.1.0"
+description = "Generacion de videos educativos estilo Khan Academy / 3Blue1Brown para el Metodo de Diferencias Finitas"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "manim>=0.19.0",
+    "typst>=0.12.0",
+    "edge-tts>=6.1.12",
+    "imageio-ffmpeg>=0.5.1",
+]

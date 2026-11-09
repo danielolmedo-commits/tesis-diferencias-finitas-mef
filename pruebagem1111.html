@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>MDF Interactivo - Tesis</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 850px; margin: 20px auto; padding: 0 15px; background: #f8fafc; color: #1e293b; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 16px; border: none; background: #e2e8f0; cursor: pointer; border-radius: 6px; font-weight: 600; }
+    .tab-btn.active { background: #2563eb; color: white; }
+    .page { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+    .page.active { display: block; }
+    .grid { display: grid; grid-template-columns: repeat(4, 75px); gap: 6px; margin: 20px 0; justify-content: center; }
+    .cell { height: 65px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 6px; font-weight: bold; font-size: 14px; border: 1px solid #cbd5e1; }
+    .boundary { background: #334155; color: white; }
+    .internal { background: #f1f5f9; cursor: pointer; transition: 0.2s; }
+    .highlight-center { outline: 3px solid #2563eb; background: #dbeafe !important; }
+    .highlight-neighbor { outline: 3px dashed #f59e0b; background: #fef3c7 !important; }
+    .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    button.action { padding: 8px 14px; background: #0f766e; color: white; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h2>Laboratorio Didáctico: Método de Diferencias Finitas (MDF)</h2>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showPage(0)">1. Derivadas</button>
+    <button class="tab-btn" onclick="showPage(1)">2. Malla y Molécula</button>
+    <button class="tab-btn" onclick="showPage(2)">3. Calor 2D (Laplace)</button>
+    <button class="tab-btn" onclick="showPage(3)">4. Electrostática (Poisson)</button>
+  </div>
+
+  <!-- PÁGINA 1 -->
+  <div class="page active">
+    <h3>Página 1: De la Derivada Continua a la Diferencia Central</h3>
+    <p>Función de prueba: <b>y(x) = x²</b> evaluada en <b>x = 2</b> (Derivada exacta: <b>y'(2) = 4</b>, <b>y''(2) = 2</b>).</p>
+    <div class="controls">
+      <label>Tamaño de paso (h): <input type="range" id="hSlider" min="0.05" max="1" step="0.05" value="0.5" oninput="calcDerivatives()"></label>
+      <span id="hVal"><b>h = 0.50</b></span>
+    </div>
+    <p id="derivResults"></p>
+  </div>
+
+  <!-- PÁGINA 2 -->
+  <div class="page">
+    <h3>Página 2: Molécula de Cálculo en 2D</h3>
+    <p>Pasa el cursor sobre cualquiera de los 4 nodos internos para ver qué vecinos participan en su ecuación:</p>
+    <div class="grid" id="stencilGrid"></div>
+    <p id="stencilEq" style="text-align:center; font-weight:bold; min-height:24px;">Selecciona un nodo interno...</p>
+  </div>
+
+  <!-- PÁGINA 3 y 4 comparten motor con distinto modo -->
+  <div class="page" id="simPage">
+    <h3 id="simTitle">Página 3: Difusión de Calor 2D</h3>
+    <p id="simDesc">Borde superior = 100, otros bordes = 0. Presiona "+1 Iteración" para ver cómo se propaga.</p>
+    <div class="controls">
+      <button class="action" onclick="stepSimulation()">+1 Iteración</button>
+      <button class="action" onclick="convergeSimulation()">Converger (ε &lt; 0.01)</button>
+      <button class="action" style="background:#64748b" onclick="resetSimulation()">Reiniciar</button>
+      <span id="iterInfo"><b>Iteración: 0 | Cambio máx: -</b></span>
+    </div>
+    <div class="grid" id="simGrid"></div>
+  </div>
+
+<script>
+  let mode = 'heat'; // 'heat' o 'poisson'
+  let nodes = [0, 0, 0, 0]; // T1, T2, T3, T4
+  let sources = [0, 0, 0, 0]; // término extra p*h^2/(4*e) en Página 4
+  let iter = 0;
+
+  function showPage(idx) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+    const pages = document.querySelectorAll('.page');
+    pages[0].classList.toggle('active', idx === 0);
+    pages[1].classList.toggle('active', idx === 1);
+    pages[2].classList.toggle('active', idx === 2 || idx === 3);
+
+    if (idx === 2) {
+      mode = 'heat';
+      document.getElementById('simTitle').innerText = 'Página 3: Difusión de Calor 2D (Laplace)';
+      document.getElementById('simDesc').innerText = 'Borde superior = 100 °C, otros = 0 °C. Promedio de 4 vecinos.';
+      sources = [0, 0, 0, 0];
+      resetSimulation();
+    } else if (idx === 3) {
+      mode = 'poisson';
+      document.getElementById('simTitle').innerText = 'Página 4: Electrostática 2D (Poisson)';
+      document.getElementById('simDesc').innerText = 'Haz clic en un nodo interno para inyectar/quitar carga (+10 V) y luego itera.';
+      resetSimulation();
+    }
+  }
+
+  // PÁGINA 1: Derivadas
+  function calcDerivatives() {
+    const h = parseFloat(document.getElementById('hSlider').value);
+    document.getElementById('hVal').innerHTML = `<b>h = ${h.toFixed(2)}</b>`;
+    const x = 2, f = v => v * v;
+    const fwd = (f(x + h) - f(x)) / h;
+    const bwd = (f(x) - f(x - h)) / h;
+    const cen = (f(x + h) - f(x - h)) / (2 * h);
+    const sec = (f(x + h) - 2 * f(x) + f(x - h)) / (h * h);
+    document.getElementById('derivResults').innerHTML = `
+      ➡️ <b>Forward:</b> ${fwd.toFixed(3)} (Error: ${Math.abs(4 - fwd).toFixed(3)})<br>
+      ⬅️ <b>Backward:</b> ${bwd.toFixed(3)} (Error: ${Math.abs(4 - bwd).toFixed(3)})<br>
+      🎯 <b>Central 1ra Derivada:</b> ${cen.toFixed(3)}<br>
+      📐 <b>Central 2da Derivada:</b> ${sec.toFixed(3)}`;
+  }
+
+  // PÁGINA 2: Molécula
+  function initStencil() {
+    const labels = [
+      'Esq','100','100','Esq',
+      '0','u₁','u₂','0',
+      '0','u₃','u₄','0',
+      'Esq','0','0','Esq'
+    ];
+    const neighbors = {
+      5: [1, 4, 6, 9],  // u1
+      6: [2, 5, 7, 10], // u2
+      9: [5, 8, 10, 13],// u3
+      10:[6, 9, 11, 14] // u4
+    };
+    const eqs = {
+      5: 'Ecuación en u₁:  u₁ = (100 + 0 + u₂ + u₃) / 4',
+      6: 'Ecuación en u₂:  u₂ = (100 + u₁ + 0 + u₄) / 4',
+      9: 'Ecuación en u₃:  u₃ = (u₁ + 0 + u₄ + 0) / 4',
+      10:'Ecuación en u₄:  u₄ = (u₂ + u₃ + 0 + 0) / 4'
+    };
+    const container = document.getElementById('stencilGrid');
+    container.innerHTML = '';
+    labels.forEach((text, i) => {
+      const div = document.createElement('div');
+      const isInternal = [5, 6, 9, 10].includes(i);
+      div.className = 'cell ' + (isInternal ? 'internal' : 'boundary');
+      div.innerText = text;
+      if (isInternal) {
+        div.onmouseenter = () => {
+          Array.from(container.children).forEach((c, idx) => {
+            c.classList.toggle('highlight-center', idx === i);
+            c.classList.toggle('highlight-neighbor', neighbors[i].includes(idx));
+          });
+          document.getElementById('stencilEq').innerText = eqs[i];
+        };
+      }
+      container.appendChild(div);
+    });
+  }
+
+  // PÁGINAS 3 y 4: Simulación 2D
+  function renderSimGrid() {
+    const unit = mode === 'heat' ? '°C' : 'V';
+    const layout = [
+      {t:'-', b:true}, {t:'100'+unit, b:true}, {t:'100'+unit, b:true}, {t:'-', b:true},
+      {t:'0'+unit, b:true}, {idx:0}, {idx:1}, {t:'0'+unit, b:true},
+      {t:'0'+unit, b:true}, {idx:2}, {idx:3}, {t:'0'+unit, b:true},
+      {t:'-', b:true}, {t:'0'+unit, b:true}, {t:'0'+unit, b:true}, {t:'-', b:true}
+    ];
+    const container = document.getElementById('simGrid');
+    container.innerHTML = '';
+    layout.forEach(item => {
+      const div = document.createElement('div');
+      if (item.b) {
+        div.className = 'cell boundary';
+        div.innerText = item.t;
+      } else {
+        const val = nodes[item.idx];
+        const src = sources[item.idx];
+        div.className = 'cell internal';
+        const intensity = Math.min(255, Math.round((val / 100) * 255));
+        div.style.background = `rgb(${255}, ${255 - intensity * 0.6}, ${255 - intensity * 0.8})`;
+        div.innerHTML = `<span>${val.toFixed(2)} ${unit}</span>` + (src ? `<small style="color:#b91c1c">+${src}V carga</small>` : '');
+        if (mode === 'poisson') {
+          div.onclick = () => {
+            sources[item.idx] = sources[item.idx] === 0 ? 10 : 0;
+            renderSimGrid();
+          };
+        }
+      }
+      container.appendChild(div);
+    });
+  }
+
+  function stepSimulation() {
+    const prev = [...nodes];
+    // Esquema Jacobi (usa los valores de la iteración previa para mayor claridad didáctica)
+    nodes[0] = (100 + 0 + prev[1] + prev[2]) / 4 + sources[0];
+    nodes[1] = (100 + prev[0] + 0 + prev[3]) / 4 + sources[1];
+    nodes[2] = (prev[0] + 0 + prev[3] + 0) / 4 + sources[2];
+    nodes[3] = (prev[1] + prev[2] + 0 + 0) / 4 + sources[3];
+    iter++;
+    const maxDiff = Math.max(...nodes.map((v, i) => Math.abs(v - prev[i])));
+    document.getElementById('iterInfo').innerHTML = `<b>Iteración: ${iter} | Cambio máx: ${maxDiff.toFixed(4)}</b>`;
+    renderSimGrid();
+    return maxDiff;
+  }
+
+  function convergeSimulation() {
+    let diff = 1, guard = 0;
+    while (diff > 0.01 && guard < 200) {
+      diff = stepSimulation();
+      guard++;
+    }
+  }
+
+  function resetSimulation() {
+    nodes = [0, 0, 0, 0];
+    iter = 0;
+    document.getElementById('iterInfo').innerHTML = `<b>Iteración: 0 | Cambio máx: -</b>`;
+    renderSimGrid();
+  }
+
+  calcDerivatives();
+  initStencil();
+  renderSimGrid();
+</script>
+</body>
+</html>

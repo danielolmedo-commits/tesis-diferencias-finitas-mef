@@ -1,0 +1,2340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tesis de Grado: Simulador 2 - Diferencias Finitas y Electromagnetismo 1D (Nivel Bachillerato a Universidad)</title>
+    <!-- Plotly para gráficos interactivos -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- MathJax para fórmulas matemáticas claras -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #eef2ff;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --accent-light: #fef3c7;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --sidebar-bg: #ffffff;
+            --player-bg: #090d16;
+            --header-bg: #0f172a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* HEADER SUPERIOR ESTILO UDEMY / COURSERA */
+        header {
+            background-color: var(--header-bg);
+            color: #ffffff;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1e293b;
+            z-index: 50;
+            min-height: 58px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .level-badge {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            color: #34d399;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 99px;
+        }
+
+        .course-title {
+            font-size: 1.02rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .course-title span {
+            color: #38bdf8;
+            font-weight: 500;
+            font-size: 0.88rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .progress-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.82rem;
+            color: #cbd5e1;
+        }
+
+        .progress-bar-container {
+            width: 120px;
+            height: 8px;
+            background-color: #334155;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            width: 5%;
+            transition: width 0.3s ease;
+        }
+
+        .header-btn {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .header-btn:hover {
+            background: #334155;
+            color: #ffffff;
+        }
+
+        .header-btn.youtube-btn {
+            background: #dc2626;
+            border-color: #ef4444;
+            color: white;
+        }
+
+        .header-btn.youtube-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* LAYOUT PRINCIPAL */
+        .app-layout {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 58px);
+            overflow: hidden;
+        }
+
+        .main-stage {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: #f8fafc;
+        }
+
+        /* SECCIÓN SUPERIOR: REPRODUCTOR DE VIDEO / GUÍA VISUAL */
+        .video-cinema {
+            background-color: var(--player-bg);
+            padding: 16px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .media-stage-box {
+            width: 100%;
+            max-width: 920px;
+            display: grid;
+            grid-template-columns: 1.35fr 1fr;
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        @media (max-width: 960px) {
+            .media-stage-box {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* TARJETA EXPLICATIVA PARA BACHILLERATO AL LADO DEL VIDEO */
+        .bachillerato-digest-card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 18px;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .digest-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            width: fit-content;
+            margin-bottom: 10px;
+        }
+
+        .digest-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .digest-body {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            line-height: 1.55;
+            flex: 1;
+        }
+
+        .digest-analogy {
+            margin-top: 12px;
+            background: rgba(56, 189, 248, 0.12);
+            border-left: 3px solid #38bdf8;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            color: #e0f2fe;
+        }
+
+        /* BARRA DE CONTROLES DEL REPRODUCTOR */
+        .video-control-bar {
+            width: 100%;
+            max-width: 920px;
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #f1f5f9;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .video-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .video-badge {
+            font-size: 0.75rem;
+            color: #fbbf24;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .current-video-title {
+            font-size: 1.12rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .video-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #334155;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background: #334155;
+            border-color: #64748b;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .action-btn.primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .action-btn.primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        .btn-complete.completed {
+            background: #065f46;
+            color: #34d399;
+            border-color: #059669;
+        }
+
+        /* PESTAÑAS INFERIORES */
+        .tabs-header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            display: flex;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 14px 6px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-badge {
+            background: #fef3c7;
+            color: #b45309;
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 99px;
+            font-weight: 700;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 24px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* GRILLA DEL SIMULADOR */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 1050px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .params-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .control-item {
+            margin-bottom: 16px;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+
+        .control-help {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .control-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .preset-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .preset-btn {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .preset-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .metrics-banner {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.83rem;
+            color: #1e3a8a;
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* TARJETA DERECHA DE SALIDA INTERACTIVA */
+        .output-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .topic-selector-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topic-chip {
+            padding: 7px 14px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            font-size: 0.81rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .topic-chip:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .topic-chip.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .sim-view {
+            display: none;
+        }
+
+        .sim-view.active {
+            display: block;
+        }
+
+        .view-header h3 {
+            font-size: 1.22rem;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .view-desc {
+            font-size: 0.92rem;
+            color: #475569;
+            margin-bottom: 16px;
+            line-height: 1.55;
+        }
+
+        /* CAJAS DIDÁCTICAS NIVEL BACHILLERATO */
+        .easy-concept-box {
+            background: linear-gradient(to right, #fef3c7, #fffbeb);
+            border: 1px solid #fde68a;
+            border-left: 5px solid #f59e0b;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-size: 0.9rem;
+            color: #78350f;
+            line-height: 1.5;
+        }
+
+        .math-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin: 14px 0;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-left-width: 4px;
+        }
+
+        .plot-container {
+            width: 100%;
+            height: 350px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        /* VISUALIZADOR DEL CABLE ELÉCTRICO Y MULTÍMETROS */
+        .circuit-diagram-box {
+            background: #0f172a;
+            color: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 14px 0;
+            position: relative;
+        }
+
+        .circuit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+
+        .wire-visual {
+            height: 34px;
+            border-radius: 99px;
+            border: 2px solid #475569;
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin: 30px 16px 45px 16px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+
+        .wire-node {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #0f172a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #0f172a;
+            transition: transform 0.15s;
+            z-index: 5;
+        }
+
+        .wire-node:hover, .wire-node.selected {
+            transform: translate(-50%, -50%) scale(1.3);
+            box-shadow: 0 0 0 4px #fbbf24;
+        }
+
+        .wire-node-volt {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #334155;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.73rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .wire-node-pos {
+            position: absolute;
+            bottom: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #cbd5e1;
+            font-size: 0.72rem;
+            white-space: nowrap;
+        }
+
+        /* TARJETA DEL "PROMEDIO DE VECINOS" (STENCIL 3 PUNTOS) */
+        .stencil-interactive-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .stencil-card {
+            padding: 16px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            background: #f8fafc;
+        }
+
+        .stencil-card.center-node {
+            background: #eef2ff;
+            border-color: var(--primary);
+            transform: scale(1.03);
+        }
+
+        .stencil-card h4 {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .stencil-card .big-val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        /* BOTONES DEL SIMULADOR DE ITERACIONES EN VIVO */
+        .iter-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #f1f5f9;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .iter-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .iter-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .iter-btn.secondary {
+            background: #0ea5e9;
+        }
+
+        .iter-btn.reset {
+            background: #64748b;
+        }
+
+        /* TABLAS EDUCATIVAS */
+        table.fem-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        table.fem-table th, table.fem-table td {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+        }
+
+        table.fem-table th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .matrix-table {
+            border-collapse: collapse;
+            margin: 15px auto;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .matrix-table td {
+            width: 56px;
+            height: 44px;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+        }
+
+        .matrix-table td.diagonal {
+            background: #e0f2fe;
+            font-weight: bold;
+            color: #0369a1;
+        }
+
+        .matrix-table td.coupled {
+            background: #fef3c7;
+            color: #b45309;
+            font-weight: bold;
+        }
+
+        .matrix-table td.boundary-fixed {
+            background: #fee2e2;
+            color: #b91c1c;
+            font-weight: bold;
+        }
+
+        /* SIDEBAR DERECHO */
+        .curriculum-sidebar {
+            width: 410px;
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .curriculum-sidebar.collapsed {
+            width: 0;
+            overflow: hidden;
+            border-left: none;
+        }
+
+        .sidebar-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .sidebar-meta {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .playlist-scroll {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        details.module-group {
+            border-bottom: 1px solid var(--border);
+        }
+
+        summary.module-header {
+            padding: 12px 16px;
+            background: #f8fafc;
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            list-style: none;
+        }
+
+        summary.module-header::-webkit-details-marker {
+            display: none;
+        }
+
+        summary.module-header.fdm-special {
+            background: linear-gradient(to right, #eef2ff, #e0f2fe);
+            color: #1e3a8a;
+            border-left: 4px solid #4f46e5;
+        }
+
+        details.module-group:not([open]) summary.module-header .arrow-icon {
+            transform: rotate(-90deg);
+        }
+
+        .arrow-icon {
+            transition: transform 0.2s ease;
+        }
+
+        .lesson-list {
+            list-style: none;
+        }
+
+        .lesson-item {
+            padding: 11px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.15s;
+        }
+
+        .lesson-item:hover {
+            background-color: #f8fafc;
+        }
+
+        .lesson-item.active {
+            background-color: #eef2ff;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+        }
+
+        .lesson-item.active .lesson-title {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .lesson-checkbox {
+            margin-top: 3px;
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+            accent-color: var(--success);
+        }
+
+        .lesson-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .lesson-sub {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.73rem;
+            color: var(--text-muted);
+        }
+
+        .badge-bachillerato {
+            background: #fef3c7;
+            color: #b45309;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        .badge-fem {
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        .sidebar-toggle-btn {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .code-container {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.86rem;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER SUPERIOR -->
+    <header>
+        <div class="header-left">
+            <span class="brand-badge">SIMULADOR 2 • TESIS</span>
+            <span class="level-badge">🎓 Nivel Bachillerato ➔ Ingeniería</span>
+            <div class="course-title">
+                De Diferencias Finitas (FDM) a Elementos Finitos:
+                <span>⚡ Caída de Potencial Eléctrico en 1D</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="progress-box">
+                <span>Progreso:</span>
+                <div class="progress-bar-container">
+                    <div id="courseProgressBar" class="progress-bar-fill"></div>
+                </div>
+                <strong id="courseProgressText">0 / 22 (0%)</strong>
+            </div>
+            <a href="simulador.html" class="header-btn" title="Ir al Simulador 1 (Transferencia de Calor FEM)">
+                🔥 Ver Simulador 1 (Calor)
+            </a>
+            <a href="https://www.youtube.com/playlist?list=PLlS9WNYGhTpOCQZJbhm5DBs7HEioF99JI" target="_blank" rel="noopener noreferrer" class="header-btn youtube-btn">
+                ▶ Playlist Base (17 Videos)
+            </a>
+            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Mostrar/Ocultar Temario">
+                ☰
+            </button>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="app-layout">
+        
+        <!-- ESCENARIO CENTRAL -->
+        <div class="main-stage">
+            
+            <!-- SECCIÓN MULTIMEDIA ARRIBA: VIDEO + EXPLICACIÓN SENCILLA DE BACHILLERATO -->
+            <div class="video-cinema">
+                <div class="media-stage-box">
+                    <div class="video-container">
+                        <iframe id="videoIframe" src="https://www.youtube-nocookie.com/embed/ado7u7pOPSE?rel=0&enablejsapi=1" title="Video de la Lección" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    
+                    <!-- CÁPSULA DE TRADUCCIÓN A NIVEL BACHILLERATO -->
+                    <div class="bachillerato-digest-card">
+                        <div>
+                            <div class="digest-tag" id="digestTag">💡 Explicación para Bachillerato</div>
+                            <h2 class="digest-title" id="digestTitle">¿Cómo cae el voltaje a lo largo de un cable?</h2>
+                            <p class="digest-body" id="digestBody">
+                                Imagina que conectas una batería de 12 Voltios a los extremos de una barra conductora. En vez de usar cálculo complicado, colocamos <strong>multímetros en fila</strong> separados a la misma distancia. ¡Eso es discretizar!
+                            </p>
+                        </div>
+                        <div class="digest-analogy" id="digestAnalogy">
+                            <strong>🎯 Regla de Oro sin Derivadas:</strong> El voltaje en cualquier punto intermedio del cable es simplemente el <strong>promedio de sus dos vecinos</strong> (izquierdo y derecho).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BARRA DE CONTROL DE CLASE -->
+                <div class="video-control-bar">
+                    <div class="video-info">
+                        <div id="videoModuleBadge" class="video-badge">Módulo 0 (Previo): Diferencias Finitas en Electromagnetismo</div>
+                        <h1 id="videoTitleText" class="current-video-title">0.1 El Cable, la Batería y los Multímetros (Nodos en 1D)</h1>
+                    </div>
+                    <div class="video-actions">
+                        <button id="btnPrevVideo" class="action-btn" onclick="navigateLesson(-1)" disabled>
+                            ◀ Anterior
+                        </button>
+                        <button id="btnNextVideo" class="action-btn primary" onclick="navigateLesson(1)">
+                            Siguiente ▶
+                        </button>
+                        <button id="btnToggleComplete" class="action-btn btn-complete" onclick="toggleCurrentCompleted()">
+                            ✓ Marcar Completada
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑAS DE NAVEGACIÓN INFERIOR -->
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchMainTab('simulador')">
+                    ⚡ Laboratorio de Diferencias Finitas (Potencial 1D)
+                    <span class="tab-badge">Paso a Paso</span>
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('guia')">
+                    📘 Guía para Bachillerato (Sin Cálculo Avanzado)
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('puente')">
+                    🌉 Puente: Diferencias Finitas (FDM) vs. Elementos Finitos (FEM)
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('codigo')">
+                    💻 Código Python Súper Simple (FDM 1D)
+                </button>
+            </div>
+
+            <!-- PESTAÑA 1: LABORATORIO INTERACTIVO -->
+            <div id="tab-simulador" class="tab-content active">
+                <div class="workspace-grid">
+                    
+                    <!-- PANEL IZQUIERDO: PARÁMETROS DEL CIRCUITO / CABLE 1D -->
+                    <div class="params-card">
+                        <h2 class="card-title">🔋 Controles del Experimento 1D</h2>
+
+                        <div class="preset-btns">
+                            <button class="preset-btn" onclick="applyPreset('lineal')">📏 Caída Lineal Simple (Sin carga)</button>
+                            <button class="preset-btn" onclick="applyPreset('carga')">⚡ Con Carga Espacial ($\rho > 0$)</button>
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Longitud del Conductor ($L$)</span>
+                                <span class="control-value" id="valL">1.0 m</span>
+                            </div>
+                            <div class="control-help">Largo total de la barra o cable resistivo</div>
+                            <input type="range" id="paramL" min="0.5" max="5.0" step="0.5" value="1.0" oninput="runFDMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Cantidad de Tramos ($N$)</span>
+                                <span class="control-value" id="valNe">4 tramos (5 nodos)</span>
+                            </div>
+                            <div class="control-help">Cuántas partes iguales dividimos el cable</div>
+                            <input type="range" id="paramNe" min="2" max="10" step="1" value="4" oninput="runFDMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Voltaje Izquierdo ($V_{\text{izq}}$)</span>
+                                <span class="control-value" id="valV1">12 V</span>
+                            </div>
+                            <div class="control-help">Polo conectado en $x = 0$ (Ej. Batería)</div>
+                            <input type="range" id="paramV1" min="0" max="100" step="2" value="12" oninput="runFDMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Voltaje Derecho ($V_{\text{der}}$)</span>
+                                <span class="control-value" id="valVn">0 V</span>
+                            </div>
+                            <div class="control-help">Polo conectado en $x = L$ (Ej. Tierra / GND)</div>
+                            <input type="range" id="paramVn" min="0" max="100" step="2" value="0" oninput="runFDMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Efecto de Carga Interna ($\rho / \varepsilon$)</span>
+                                <span class="control-value" id="valRho">0 V/m²</span>
+                            </div>
+                            <div class="control-help">Si es 0, el voltaje cae en línea recta perfecta</div>
+                            <input type="range" id="paramRho" min="-40" max="40" step="4" value="0" oninput="runFDMCalculation()">
+                        </div>
+
+                        <div class="control-item">
+                            <div class="control-label">
+                                <span>Inspeccionar Nodo Interior:</span>
+                                <span class="control-value" id="valInspectNode">Nodo 2</span>
+                            </div>
+                            <input type="range" id="paramInspect" min="2" max="4" step="1" value="2" oninput="updateNodeInspector()">
+                        </div>
+
+                        <div class="metrics-banner">
+                            <div><strong>Distancia entre Nodos ($\Delta x$):</strong> <span id="metricDx">0.25</span> m</div>
+                            <div><strong>Caída por tramo (si $\rho=0$):</strong> <span id="metricDrop">3.00</span> V</div>
+                            <div><strong>Campo Eléctrico Medio ($E$):</strong> <span id="metricE">12.00</span> V/m</div>
+                        </div>
+                    </div>
+
+                    <!-- PANEL DERECHO: VISTAS DEL SIMULADOR DE DIFERENCIAS FINITAS -->
+                    <div class="output-card">
+                        
+                        <!-- SELECTOR DE HERRAMIENTAS INTERACTIVAS -->
+                        <div class="topic-selector-bar">
+                            <button class="topic-chip active" id="chip-cable" onclick="switchSimView('cable')">1. El Cable y los Multímetros (Nodos)</button>
+                            <button class="topic-chip" id="chip-vecinos" onclick="switchSimView('vecinos')">2. Regla del Promedio de Vecinos</button>
+                            <button class="topic-chip" id="chip-iteracion" onclick="switchSimView('iteracion')">3. Simulación Paso a Paso (En Vivo)</button>
+                            <button class="topic-chip" id="chip-campo" onclick="switchSimView('campo')">4. Pendiente = Campo Eléctrico E(x)</button>
+                            <button class="topic-chip" id="chip-sistema" onclick="switchSimView('sistema')">5. Ecuaciones y Matriz [-1, 2, -1]</button>
+                        </div>
+
+                        <!-- VISTA 1: EL CABLE Y LOS MULTÍMETROS -->
+                        <div id="view-cable" class="sim-view active">
+                            <div class="view-header">
+                                <h3>1. Discretización: Poniendo Multímetros a lo largo del Cable</h3>
+                            </div>
+                            <div class="easy-concept-box">
+                                <strong>👦 Idea clave para Bachillerato:</strong> Una barra real tiene infinitos átomos, pero no podemos hacer infinitas cuentas. Por eso elegimos <strong>puntos fijos llamados Nodos</strong> separados por un paso $\Delta x = \frac{L}{N}$. ¡Haz clic en cualquier nodo del cable negro de abajo para inspeccionarlo!
+                            </div>
+
+                            <!-- CABLE INTERACTIVO CON NODOS -->
+                            <div class="circuit-diagram-box">
+                                <div class="circuit-header">
+                                    <span>➕ Fuente Izquierda ($x=0$)</span>
+                                    <span>Haz clic en un nodo para medir con el multímetro</span>
+                                    <span>➖ Extremo Derecho ($x=L$)</span>
+                                </div>
+                                <div id="wireVisualBar" class="wire-visual"></div>
+                            </div>
+
+                            <div id="plot-potential" class="plot-container"></div>
+                        </div>
+
+                        <!-- VISTA 2: LA REGLA DEL PROMEDIO DE LOS VECINOS (DIFERENCIAS FINITAS) -->
+                        <div id="view-vecinos" class="sim-view">
+                            <div class="view-header">
+                                <h3>2. ¿Por qué Diferencias Finitas es tan fácil? ¡La Regla del Promedio!</h3>
+                            </div>
+                            <div class="easy-concept-box">
+                                <strong>🧮 De Ecuación Diferencial a Aritmética de Secundaria:</strong><br>
+                                En electromagnetismo, la ley de Gauss dice que $-\frac{d^2V}{dx^2} = \frac{\rho}{\varepsilon}$. En <strong>Diferencias Finitas</strong>, cambiamos la derivada segunda por una resta entre 3 nodos seguidos:
+                                $$\frac{-V_{\text{izq}} + 2V_{\text{centro}} - V_{\text{der}}}{(\Delta x)^2} = \frac{\rho}{\varepsilon} \implies \mathbf{V_{\text{centro}} = \frac{V_{\text{izq}} + V_{\text{der}}}{2} + \frac{\rho (\Delta x)^2}{2\varepsilon}}$$
+                            </div>
+
+                            <!-- TARJETAS INTERACTIVAS DE LOS 3 VECINOS -->
+                            <div class="stencil-interactive-box">
+                                <div class="stencil-card">
+                                    <h4 id="stLeftTitle">Vecino Izquierdo (Nodo 1)</h4>
+                                    <div class="big-val" id="stLeftVal">12.00 V</div>
+                                    <small style="color:#64748b;">$V_{i-1}$</small>
+                                </div>
+                                <div class="stencil-card center-node">
+                                    <h4 id="stCenterTitle">🎯 Nodo Analizado (Nodo 2)</h4>
+                                    <div class="big-val" id="stCenterVal" style="color:var(--primary);">9.00 V</div>
+                                    <small id="stFormulaText" style="color:#4338ca; font-weight:700;">Promedio = (12.0 + 6.0) / 2</small>
+                                </div>
+                                <div class="stencil-card">
+                                    <h4 id="stRightTitle">Vecino Derecho (Nodo 3)</h4>
+                                    <div class="big-val" id="stRightVal">6.00 V</div>
+                                    <small style="color:#64748b;">$V_{i+1}$</small>
+                                </div>
+                            </div>
+
+                            <div id="plot-stencil" class="plot-container" style="height:300px;"></div>
+                        </div>
+
+                        <!-- VISTA 3: SIMULACIÓN ITERATIVA PASO A PASO -->
+                        <div id="view-iteracion" class="sim-view">
+                            <div class="view-header">
+                                <h3>3. ¿Cómo descubre la computadora los voltajes desde cero? (Iteración en Vivo)</h3>
+                            </div>
+                            <div class="easy-concept-box">
+                                <strong>🕹️ ¡Pruébalo tú mismo!</strong> Al principio, la computadora <strong>no sabe</strong> cuánto vale el voltaje adentro del cable, así que pone todos los nodos internos en <strong>0 V</strong>. En cada paso (iteración), cada nodo calcula el promedio de sus dos vecinos. ¡Presiona <strong>"Dar 1 Paso"</strong> o <strong>"Auto-Animar"</strong> y mira cómo el voltaje viaja por el cable hasta estabilizarse!
+                            </div>
+
+                            <div class="iter-controls">
+                                <button class="iter-btn" onclick="stepIteration()">👣 Dar 1 Paso de Promedio</button>
+                                <button class="iter-btn secondary" id="btnAutoPlay" onclick="toggleAutoIteration()">▶️ Auto-Animar Simulación</button>
+                                <button class="iter-btn reset" onclick="resetIteration()">🔄 Reiniciar Nodos Internos a 0 V</button>
+                                <span style="margin-left:auto; font-weight:700; color:#0f172a;">
+                                    Iteración actual: <span id="iterCountBadge" style="color:var(--primary); font-size:1.1rem;">0</span>
+                                    | Error máx: <span id="iterErrorBadge" style="color:#059669;">--</span>
+                                </span>
+                            </div>
+
+                            <div id="plot-iteration" class="plot-container" style="margin-top:14px;"></div>
+                        </div>
+
+                        <!-- VISTA 4: CAMPO ELÉCTRICO = LA PENDIENTE DEL TOBOGÁN -->
+                        <div id="view-campo" class="sim-view">
+                            <div class="view-header">
+                                <h3>4. El Campo Eléctrico $E(x)$: ¿Qué tan empinada es la caída de voltaje?</h3>
+                            </div>
+                            <div class="easy-concept-box">
+                                <strong>⚡ El Tobogán Eléctrico:</strong> Imagina que el voltaje $V(x)$ es la altura de un tobogán. Las cargas positivas caen desde donde hay más voltaje hacia donde hay menos voltaje. El <strong>Campo Eléctrico $E$</strong> es simplemente la <strong>pendiente (inclinación)</strong> entre dos nodos seguidos:
+                                $$E_{\text{tramo}} = -\frac{V_{i+1} - V_i}{\Delta x} = \frac{V_i - V_{i+1}}{\Delta x} \quad [\text{Voltios / metro}]$$
+                            </div>
+                            <div id="plot-efield" class="plot-container"></div>
+                        </div>
+
+                        <!-- VISTA 5: SISTEMA DE ECUACIONES Y MATRIZ -->
+                        <div id="view-sistema" class="sim-view">
+                            <div class="view-header">
+                                <h3>5. El Sistema de Ecuaciones de Secundaria y la Matriz $[-1, 2, -1]$</h3>
+                            </div>
+                            <p class="view-desc">
+                                Si escribimos la regla $-V_{i-1} + 2V_i - V_{i+1} = \text{carga}$ para cada nodo interior, obtenemos un sistema de ecuaciones lineales idéntico a los que se resuelven en álgebra de bachillerato:
+                            </p>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:18px; align-items:start;">
+                                <div id="equations-list-box" style="background:#f8fafc; padding:16px; border-radius:8px; border:1px solid var(--border); font-size:0.88rem; line-height:1.8;"></div>
+                                <div style="overflow-x:auto; text-align:center;">
+                                    <div style="font-weight:700; margin-bottom:8px; font-size:0.88rem;">Matriz de Diferencias Finitas $[A]$</div>
+                                    <div id="fdm-matrix-container"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 2: GUÍA PARA BACHILLERATO -->
+            <div id="tab-guia" class="tab-content">
+                <div style="max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; border: 1px solid var(--border); line-height: 1.75;">
+                    <h2 style="color: #0f172a; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-bottom: 20px;">
+                        📘 Guía Paso a Paso para Estudiantes de Bachillerato: ¿Cómo simula la Física una Computadora?
+                    </h2>
+
+                    <h3 style="color: #4338ca; margin-top: 18px;">Paso 1: El problema físico (Un divisor de voltaje en un cable)</h3>
+                    <p>
+                        Cuando conectas una pila de $12\text{ V}$ a un cable resistente de $1\text{ metro}$ de largo, el extremo izquierdo tiene $12\text{ V}$ y el derecho tiene $0\text{ V}$. Si preguntas: <em>"¿Cuántos voltios hay exactamente a la mitad del cable ($0.5\text{ m}$)?"</em>, tu intuición te dice: <strong>¡$6\text{ V}$!</strong> Y a un cuarto del camino ($0.25\text{ m}$), habrá $9\text{ V}$.
+                    </p>
+
+                    <h3 style="color: #4338ca; margin-top: 22px;">Paso 2: ¿Por qué una computadora no puede usar "infinitos puntos"?</h3>
+                    <p>
+                        La memoria de un ordenador es finita. No puede guardar el voltaje de infinitos puntos. Por eso aplicamos la <strong>Discretización</strong>: cortamos el cable imaginariamente con tijeras en $N$ pedacitos iguales de tamaño $\Delta x$, y solo calculamos el voltaje en las marcas de corte, llamadas <strong>Nodos</strong>.
+                    </p>
+
+                    <h3 style="color: #4338ca; margin-top: 22px;">Paso 3: ¿Qué significa "Diferencias Finitas"?</h3>
+                    <p>
+                        En la universidad se usa el cálculo diferencial (derivadas como $\frac{dV}{dx}$). Pero una derivada no es más que una <strong>resta dividida entre una distancia</strong> cuando los puntos están cerquita:
+                    </p>
+                    <div class="math-box">
+                        $$\text{Pendiente a la derecha del nodo } i = \frac{V_{i+1} - V_i}{\Delta x}, \qquad \text{Pendiente a la izquierda del nodo } i = \frac{V_i - V_{i-1}}{\Delta x}$$
+                    </div>
+                    <p>
+                        Si no se escapa corriente por los lados del cable, la pendiente que entra por la izquierda debe ser igual a la pendiente que sale por la derecha:
+                    </p>
+                    <div class="math-box">
+                        $$\frac{V_i - V_{i-1}}{\Delta x} = \frac{V_{i+1} - V_i}{\Delta x} \implies V_i - V_{i-1} = V_{i+1} - V_i \implies 2V_i = V_{i-1} + V_{i+1} \implies \mathbf{V_i = \frac{V_{i-1} + V_{i+1}}{2}}$$
+                    </div>
+                    <p>
+                        ¡Acabas de deducir el <strong>Método de Diferencias Finitas</strong> usando únicamente despejes de primer año de bachillerato!
+                    </p>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 3: PUENTE FDM VS FEM -->
+            <div id="tab-puente" class="tab-content">
+                <div style="max-width: 920px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; border: 1px solid var(--border); line-height: 1.7;">
+                    <h2 style="color: #0f172a; border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px;">
+                        🌉 El Puente Conceptual: De Diferencias Finitas (FDM) a Elementos Finitos (FEM)
+                    </h2>
+                    <p style="margin-bottom: 16px;">
+                        Una vez que entiendes Diferencias Finitas en el <strong>Módulo 0</strong>, estás 100% preparado para entender los <strong>17 videos del curso de Elementos Finitos (FEM)</strong>. Mira cómo se conectan ambos métodos:
+                    </p>
+
+                    <table class="fem-table">
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Diferencias Finitas (FDM - Módulo 0)</th>
+                                <th>Elementos Finitos (FEM - Videos 1 al 17)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>¿En qué se enfoca?</strong></td>
+                                <td>En los <strong>Puntos (Nodos)</strong> donde ponemos el multímetro.</td>
+                                <td>En los <strong>Tramos (Elementos)</strong> que unen un nodo con otro.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>¿Qué pasa entre dos nodos?</strong></td>
+                                <td>No lo define explícitamente; solo calcula en las marcas.</td>
+                                <td>Usa <strong>Funciones de Forma ($N_1, N_2$)</strong> para interpolar cualquier punto intermedio.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>¿Cómo transforma la ecuación física?</strong></td>
+                                <td>Cambia derivadas por <strong>restas directas</strong> (Aproximación de Taylor).</td>
+                                <td>Multiplica por un peso e <strong>integra por partes</strong> (Método de Galerkin / Forma Débil).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Matriz resultante en 1D</strong></td>
+                                <td>Filas con el patrón $\frac{1}{\Delta x^2}[-1, \;\; 2, \;\; -1]$</td>
+                                <td>Al ensamblar $\frac{1}{l_e}\begin{bmatrix}1 & -1\\-1 & 1\end{bmatrix}$, ¡da el mismo patrón $[-1, \;\; 2, \;\; -1]$!</td>
+                            </tr>
+                            <tr>
+                                <td><strong>¿Por qué aprender ambos?</strong></td>
+                                <td>Es el método más intuitivo para aprender qué es una malla, un nodo y una matriz.</td>
+                                <td>Es el estándar profesional para geometrías complejas en 2D y 3D (antenas, motores, estructuras).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 4: CÓDIGO PYTHON SÚPER SIMPLE -->
+            <div id="tab-codigo" class="tab-content">
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <h3 style="margin-bottom: 12px; color:#0f172a;">🐍 Código en Python de Diferencias Finitas 1D (Explicado línea por línea para Bachillerato)</h3>
+                    <pre class="code-container"><code># ==============================================================================
+# SIMULADOR DE CAÍDA DE VOLTAJE EN 1D USANDO DIFERENCIAS FINITAS (NIVEL BACHILLERATO)
+# ==============================================================================
+
+L = 1.0          # Largo del cable en metros
+N_tramos = 4     # Dividimos el cable en 4 partes iguales
+N_nodos = N_tramos + 1  # Tenemos 5 nodos (puntos de medición)
+dx = L / N_tramos       # Distancia entre cada multímetro (0.25 m)
+
+# 1. Creamos una lista de voltajes inicialmente en 0 V para todos los nodos
+V = [0.0] * N_nodos
+
+# 2. Conectamos la batería en los extremos (Condiciones de Frontera)
+V[0] = 12.0   # Extremo izquierdo a 12 Voltios
+V[-1] = 0.0   # Extremo derecho a 0 Voltios (Tierra)
+
+# 3. Aplicamos la "Regla del Promedio de los Vecinos" repetidamente
+for paso in range(50):
+    for i in range(1, N_nodos - 1): # Recorremos solo los nodos de adentro
+        V[i] = (V[i - 1] + V[i + 1]) / 2.0
+
+# 4. Mostramos los resultados finales y el Campo Eléctrico E = -(V_der - V_izq)/dx
+print("Resultados de la Simulación 1D:")
+for i in range(N_nodos):
+    x = i * dx
+    print(f"  Nodo {i+1} (x = {x:.2f} m) --> Voltaje = {V[i]:.2f} V")
+</code></pre>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SIDEBAR DERECHO: TEMARIO COMPLETO (MÓDULO 0 FDM + 17 VIDEOS FEM) -->
+        <aside id="curriculumSidebar" class="curriculum-sidebar">
+            <div class="sidebar-header">
+                <div>
+                    <h2>Ruta de Aprendizaje</h2>
+                    <div class="sidebar-meta">5 Lecciones Previas FDM + 17 Videos FEM</div>
+                </div>
+                <button class="sidebar-toggle-btn" onclick="toggleSidebar()" style="color: #475569;">✕</button>
+            </div>
+            <div class="playlist-scroll" id="modulesContainer"></div>
+        </aside>
+
+    </div>
+
+    <script>
+        // ESTRUCTURA DEL CURSO: MÓDULO 0 (DIFERENCIAS FINITAS Y ELECTROMAGNETISMO PARA BACHILLERATO) + MÓDULOS 1-6 (17 VIDEOS FEM)
+        const courseData = [
+            {
+                module: "⚡ Módulo 0 (Base Previa): Diferencias Finitas y Caída de Potencial 1D (Nivel Bachillerato)",
+                isFDM: true,
+                lessons: [
+                    {
+                        index: 1,
+                        id: "ado7u7pOPSE",
+                        title: "0.1 El Cable, la Batería y los Multímetros (Nodos en 1D)",
+                        duration: "Interactivo",
+                        level: "Bachillerato",
+                        focusView: "cable",
+                        digestTitle: "¿Cómo medimos el voltaje en un cable por partes?",
+                        digestBody: "En lugar de estudiar todo el cable continuo de golpe, colocamos multímetros a distancias iguales $\\Delta x$. Cada punto de medición se llama <strong>Nodo</strong>.",
+                        digestAnalogy: "🎯 <strong>Idea clave:</strong> Si partes una barra de $1\\text{ m}$ en $4$ tramos, obtienes $5$ nodos ($N_{\\text{nodos}} = N_{\\text{tramos}} + 1$)."
+                    },
+                    {
+                        index: 2,
+                        id: "ado7u7pOPSE",
+                        title: "0.2 La Regla del Promedio de los Vecinos (Diferencias Finitas)",
+                        duration: "Interactivo",
+                        level: "Bachillerato",
+                        focusView: "vecinos",
+                        digestTitle: "Cero derivadas complicadas: ¡Solo promedios!",
+                        digestBody: "En Diferencias Finitas reemplazamos las derivadas por restas simples entre vecinos. Cuando no hay carga encerrada, cada nodo tiene exactamente el voltaje promedio de sus dos vecinos.",
+                        digestAnalogy: "🧮 <strong>Fórmula mágica:</strong> $V_{\\text{centro}} = \\frac{V_{\\text{izq}} + V_{\\text{der}}}{2}$. Si a tu izquierda hay $12\\text{ V}$ y a tu derecha hay $6\\text{ V}$, ¡tú tienes $9\\text{ V}$!"
+                    },
+                    {
+                        index: 3,
+                        id: "P8RiMqr--ys",
+                        title: "0.3 ¿Cómo piensa la Computadora? Simulación Paso a Paso",
+                        duration: "Interactivo",
+                        level: "Bachillerato",
+                        focusView: "iteracion",
+                        digestTitle: "Viendo trabajar al ordenador en cámara lenta",
+                        digestBody: "La computadora arranca adivinando $0\\text{ V}$ en los nodos internos y repite la Regla del Promedio muchas veces hasta que los números dejan de cambiar (convergencia).",
+                        digestAnalogy: "🕹️ <strong>Prueba abajo:</strong> Usa el botón <em>'Dar 1 Paso de Promedio'</em> en la pestaña 3 del simulador para verlo en vivo."
+                    },
+                    {
+                        index: 4,
+                        id: "2ooaV_HdGg8",
+                        title: "0.4 La Pendiente del Voltaje: El Campo Eléctrico E(x)",
+                        duration: "Interactivo",
+                        level: "Bachillerato",
+                        focusView: "campo",
+                        digestTitle: "El voltaje es la altura; el Campo Eléctrico es la inclinación",
+                        digestBody: "El Campo Eléctrico $E$ nos dice cuántos voltios caen por cada metro que avanzamos: $E = -\\frac{V_{i+1}-V_i}{\\Delta x}$. Es exactamente la fórmula de pendiente de una recta de secundaria.",
+                        digestAnalogy: "⚡ <strong>Si hay carga interna ($\\rho > 0$):</strong> La gráfica se curva como una parábola y el campo eléctrico cambia en cada tramo."
+                    },
+                    {
+                        index: 5,
+                        id: "8PSRMouFfSc",
+                        title: "0.5 El Sistema de Ecuaciones [-1, 2, -1] y el Paso a FEM",
+                        duration: "Interactivo",
+                        level: "Puente a FEM",
+                        focusView: "sistema",
+                        digestTitle: "De un acertijo de secundaria a una Matriz de Ingeniería",
+                        digestBody: "Juntar la ecuación de cada nodo forma una tabla de números llamada Matriz con la famosa fila $[-1, 2, -1]$. ¡En Elementos Finitos obtendremos exactamente la misma estructura!",
+                        digestAnalogy: "🌉 <strong>Listo para avanzar:</strong> Ahora los 17 videos de Elementos Finitos tendrán total sentido físico para ti."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 1: Discretización y Malla (Videos 1-2)",
+                lessons: [
+                    {
+                        index: 6,
+                        id: "ado7u7pOPSE",
+                        title: "Video 1: Discretización del Dominio en 1D",
+                        duration: "06:57",
+                        level: "Curso FEM",
+                        focusView: "cable",
+                        digestTitle: "Video 1: Domain Discretization in 1D",
+                        digestBody: "En este primer video de la serie base, vemos cómo dividir la barra 1D en sub-segmentos (elementos) y nodos, exactamente igual que nuestro cable con multímetros.",
+                        digestAnalogy: "🔗 En Diferencias Finitas mirábamos los puntos; en Elementos Finitos miramos los tramos entre puntos."
+                    },
+                    {
+                        index: 7,
+                        id: "2ooaV_HdGg8",
+                        title: "Video 2: Localización y Conectividad",
+                        duration: "12:17",
+                        level: "Curso FEM",
+                        focusView: "cable",
+                        digestTitle: "Video 2: Localization and Interpolation",
+                        digestBody: "Cada tramo entre dos multímetros tiene un nodo izquierdo (1) y uno derecho (2). La tabla de conectividad le dice al programa qué nodos globales une cada tramo.",
+                        digestAnalogy: "📋 Tramo 1 une Nodos (1,2); Tramo 2 une Nodos (2,3), y así sucesivamente."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 2: Funciones de Forma e Interpolación (Videos 3-5)",
+                lessons: [
+                    {
+                        index: 8,
+                        id: "IdAxVBQkyIk",
+                        title: "Video 3: Funciones de Forma (Shape Functions)",
+                        duration: "04:40",
+                        level: "Curso FEM",
+                        focusView: "campo",
+                        digestTitle: "Video 3: Shape Functions",
+                        digestBody: "¿Cuánto vale el voltaje a mitad de camino entre dos multímetros? Las funciones de forma $N_1$ y $N_2$ son dos líneas rectas que sirven como balanza para promediar.",
+                        digestAnalogy: "⚖️ Justo en la mitad del tramo, $N_1 = 0.5$ y $N_2 = 0.5$."
+                    },
+                    {
+                        index: 9,
+                        id: "bVNRZ0Ro1Uw",
+                        title: "Video 4: Funciones de Forma como Interpolación",
+                        duration: "04:26",
+                        level: "Curso FEM",
+                        focusView: "campo",
+                        digestTitle: "Video 4: Shape Functions as Interpolation",
+                        digestBody: "Conectando los valores medidos en cada nodo mediante rectas obtenemos el perfil completo del potencial eléctrico en cualquier coordenada $x$.",
+                        digestAnalogy: "📈 Es como unir los puntos de una gráfica con una regla."
+                    },
+                    {
+                        index: 10,
+                        id: "XwFO6kPJCW4",
+                        title: "Video 5: Aproximación del Modelo Continuo",
+                        duration: "06:33",
+                        level: "Curso FEM",
+                        focusView: "cable",
+                        digestTitle: "Video 5: Model Approximation",
+                        digestBody: "Al usar rectas tramo por tramo, aproximamos cualquier curva suave de voltaje. Cuantos más nodos pongamos, más idéntica será nuestra aproximación a la curva real.",
+                        digestAnalogy: "🔍 Prueba subir el control de 'Cantidad de Tramos' a 10 cuando hay carga interna."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 3: Residuos Ponderados y Galerkin (Videos 6-9)",
+                lessons: [
+                    {
+                        index: 11,
+                        id: "r6aogFfaE24",
+                        title: "Video 6: Concepto de Residuos (Residuals)",
+                        duration: "03:18",
+                        level: "Curso FEM",
+                        focusView: "iteracion",
+                        digestTitle: "Video 6: Residuals (El Error)",
+                        digestBody: "Cuando los voltajes de los nodos todavía no están en su valor exacto (como al inicio de nuestra simulación paso a paso), la ecuación no da cero: lo que sobra se llama Residuo.",
+                        digestAnalogy: "🎯 Simular consiste en hacer que ese Residuo se vuelva cero."
+                    },
+                    {
+                        index: 12,
+                        id: "fAHxId5lKpo",
+                        title: "Video 7: Residuos con Funciones de Peso",
+                        duration: "05:39",
+                        level: "Curso FEM",
+                        focusView: "iteracion",
+                        digestTitle: "Video 7: Residuals with Weights",
+                        digestBody: "En vez de exigir que el error sea cero solo en puntos sueltos, pedimos que el promedio pesado del error en cada tramo sea cero.",
+                        digestAnalogy: "🧽 Repartimos y anulamos el error a lo largo de todo el cable."
+                    },
+                    {
+                        index: 13,
+                        id: "v0g-wtOexUo",
+                        title: "Video 8: Método de Residuos Ponderados",
+                        duration: "06:02",
+                        level: "Curso FEM",
+                        focusView: "vecinos",
+                        digestTitle: "Video 8: Weighted Residual Method",
+                        digestBody: "Presenta la familia general de métodos numéricos para anular el residuo en problemas de física e ingeniería.",
+                        digestAnalogy: "🧰 Diferencias Finitas anula el error en puntos; Elementos Finitos lo anula en promedio por tramo."
+                    },
+                    {
+                        index: 14,
+                        id: "NU6vc-rlWvA",
+                        title: "Video 9: El Método de Galerkin",
+                        duration: "05:59",
+                        level: "Curso FEM",
+                        focusView: "vecinos",
+                        digestTitle: "Video 9: Galerkin Method",
+                        digestBody: "Galerkin descubrió que la mejor forma de pesar el error es usar las mismas funciones de forma de los nodos.",
+                        digestAnalogy: "🏆 Es la receta matemática que convierte integrales en la misma regla de vecinos que ya conoces."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 4: Formulación Débil e Integración (Videos 10-11)",
+                lessons: [
+                    {
+                        index: 15,
+                        id: "xz9e7HRFSTw",
+                        title: "Video 10: Integración por Partes",
+                        duration: "04:11",
+                        level: "Curso FEM",
+                        focusView: "campo",
+                        digestTitle: "Video 10: Integration by Parts",
+                        digestBody: "Truco matemático para pasar de necesitar segundas derivadas (curvatura) a necesitar solo primeras derivadas (la pendiente o Campo Eléctrico $E$).",
+                        digestAnalogy: "📉 Gracias a esto podemos usar tramos rectos simples sin que las cuentas fallen."
+                    },
+                    {
+                        index: 16,
+                        id: "c1c0tGibzLM",
+                        title: "Video 11: Forma Fuerte, Débil y Sistema Lineal",
+                        duration: "05:31",
+                        level: "Curso FEM",
+                        focusView: "sistema",
+                        digestTitle: "Video 11: Strong Form, Weak Form & SLE",
+                        digestBody: "Muestra cómo la ecuación diferencial se transforma finalmente en un sistema de ecuaciones algebraicas $[K]\\{V\\} = \\{F\\}$.",
+                        digestAnalogy: "🔢 Exactamente igual al sistema de ecuaciones que ves en la Pestaña 5 del simulador."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 5: Matrices y Condiciones de Frontera (Videos 12-14)",
+                lessons: [
+                    {
+                        index: 17,
+                        id: "8PSRMouFfSc",
+                        title: "Video 12: Ensamblaje de la Matriz Global",
+                        duration: "13:29",
+                        level: "Curso FEM",
+                        focusView: "sistema",
+                        digestTitle: "Video 12: Assembly (Ensamblaje)",
+                        digestBody: "Cuando juntas el tramo izquierdo y el tramo derecho de un nodo, sus aportes se suman ($1 + 1 = 2$), formando la diagonal con el número $2$ y los vecinos con $-1$.",
+                        digestAnalogy: "🧩 ¡Aquí ves por qué Elementos Finitos y Diferencias Finitas llegan a la misma matriz $[-1, 2, -1]$!"
+                    },
+                    {
+                        index: 18,
+                        id: "Rh4cQfztGw4",
+                        title: "Video 13: Condiciones de Frontera",
+                        duration: "11:45",
+                        level: "Curso FEM",
+                        focusView: "sistema",
+                        digestTitle: "Video 13: Boundary Conditions",
+                        digestBody: "Para poder resolver los voltajes internos, necesitamos fijar los voltajes de la batería en los dos extremos del cable ($V_{\\text{izq}}$ y $V_{\\text{der}}$).",
+                        digestAnalogy: "🔋 Sin conectar la batería en los extremos, el sistema tendría infinitas respuestas."
+                    },
+                    {
+                        index: 19,
+                        id: "4jW6RdvkbDk",
+                        title: "Video 14: Definición de Componentes Matriciales",
+                        duration: "08:36",
+                        level: "Curso FEM",
+                        focusView: "sistema",
+                        digestTitle: "Video 14: Defining Matrix Components",
+                        digestBody: "Cálculo detallado de cada término de la matriz y del vector de cargas eléctricas o térmicas.",
+                        digestAnalogy: "📐 Revisa la Pestaña 5 del laboratorio para ver los números calculados en tiempo real."
+                    }
+                ]
+            },
+            {
+                module: "Módulo 6: Síntesis, Casos Prácticos y Resumen (Videos 15-17)",
+                lessons: [
+                    {
+                        index: 20,
+                        id: "lpVIhF3-wvY",
+                        title: "Video 15: Síntesis y Resumen General",
+                        duration: "03:06",
+                        level: "Curso FEM",
+                        focusView: "cable",
+                        digestTitle: "Video 15: Summary",
+                        digestBody: "Repaso completo de todos los pasos de una simulación numérica: Discretizar ➔ Plantear ecuaciones por nodo/elemento ➔ Ensamblar matriz ➔ Resolver y graficar.",
+                        digestAnalogy: "🎓 Es el mismo flujo universal que usan los programas profesionales de ingeniería."
+                    },
+                    {
+                        index: 21,
+                        id: "j2PIuqURmNw",
+                        title: "Video 16: Otro Ejemplo Práctico",
+                        duration: "05:50",
+                        level: "Curso FEM",
+                        focusView: "vecinos",
+                        digestTitle: "Video 16: Another Example",
+                        digestBody: "Aplicación paso a paso con fuentes internas activas para observar cómo cambia la curvatura de la solución.",
+                        digestAnalogy: "⚡ Activa el botón 'Con Carga Espacial' arriba a la izquierda para reproducir este efecto."
+                    },
+                    {
+                        index: 22,
+                        id: "P8RiMqr--ys",
+                        title: "Video 17: Visión General Animada en 1D",
+                        duration: "10:15",
+                        level: "Curso FEM",
+                        focusView: "iteracion",
+                        digestTitle: "Video 17: Animated Overview",
+                        digestBody: "Animación integradora que muestra cómo los nodos discretos reconstruyen la física continua a lo largo de la barra 1D.",
+                        digestAnalogy: "🚀 ¡Felicidades! Has recorrido desde el concepto básico de Bachillerato hasta Elementos Finitos."
+                    }
+                ]
+            }
+        ];
+
+        const allLessons = [];
+        courseData.forEach(mod => {
+            mod.lessons.forEach(les => {
+                allLessons.push({
+                    ...les,
+                    moduleName: mod.module,
+                    isFDM: !!mod.isFDM
+                });
+            });
+        });
+
+        let currentLessonIndex = 0;
+        let completedSet = new Set();
+        let currentFDMResults = null;
+
+        // Estado para la simulación iterativa paso a paso (Jacobi/Gauss-Seidel visual)
+        let iterVoltages = [];
+        let iterCount = 0;
+        let autoPlayTimer = null;
+
+        try {
+            const saved = localStorage.getItem('simulador2_completed');
+            if (saved) JSON.parse(saved).forEach(i => completedSet.add(i));
+        } catch(e) {}
+
+        function initCurriculumUI() {
+            const container = document.getElementById('modulesContainer');
+            container.innerHTML = '';
+
+            courseData.forEach((mod, modIdx) => {
+                const group = document.createElement('details');
+                group.className = 'module-group';
+                group.id = `mod-group-${modIdx}`;
+                group.open = true;
+
+                const header = document.createElement('summary');
+                header.className = 'module-header' + (mod.isFDM ? ' fdm-special' : '');
+                header.innerHTML = `
+                    <span>${mod.module}</span>
+                    <span class="arrow-icon">▼</span>
+                `;
+
+                const content = document.createElement('div');
+                content.className = 'module-content';
+                const ul = document.createElement('ul');
+                ul.className = 'lesson-list';
+
+                mod.lessons.forEach(lesson => {
+                    const globalIdx = lesson.index - 1;
+                    const li = document.createElement('li');
+                    li.className = 'lesson-item';
+                    li.id = `lesson-item-${globalIdx}`;
+                    li.onclick = (e) => {
+                        if (e.target.tagName !== 'INPUT') selectLesson(globalIdx);
+                    };
+
+                    const isChecked = completedSet.has(globalIdx);
+                    const badgeClass = lesson.level === 'Bachillerato' ? 'badge-bachillerato' : 'badge-fem';
+
+                    li.innerHTML = `
+                        <input type="checkbox" class="lesson-checkbox" id="chk-${globalIdx}" ${isChecked ? 'checked' : ''} onchange="toggleComplete(${globalIdx}, event)">
+                        <div class="lesson-details">
+                            <div class="lesson-title">${lesson.title}</div>
+                            <div class="lesson-sub">
+                                <span>⏱ ${lesson.duration}</span>
+                                <span class="${badgeClass}">${lesson.level}</span>
+                            </div>
+                        </div>
+                    `;
+                    ul.appendChild(li);
+                });
+
+                content.appendChild(ul);
+                group.appendChild(header);
+                group.appendChild(content);
+                container.appendChild(group);
+            });
+
+            updateProgressUI();
+            selectLesson(0, false);
+        }
+
+        function selectLesson(index, autoFocus = true) {
+            if (index < 0 || index >= allLessons.length) return;
+
+            const prev = document.getElementById(`lesson-item-${currentLessonIndex}`);
+            if (prev) prev.classList.remove('active');
+
+            currentLessonIndex = index;
+            const lesson = allLessons[index];
+
+            const curr = document.getElementById(`lesson-item-${currentLessonIndex}`);
+            if (curr) curr.classList.add('active');
+
+            const iframe = document.getElementById('videoIframe');
+            const targetSrc = `https://www.youtube-nocookie.com/embed/${lesson.id}?rel=0&enablejsapi=1`;
+            if (iframe.src !== targetSrc) {
+                iframe.src = targetSrc;
+            }
+
+            document.getElementById('videoModuleBadge').innerText = lesson.moduleName;
+            document.getElementById('videoTitleText').innerText = lesson.title;
+
+            // Actualizar cápsula de Bachillerato
+            document.getElementById('digestTag').innerText = `💡 Cápsula Didáctica • ${lesson.level}`;
+            document.getElementById('digestTitle').innerText = lesson.digestTitle;
+            document.getElementById('digestBody').innerHTML = lesson.digestBody;
+            document.getElementById('digestAnalogy').innerHTML = lesson.digestAnalogy;
+
+            document.getElementById('btnPrevVideo').disabled = currentLessonIndex === 0;
+            document.getElementById('btnNextVideo').disabled = currentLessonIndex === allLessons.length - 1;
+
+            updateCompleteButtonState();
+
+            if (autoFocus && lesson.focusView) {
+                switchSimView(lesson.focusView);
+                switchMainTab('simulador');
+            }
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().catch(() => {});
+            }
+        }
+
+        function navigateLesson(dir) {
+            selectLesson(currentLessonIndex + dir, true);
+        }
+
+        function toggleComplete(idx, ev) {
+            if (ev) ev.stopPropagation();
+            if (completedSet.has(idx)) completedSet.delete(idx);
+            else completedSet.add(idx);
+            try {
+                localStorage.setItem('simulador2_completed', JSON.stringify(Array.from(completedSet)));
+            } catch(e) {}
+            updateProgressUI();
+            updateCompleteButtonState();
+        }
+
+        function toggleCurrentCompleted() {
+            toggleComplete(currentLessonIndex);
+            const chk = document.getElementById(`chk-${currentLessonIndex}`);
+            if (chk) chk.checked = completedSet.has(currentLessonIndex);
+        }
+
+        function updateCompleteButtonState() {
+            const btn = document.getElementById('btnToggleComplete');
+            if (completedSet.has(currentLessonIndex)) {
+                btn.classList.add('completed');
+                btn.innerHTML = '✓ Completada';
+            } else {
+                btn.classList.remove('completed');
+                btn.innerHTML = '✓ Marcar Completada';
+            }
+        }
+
+        function updateProgressUI() {
+            const count = completedSet.size;
+            const total = allLessons.length;
+            const pct = Math.round((count / total) * 100);
+            document.getElementById('courseProgressBar').style.width = `${pct}%`;
+            document.getElementById('courseProgressText').innerText = `${count} / ${total} (${pct}%)`;
+        }
+
+        function toggleSidebar() {
+            document.getElementById('curriculumSidebar').classList.toggle('collapsed');
+        }
+
+        function switchMainTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            const map = { 'simulador': 0, 'guia': 1, 'puente': 2, 'codigo': 3 };
+            document.querySelectorAll('.tab-btn')[map[tabName]].classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            if (tabName === 'simulador') runFDMCalculation();
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().catch(() => {});
+            }
+        }
+
+        function switchSimView(viewKey) {
+            document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.sim-view').forEach(v => v.classList.remove('active'));
+
+            const chip = document.getElementById(`chip-${viewKey}`);
+            if (chip) chip.classList.add('active');
+            const view = document.getElementById(`view-${viewKey}`);
+            if (view) view.classList.add('active');
+
+            renderActiveSimView();
+        }
+
+        function applyPreset(type) {
+            if (type === 'lineal') {
+                document.getElementById('paramL').value = 1.0;
+                document.getElementById('paramNe').value = 4;
+                document.getElementById('paramV1').value = 12;
+                document.getElementById('paramVn').value = 0;
+                document.getElementById('paramRho').value = 0;
+            } else if (type === 'carga') {
+                document.getElementById('paramL').value = 1.0;
+                document.getElementById('paramNe').value = 6;
+                document.getElementById('paramV1').value = 12;
+                document.getElementById('paramVn').value = 0;
+                document.getElementById('paramRho').value = 32;
+            }
+            runFDMCalculation();
+        }
+
+        // =========================================================================
+        // MOTOR DE DIFERENCIAS FINITAS 1D (POTENCIAL ELÉCTRICO Y CAMPO ELÉCTRICO)
+        // Ecuación: - d²V/dx² = rho_eps   en x in [0, L], con V(0)=V1, V(L)=Vn
+        // Esquema centrado FDM: (-V_{i-1} + 2*V_i - V_{i+1}) / dx² = rho_eps
+        // =========================================================================
+        function runFDMCalculation() {
+            const L = parseFloat(document.getElementById('paramL').value);
+            const ne = parseInt(document.getElementById('paramNe').value);
+            const V1 = parseFloat(document.getElementById('paramV1').value);
+            const Vn = parseFloat(document.getElementById('paramVn').value);
+            const rhoEps = parseFloat(document.getElementById('paramRho').value);
+
+            const nn = ne + 1;
+            const dx = L / ne;
+
+            // Ajustar rango del selector de nodo interior
+            const inspectInput = document.getElementById('paramInspect');
+            inspectInput.max = nn - 1;
+            if (parseInt(inspectInput.value) >= nn) {
+                inspectInput.value = Math.max(2, nn - 1);
+            }
+            const inspectNodeIdx = parseInt(inspectInput.value) - 1; // 0-based
+
+            document.getElementById('valL').innerText = `${L.toFixed(1)} m`;
+            document.getElementById('valNe').innerText = `${ne} tramos (${nn} nodos)`;
+            document.getElementById('valV1').innerText = `${V1.toFixed(0)} V`;
+            document.getElementById('valVn').innerText = `${Vn.toFixed(0)} V`;
+            document.getElementById('valRho').innerText = `${rhoEps.toFixed(0)} V/m²`;
+            document.getElementById('valInspectNode').innerText = `Nodo ${inspectNodeIdx + 1}`;
+
+            document.getElementById('metricDx').innerText = dx.toFixed(3);
+            document.getElementById('metricDrop').innerText = ((V1 - Vn) / ne).toFixed(2);
+            document.getElementById('metricE').innerText = ((V1 - Vn) / L).toFixed(2);
+
+            const nodes_x = [];
+            for (let i = 0; i < nn; i++) nodes_x.push(i * dx);
+
+            // Armar matriz FDM [A]{V} = {b}
+            const A = Array.from({ length: nn }, () => Array(nn).fill(0));
+            const b = Array(nn).fill(0);
+
+            A[0][0] = 1.0;
+            b[0] = V1;
+
+            for (let i = 1; i < nn - 1; i++) {
+                A[i][i - 1] = -1.0;
+                A[i][i] = 2.0;
+                A[i][i + 1] = -1.0;
+                b[i] = rhoEps * dx * dx;
+            }
+
+            A[nn - 1][nn - 1] = 1.0;
+            b[nn - 1] = Vn;
+
+            const nodes_V = solveLinearSystem(A, b);
+
+            // Campo eléctrico en cada tramo por diferencias finitas: E_e = -(V_{i+1} - V_i)/dx
+            const elem_x_mid = [];
+            const elem_E = [];
+            for (let e = 0; e < ne; e++) {
+                elem_x_mid.push((nodes_x[e] + nodes_x[e + 1]) / 2.0);
+                elem_E.push(-(nodes_V[e + 1] - nodes_V[e]) / dx);
+            }
+
+            currentFDMResults = {
+                L, ne, nn, dx, V1, Vn, rhoEps,
+                nodes_x, nodes_V, A, b,
+                elem_x_mid, elem_E,
+                inspectNodeIdx
+            };
+
+            resetIteration(false);
+            renderActiveSimView();
+        }
+
+        function updateNodeInspector() {
+            if (!currentFDMResults) return;
+            const inspectInput = document.getElementById('paramInspect');
+            currentFDMResults.inspectNodeIdx = parseInt(inspectInput.value) - 1;
+            document.getElementById('valInspectNode').innerText = `Nodo ${currentFDMResults.inspectNodeIdx + 1}`;
+            renderActiveSimView();
+        }
+
+        function solveLinearSystem(A_orig, b_orig) {
+            const n = b_orig.length;
+            const A = A_orig.map(r => [...r]);
+            const b = [...b_orig];
+
+            for (let i = 0; i < n; i++) {
+                let maxRow = i;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) maxRow = k;
+                }
+                [A[i], A[maxRow]] = [A[maxRow], A[i]];
+                [b[i], b[maxRow]] = [b[maxRow], b[i]];
+
+                for (let k = i + 1; k < n; k++) {
+                    const factor = A[k][i] / A[i][i];
+                    for (let j = i; j < n; j++) A[k][j] -= factor * A[i][j];
+                    b[k] -= factor * b[i];
+                }
+            }
+
+            const x = Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                let s = 0;
+                for (let j = i + 1; j < n; j++) s += A[i][j] * x[j];
+                x[i] = (b[i] - s) / A[i][i];
+            }
+            return x;
+        }
+
+        // =========================================================================
+        // SIMULADOR DE ITERACIONES PASO A PASO (MÉTODO DE RELAJACIÓN PARA ALUMNOS)
+        // =========================================================================
+        function resetIteration(shouldRender = true) {
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+                autoPlayTimer = null;
+                document.getElementById('btnAutoPlay').innerText = '▶️ Auto-Animar Simulación';
+            }
+            if (!currentFDMResults) return;
+            const { nn, V1, Vn } = currentFDMResults;
+            iterVoltages = Array(nn).fill(0);
+            iterVoltages[0] = V1;
+            iterVoltages[nn - 1] = Vn;
+            iterCount = 0;
+            if (shouldRender) renderActiveSimView();
+        }
+
+        function stepIteration() {
+            if (!currentFDMResults) return;
+            const { nn, dx, rhoEps } = currentFDMResults;
+            const nextV = [...iterVoltages];
+            const extraTerm = 0.5 * rhoEps * dx * dx;
+
+            for (let i = 1; i < nn - 1; i++) {
+                nextV[i] = 0.5 * (iterVoltages[i - 1] + iterVoltages[i + 1]) + extraTerm;
+            }
+            iterVoltages = nextV;
+            iterCount++;
+            renderActiveSimView();
+        }
+
+        function toggleAutoIteration() {
+            const btn = document.getElementById('btnAutoPlay');
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+                autoPlayTimer = null;
+                btn.innerText = '▶️ Auto-Animar Simulación';
+            } else {
+                btn.innerText = '⏸️ Pausar Animación';
+                autoPlayTimer = setInterval(() => {
+                    stepIteration();
+                    // Detener si ya convergió casi por completo
+                    const maxErr = getMaxIterError();
+                    if (maxErr < 0.005 || iterCount > 150) {
+                        clearInterval(autoPlayTimer);
+                        autoPlayTimer = null;
+                        btn.innerText = '▶️ Auto-Animar Simulación';
+                    }
+                }, 260);
+            }
+        }
+
+        function getMaxIterError() {
+            if (!currentFDMResults) return 0;
+            let maxE = 0;
+            for (let i = 0; i < currentFDMResults.nn; i++) {
+                maxE = Math.max(maxE, Math.abs(iterVoltages[i] - currentFDMResults.nodes_V[i]));
+            }
+            return maxE;
+        }
+
+        // =========================================================================
+        // RENDERIZADO DE LAS 5 VISTAS DEL SIMULADOR
+        // =========================================================================
+        function renderActiveSimView() {
+            if (!currentFDMResults) return;
+            const { L, ne, nn, dx, V1, Vn, rhoEps, nodes_x, nodes_V, A, b, elem_x_mid, elem_E, inspectNodeIdx } = currentFDMResults;
+
+            // Curva analítica continua para comparación visual
+            const fine_x = [];
+            const fine_V = [];
+            for (let k = 0; k <= 100; k++) {
+                const x = (k / 100) * L;
+                fine_x.push(x);
+                fine_V.push(V1 + (x / L) * (Vn - V1) + 0.5 * rhoEps * x * (L - x));
+            }
+
+            // 1. VISTA DEL CABLE Y MULTÍMETROS
+            if (document.getElementById('view-cable').classList.contains('active')) {
+                renderWireVisual(nodes_x, nodes_V, L, inspectNodeIdx);
+
+                const traceExact = {
+                    x: fine_x,
+                    y: fine_V,
+                    mode: 'lines',
+                    name: 'Curva Real Continua V(x)',
+                    line: { color: '#cbd5e1', width: 3, dash: 'dot' }
+                };
+                const traceNodes = {
+                    x: nodes_x,
+                    y: nodes_V,
+                    mode: 'lines+markers+text',
+                    name: 'Nodos Medidos (Diferencias Finitas)',
+                    text: nodes_V.map(v => `${v.toFixed(1)}V`),
+                    textposition: 'top center',
+                    line: { color: '#4f46e5', width: 3 },
+                    marker: { size: 12, color: '#f59e0b', line: { color: '#0f172a', width: 2 } }
+                };
+                const layout = {
+                    title: 'Caída de Potencial Eléctrico V(x) a lo largo del Conductor 1D',
+                    xaxis: { title: 'Posición en el cable x [m]', range: [-0.04 * L, 1.04 * L] },
+                    yaxis: { title: 'Potencial Eléctrico V [Voltios]' },
+                    margin: { t: 45, b: 50, l: 60, r: 25 },
+                    plot_bgcolor: '#f8fafc',
+                    paper_bgcolor: '#ffffff'
+                };
+                Plotly.newPlot('plot-potential', [traceExact, traceNodes], layout, { displayModeBar: false, responsive: true });
+            }
+
+            // 2. VISTA DE LA REGLA DEL PROMEDIO DE VECINOS
+            if (document.getElementById('view-vecinos').classList.contains('active')) {
+                const i = Math.min(Math.max(1, inspectNodeIdx), nn - 2);
+                const vLeft = nodes_V[i - 1];
+                const vCenter = nodes_V[i];
+                const vRight = nodes_V[i + 1];
+                const extra = 0.5 * rhoEps * dx * dx;
+
+                document.getElementById('stLeftTitle').innerText = `Vecino Izquierdo (Nodo ${i})`;
+                document.getElementById('stLeftVal').innerText = `${vLeft.toFixed(2)} V`;
+
+                document.getElementById('stCenterTitle').innerText = `🎯 Nodo Analizado (Nodo ${i + 1})`;
+                document.getElementById('stCenterVal').innerText = `${vCenter.toFixed(2)} V`;
+
+                document.getElementById('stRightTitle').innerText = `Vecino Derecho (Nodo ${i + 2})`;
+                document.getElementById('stRightVal').innerText = `${vRight.toFixed(2)} V`;
+
+                if (Math.abs(extra) < 1e-6) {
+                    document.getElementById('stFormulaText').innerText = `Promedio exacto = (${vLeft.toFixed(2)} + ${vRight.toFixed(2)}) / 2 = ${vCenter.toFixed(2)} V`;
+                } else {
+                    document.getElementById('stFormulaText').innerText = `(${vLeft.toFixed(2)} + ${vRight.toFixed(2)})/2 + (${extra.toFixed(2)}) = ${vCenter.toFixed(2)} V`;
+                }
+
+                const traceAll = {
+                    x: nodes_x,
+                    y: nodes_V,
+                    mode: 'lines+markers',
+                    name: 'Todos los Nodos',
+                    line: { color: '#94a3b8', width: 2 },
+                    marker: { size: 9, color: '#94a3b8' }
+                };
+                const traceStencil = {
+                    x: [nodes_x[i - 1], nodes_x[i], nodes_x[i + 1]],
+                    y: [vLeft, vCenter, vRight],
+                    mode: 'lines+markers+text',
+                    name: 'Trío de Vecinos Activo',
+                    text: [`Izq: ${vLeft.toFixed(1)}V`, `Centro: ${vCenter.toFixed(1)}V`, `Der: ${vRight.toFixed(1)}V`],
+                    textposition: 'top center',
+                    line: { color: '#4f46e5', width: 4 },
+                    marker: { size: [14, 18, 14], color: ['#0ea5e9', '#ef4444', '#0ea5e9'] }
+                };
+                Plotly.newPlot('plot-stencil', [traceAll, traceStencil], {
+                    margin: { t: 25, b: 45, l: 55, r: 25 },
+                    xaxis: { title: 'Posición x [m]', range: [-0.05 * L, 1.05 * L] },
+                    yaxis: { title: 'Voltaje [V]' },
+                    plot_bgcolor: '#f8fafc'
+                }, { displayModeBar: false, responsive: true });
+            }
+
+            // 3. VISTA DE SIMULACIÓN ITERATIVA PASO A PASO
+            if (document.getElementById('view-iteracion').classList.contains('active')) {
+                const maxErr = getMaxIterError();
+                document.getElementById('iterCountBadge').innerText = iterCount;
+                document.getElementById('iterErrorBadge').innerText = `${maxErr.toFixed(3)} V`;
+
+                const traceTarget = {
+                    x: nodes_x,
+                    y: nodes_V,
+                    mode: 'lines+markers',
+                    name: 'Solución Final Exacta (Meta)',
+                    line: { color: '#10b981', width: 2, dash: 'dash' },
+                    marker: { size: 8, color: '#10b981' }
+                };
+                const traceCurrentIter = {
+                    x: nodes_x,
+                    y: iterVoltages,
+                    mode: 'lines+markers+text',
+                    name: `Voltaje en Paso ${iterCount}`,
+                    text: iterVoltages.map(v => `${v.toFixed(1)}V`),
+                    textposition: 'top center',
+                    line: { color: '#ef4444', width: 4 },
+                    marker: { size: 13, color: '#ef4444' }
+                };
+                Plotly.newPlot('plot-iteration', [traceTarget, traceCurrentIter], {
+                    title: `Evolución de los Nodos en la Iteración #${iterCount}`,
+                    xaxis: { title: 'Posición x [m]', range: [-0.04 * L, 1.04 * L] },
+                    yaxis: { title: 'Voltaje [V]', range: [Math.min(0, V1, Vn) - 2, Math.max(...nodes_V, V1, Vn) + 4] },
+                    margin: { t: 40, b: 50, l: 55, r: 25 },
+                    plot_bgcolor: '#f8fafc'
+                }, { displayModeBar: false, responsive: true });
+            }
+
+            // 4. VISTA DEL CAMPO ELÉCTRICO E(x) = -dV/dx
+            if (document.getElementById('view-campo').classList.contains('active')) {
+                const traceE = {
+                    x: elem_x_mid,
+                    y: elem_E,
+                    type: 'bar',
+                    name: 'Campo Eléctrico E por tramo [V/m]',
+                    text: elem_E.map(e => `${e.toFixed(1)} V/m`),
+                    textposition: 'auto',
+                    marker: { color: '#0ea5e9', opacity: 0.85, line: { color: '#0284c7', width: 2 } }
+                };
+                Plotly.newPlot('plot-efield', [traceE], {
+                    title: 'Campo Eléctrico en cada tramo: E = (V_izq - V_der) / Δx',
+                    xaxis: { title: 'Centro de cada tramo del cable x [m]', range: [0, L] },
+                    yaxis: { title: 'Campo Eléctrico E [V/m]' },
+                    margin: { t: 45, b: 50, l: 60, r: 25 },
+                    plot_bgcolor: '#f8fafc'
+                }, { displayModeBar: false, responsive: true });
+            }
+
+            // 5. VISTA DEL SISTEMA DE ECUACIONES Y MATRIZ [-1, 2, -1]
+            if (document.getElementById('view-sistema').classList.contains('active')) {
+                let eqHtml = `<strong>Ecuaciones Nodo por Nodo:</strong><br>`;
+                eqHtml += `• <strong>Nodo 1 (Extremo Izq.):</strong> $V_1 = ${V1}\\text{ V}$<br>`;
+                for (let i = 1; i < nn - 1; i++) {
+                    const rhs = (rhoEps * dx * dx).toFixed(2);
+                    eqHtml += `• <strong>Nodo ${i + 1} (Interior):</strong> $-V_{${i}} + 2V_{${i + 1}} - V_{${i + 2}} = ${rhs}$ <span style="color:#059669;font-weight:700;">➔ $V_{${i + 1}} = ${nodes_V[i].toFixed(2)}\\text{ V}$</span><br>`;
+                }
+                eqHtml += `• <strong>Nodo ${nn} (Extremo Der.):</strong> $V_{${nn}} = ${Vn}\\text{ V}$`;
+                document.getElementById('equations-list-box').innerHTML = eqHtml;
+
+                let mHtml = `<table class="matrix-table">`;
+                for (let i = 0; i < nn; i++) {
+                    mHtml += `<tr>`;
+                    for (let j = 0; j < nn; j++) {
+                        const val = A[i][j];
+                        let cls = "";
+                        if (i === j && (i === 0 || i === nn - 1)) cls = "boundary-fixed";
+                        else if (i === j) cls = "diagonal";
+                        else if (Math.abs(i - j) === 1 && i > 0 && i < nn - 1) cls = "coupled";
+                        mHtml += `<td class="${cls}">${val}</td>`;
+                    }
+                    mHtml += `</tr>`;
+                }
+                mHtml += `</table>`;
+                document.getElementById('fdm-matrix-container').innerHTML = mHtml;
+
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    window.MathJax.typesetPromise().catch(() => {});
+                }
+            }
+        }
+
+        function renderWireVisual(nodes_x, nodes_V, L, selectedIdx) {
+            const bar = document.getElementById('wireVisualBar');
+            bar.innerHTML = '';
+
+            const minV = Math.min(...nodes_V);
+            const maxV = Math.max(...nodes_V);
+            const span = (maxV - minV) || 1;
+
+            const stops = nodes_V.map((v, i) => {
+                const ratio = (v - minV) / span;
+                const r = Math.round(30 + 225 * ratio);
+                const g = Math.round(64 + 130 * (1 - Math.abs(ratio - 0.5)));
+                const b = Math.round(255 * (1 - ratio));
+                const pct = (nodes_x[i] / L) * 100;
+                return `rgb(${r},${g},${b}) ${pct.toFixed(1)}%`;
+            });
+            bar.style.background = `linear-gradient(to right, ${stops.join(', ')})`;
+
+            nodes_x.forEach((x, i) => {
+                const pct = (x / L) * 100;
+                const nodeEl = document.createElement('div');
+                nodeEl.className = 'wire-node' + (i === selectedIdx ? ' selected' : '');
+                nodeEl.style.left = `${pct}%`;
+                nodeEl.innerText = i + 1;
+                nodeEl.onclick = () => {
+                    if (i > 0 && i < nodes_x.length - 1) {
+                        document.getElementById('paramInspect').value = i + 1;
+                        updateNodeInspector();
+                    }
+                };
+
+                const voltTag = document.createElement('div');
+                voltTag.className = 'wire-node-volt';
+                voltTag.innerText = `${nodes_V[i].toFixed(1)} V`;
+
+                const posTag = document.createElement('div');
+                posTag.className = 'wire-node-pos';
+                posTag.innerText = `${x.toFixed(2)}m`;
+
+                nodeEl.appendChild(voltTag);
+                nodeEl.appendChild(posTag);
+                bar.appendChild(nodeEl);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initCurriculumUI();
+            runFDMCalculation();
+        });
+    </script>
+</body>
+</html>
