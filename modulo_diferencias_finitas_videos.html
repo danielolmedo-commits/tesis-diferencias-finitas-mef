@@ -826,6 +826,126 @@
             color: #b45309;
         }
 
+        /* MEJORAS FASE 2: FLUJO PEDAGÓGICO EN INTERACTIVO 2 (2D Y VIGA 1D) */
+        .lab-purpose-strip {
+            background: linear-gradient(90deg, #eff6ff 0%, #f8fafc 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.83rem;
+            color: var(--text-secondary);
+        }
+
+        .lab-purpose-steps {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .lab-step-pill {
+            background: #ffffff;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+            font-weight: 700;
+            font-size: 0.77rem;
+            padding: 3px 10px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .node-stepper-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            width: 100%;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .solve-toggle-btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #10b981;
+            background: #ecfdf5;
+            color: #065f46;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .solve-toggle-btn:hover {
+            background: #d1fae5;
+        }
+
+        .solve-toggle-btn.active {
+            background: #059669;
+            color: #ffffff;
+            border-color: #047857;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.28);
+        }
+
+        table.matrix-tbl td.sol-cell, table.matrix-tbl th.sol-head {
+            background: #ecfdf5;
+            color: #065f46;
+            font-weight: 800;
+            border-left: 2px solid #34d399;
+        }
+
+        .beam-viz-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .beam-Bottom-split {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+            gap: 14px;
+            align-items: stretch;
+        }
+
+        @media (max-width: 960px) {
+            .beam-Bottom-split {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .beam-schematic-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .beam-matrix-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
         /* ENTRADAS DE 4 BORDES EN CRUZ */
         .border-inputs-cross {
             display: grid;
@@ -959,72 +1079,169 @@
             font-weight: 700;
         }
 
-        /* SUBSECCIÓN DE CONSTRUCCIÓN GEOMÉTRICA CLÁSICA (PÁGINA 1) */
+        /* SUBSECCIÓN DE CONSTRUCCIÓN GEOMÉTRICA CLÁSICA PASO A PASO (PÁGINA 1) */
         .geo-construction-panel {
             background: #f8fafc;
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 20px 22px;
-            margin: 16px 0 22px 0;
+            padding: 12px 16px;
+            margin: 12px 0 18px 0;
+        }
+
+        .geo-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
         .geo-construction-title {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1rem;
+            gap: 8px;
+            font-size: 0.96rem;
             font-weight: 800;
             color: var(--text);
-            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Layout lado a lado con mayor protagonismo para la gráfica (aprox. 65% izquierda / 35% derecha) */
+        .geo-interactive-split {
+            display: grid;
+            grid-template-columns: minmax(0, 1.85fr) minmax(290px, 1fr);
+            gap: 14px;
+            align-items: stretch;
+        }
+
+        @media (max-width: 920px) {
+            .geo-interactive-split {
+                grid-template-columns: 1fr;
+            }
         }
 
         .geo-svg-stage {
             background: #ffffff;
             border: 1px solid #cbd5e1;
             border-radius: 12px;
-            padding: 14px 16px;
-            margin: 14px 0 18px 0;
+            padding: 6px 8px;
+            margin: 0;
             box-shadow: var(--shadow-sm);
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .geo-steps-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            margin-bottom: 14px;
-        }
-
-        @media (max-width: 900px) {
-            .geo-steps-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .geo-step-card {
+        .geo-side-column {
             background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 13px 15px;
-            font-size: 0.87rem;
-            color: var(--text-secondary);
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .geo-step-card strong.step-head {
-            display: block;
-            font-size: 0.89rem;
-            margin-bottom: 5px;
+        .geo-step-pane {
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+            animation: fadeSlide 0.2s ease;
+        }
+
+        .geo-step-pane.amber-pane { border-left-color: #d97706; }
+        .geo-step-pane.sky-pane   { border-left-color: #0284c7; }
+        .geo-step-pane.blue-pane  { border-left-color: #2563eb; }
+        .geo-step-pane.green-pane { border-left-color: #10b981; }
+
+        .geo-pane-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .geo-pane-head h4 {
+            font-size: 0.95rem;
+            font-weight: 800;
             color: var(--text);
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .geo-step-pane p {
+            font-size: 0.85rem;
+            line-height: 1.48;
+            margin-bottom: 6px;
+        }
+
+        .geo-step-pane .math-block {
+            padding: 8px 10px;
+            margin: 6px 0;
+            font-size: 0.92rem;
+        }
+
+        .geo-stepper-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .geo-nav-btn {
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 0.82rem;
+            padding: 8px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .geo-nav-btn:hover:not(:disabled) {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .geo-nav-btn.primary {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.22);
+        }
+
+        .geo-nav-btn.primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+        }
+
+        .geo-nav-btn:disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
         .cancellation-banner {
             background: #eff6ff;
             border: 1px solid #93c5fd;
             border-left: 4px solid var(--primary);
-            border-radius: 10px;
-            padding: 14px 18px;
-            font-size: 0.9rem;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 0.82rem;
             color: #1e3a8a;
+            margin-top: 6px;
+            overflow-x: auto;
         }
 
         /* BLOQUES VISUALES DE FÍSICA ELECTROSTÁTICA Y ANALOGÍA TÉRMICA (PÁGINA 4) */
@@ -1110,6 +1327,19 @@
         html[data-theme="dark"] img {
             filter: invert(1) hue-rotate(180deg);
         }
+        /* En pantalla completa el navegador saca el <video> al top-layer (fuera del filtro de <html>),
+           por lo que quitamos la inversión del video para que su pizarrón conserve el fondo oscuro original */
+        html[data-theme="dark"] video:fullscreen,
+        html[data-theme="dark"] video:-webkit-full-screen,
+        html[data-theme="dark"] :fullscreen video,
+        html[data-theme="dark"] :-webkit-full-screen video {
+            filter: none !important;
+            background-color: #090d16 !important;
+        }
+        html[data-theme="dark"] video:fullscreen::backdrop,
+        html[data-theme="dark"] video:-webkit-full-screen::backdrop {
+            background-color: #090d16 !important;
+        }
 
         /* ============ CÁPSULAS EN VIDEO ============ */
         .video-capsule {
@@ -1168,6 +1398,127 @@
             padding: 8px 12px;
             color: #92400e;
         }
+        /* ============ ESPACIO DE DEMOSTRACIONES MATEMÁTICAS PASO A PASO (FASE 3) ============ */
+        .math-demo-spotlight {
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            border: 1px solid #93c5fd;
+            border-left: 5px solid #2563eb;
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            box-shadow: var(--shadow-md);
+            margin: 18px 0 24px 0;
+        }
+
+        .math-demo-spotlight.amber-theme {
+            background: linear-gradient(135deg, #fffbeb 0%, #f8fafc 100%);
+            border-color: #fcd34d;
+            border-left-color: #d97706;
+        }
+
+        .math-demo-spotlight.green-theme {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f8fafc 100%);
+            border-color: #6ee7b7;
+            border-left-color: #059669;
+        }
+
+        .math-demo-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .math-demo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+
+        .math-demo-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr);
+            gap: 18px;
+            align-items: center;
+        }
+
+        @media (max-width: 920px) {
+            .math-demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .math-demo-player video {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 10px;
+            background: #090d16;
+            display: block;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.24);
+            border: 1px solid #334155;
+        }
+
+        .math-demo-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .math-demo-step-btn {
+            text-align: left;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 9px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .math-demo-step-btn:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: translateX(3px);
+        }
+
+        .math-demo-step-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 0.77rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .math-demo-step-time {
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 1px 8px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-family: 'Consolas', monospace;
+        }
+
+        .math-demo-step-desc {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.38;
+        }
+
         .reinforce-divider {
             display: flex;
             align-items: center;
@@ -1286,202 +1637,289 @@
                     En el cálculo continuo, la derivada $y'(x_i)$ representa la pendiente de la <strong>recta tangente</strong> que toca a la curva en un único punto $x_i$. Sin embargo, para calcular la pendiente de una recta con álgebra básica ($\text{pendiente} = \frac{\text{cambio vertical}}{\text{cambio horizontal}}$) necesitamos <strong>dos puntos</strong>. Al dividir el dominio en nodos separados por un paso fijo $h = \Delta x$, formamos <strong>triángulos rectángulos</strong> entre nodos vecinos y aproximamos la tangente mediante <strong>rectas secantes</strong>:
                 </p>
 
-                <!-- SUBSECCIÓN DIDÁCTICA: CONSTRUCCIÓN GEOMÉTRICA CLÁSICA PASO A PASO -->
+                <!-- SUBSECCIÓN DIDÁCTICA: CONSTRUCCIÓN GEOMÉTRICA CLÁSICA PASO A PASO INTERACTIVA -->
                 <div class="geo-construction-panel">
-                    <div class="geo-construction-title">
-                        <span class="scheme-badge badge-blue" style="margin:0;">Construcción Geométrica Clásica</span>
-                        <span>Deducción desde el triángulo rectángulo en $(x_{i-1}, y_{i-1})$, $(x_i, y_i)$ y $(x_{i+1}, y_{i+1})$</span>
-                    </div>
-                    <p style="font-size:0.9rem; margin-bottom:6px;">
-                        Observa cómo cada recta secante es la <strong>hipotenusa de un triángulo rectángulo</strong> cuya pendiente se obtiene dividiendo el <strong>cateto vertical ($\Delta y$)</strong> entre el <strong>cateto horizontal ($\Delta x$)</strong> proyectado sobre los ejes:
-                    </p>
-
-                    <div class="geo-svg-stage">
-                        <svg viewBox="0 0 850 412" width="100%" style="max-width:840px; height:auto; display:block; margin:0 auto;" role="img" aria-label="Construcción geométrica clásica de las diferencias finitas hacia adelante, hacia atrás y central sobre tres nodos consecutivos">
-                            <defs>
-                                <marker id="axisArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569"/>
-                                </marker>
-                                <marker id="dimArrowSlate" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
-                                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569"/>
-                                </marker>
-                                <marker id="dimArrowBlue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
-                                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb"/>
-                                </marker>
-                                <marker id="dimArrowAmber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
-                                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d97706"/>
-                                </marker>
-                                <marker id="dimArrowSky" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
-                                    <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0284c7"/>
-                                </marker>
-                            </defs>
-
-                            <!-- Leyenda superior limpia dentro del lienzo -->
-                            <rect x="98" y="12" width="490" height="32" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
-                            <line x1="112" y1="28" x2="140" y2="28" stroke="#10b981" stroke-width="2.8" stroke-dasharray="6,4"/>
-                            <text x="146" y="32" font-size="11.5" font-weight="700" fill="#065f46">Tangente real en xᵢ</text>
-
-                            <line x1="264" y1="28" x2="292" y2="28" stroke="#2563eb" stroke-width="3"/>
-                            <text x="298" y="32" font-size="11.5" font-weight="700" fill="#1e40af">Central</text>
-
-                            <line x1="356" y1="28" x2="384" y2="28" stroke="#d97706" stroke-width="2.8"/>
-                            <text x="390" y="32" font-size="11.5" font-weight="700" fill="#92400e">Forward</text>
-
-                            <line x1="454" y1="28" x2="482" y2="28" stroke="#0284c7" stroke-width="2.8"/>
-                            <text x="488" y="32" font-size="11.5" font-weight="700" fill="#075985">Backward</text>
-
-                            <!-- Ejes coordenados X e Y -->
-                            <line x1="82" y1="304" x2="82" y2="22" stroke="#475569" stroke-width="2" marker-end="url(#axisArrow)"/>
-                            <line x1="76" y1="298" x2="804" y2="298" stroke="#475569" stroke-width="2" marker-end="url(#axisArrow)"/>
-                            <text x="70" y="26" font-size="13.5" font-weight="800" fill="#0f172a" text-anchor="end">y(x)</text>
-                            <text x="816" y="303" font-size="13.5" font-weight="800" fill="#0f172a">x</text>
-
-                            <!-- Líneas punteadas hacia el eje Y (ordenadas y_{i-1}, y_i, y_{i+1}) -->
-                            <line x1="82" y1="250" x2="180" y2="250" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,4"/>
-                            <line x1="82" y1="190" x2="390" y2="190" stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,4"/>
-                            <line x1="82" y1="74"  x2="600" y2="74"  stroke="#94a3b8" stroke-width="1.3" stroke-dasharray="4,4"/>
-
-                            <line x1="76" y1="250" x2="82" y2="250" stroke="#475569" stroke-width="2"/>
-                            <line x1="76" y1="190" x2="82" y2="190" stroke="#475569" stroke-width="2"/>
-                            <line x1="76" y1="74"  x2="82" y2="74"  stroke="#475569" stroke-width="2"/>
-
-                            <text x="71" y="254" font-size="13" font-weight="700" fill="#0369a1" text-anchor="end">yᵢ₋₁</text>
-                            <text x="71" y="194" font-size="13" font-weight="800" fill="#dc2626" text-anchor="end">yᵢ</text>
-                            <text x="71" y="78"  font-size="13" font-weight="700" fill="#b45309" text-anchor="end">yᵢ₊₁</text>
-
-                            <!-- Líneas punteadas verticales hacia el eje X (abscisas x_{i-1}, x_i, x_{i+1}) -->
-                            <line x1="180" y1="250" x2="180" y2="298" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="4,4"/>
-                            <line x1="390" y1="250" x2="390" y2="298" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="4,4"/>
-                            <line x1="600" y1="250" x2="600" y2="298" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="4,4"/>
-
-                            <line x1="180" y1="298" x2="180" y2="304" stroke="#475569" stroke-width="2"/>
-                            <line x1="390" y1="298" x2="390" y2="304" stroke="#475569" stroke-width="2"/>
-                            <line x1="600" y1="298" x2="600" y2="304" stroke="#475569" stroke-width="2"/>
-
-                            <text x="180" y="319" font-size="13" font-weight="700" fill="#334155" text-anchor="middle">xᵢ₋₁</text>
-                            <text x="390" y="319" font-size="13.5" font-weight="800" fill="#dc2626" text-anchor="middle">xᵢ</text>
-                            <text x="600" y="319" font-size="13" font-weight="700" fill="#334155" text-anchor="middle">xᵢ₊₁</text>
-
-                            <!-- Bases horizontales y cierres de los triángulos rectángulos -->
-                            <!-- Base inferior y = y_{i-1} extendida para Backward y Central -->
-                            <line x1="180" y1="250" x2="758" y2="250" stroke="#64748b" stroke-width="1.3" stroke-dasharray="5,4"/>
-                            <!-- Base intermedia y = y_i extendida para Forward -->
-                            <line x1="390" y1="190" x2="660" y2="190" stroke="#d97706" stroke-width="1.3" stroke-dasharray="5,4"/>
-                            <!-- Tope superior y = y_{i+1} extendido para cotas de catetos -->
-                            <line x1="600" y1="74"  x2="758" y2="74"  stroke="#64748b" stroke-width="1.3" stroke-dasharray="5,4"/>
-                            <!-- Cierre vertical en x_{i+1} desde y_{i+1} hasta y_{i-1} -->
-                            <line x1="600" y1="74"  x2="600" y2="250" stroke="#64748b" stroke-width="1.4" stroke-dasharray="4,3"/>
-
-                            <!-- Símbolos de ángulo recto (90°) en los triángulos -->
-                            <polyline points="379,250 379,239 390,239" fill="none" stroke="#0284c7" stroke-width="1.6"/>
-                            <polyline points="589,190 589,179 600,179" fill="none" stroke="#d97706" stroke-width="1.6"/>
-                            <polyline points="589,250 589,239 600,239" fill="none" stroke="#2563eb" stroke-width="1.6"/>
-
-                            <!-- Cateto vertical Backward: y_i - y_{i-1} en x_i -->
-                            <line x1="390" y1="247" x2="390" y2="193" stroke="#0284c7" stroke-width="2.4" marker-start="url(#dimArrowSky)" marker-end="url(#dimArrowSky)"/>
-                            <rect x="304" y="211" width="76" height="22" rx="5" fill="#e0f2fe" stroke="#7dd3fc"/>
-                            <text x="342" y="226" font-size="12" font-weight="800" fill="#0369a1" text-anchor="middle">yᵢ − yᵢ₋₁</text>
-
-                            <!-- Cateto vertical Forward: y_{i+1} - y_i -->
-                            <line x1="650" y1="187" x2="650" y2="77" stroke="#d97706" stroke-width="2.2" marker-start="url(#dimArrowAmber)" marker-end="url(#dimArrowAmber)"/>
-                            <rect x="611" y="121" width="78" height="23" rx="5" fill="#fef3c7" stroke="#fcd34d"/>
-                            <text x="650" y="136" font-size="12" font-weight="800" fill="#b45309" text-anchor="middle">yᵢ₊₁ − yᵢ</text>
-
-                            <!-- Cateto vertical Central: y_{i+1} - y_{i-1} -->
-                            <line x1="748" y1="247" x2="748" y2="77" stroke="#2563eb" stroke-width="2.4" marker-start="url(#dimArrowBlue)" marker-end="url(#dimArrowBlue)"/>
-                            <rect x="703" y="150" width="90" height="24" rx="5" fill="#dbeafe" stroke="#93c5fd"/>
-                            <text x="748" y="166" font-size="12" font-weight="800" fill="#1d4ed8" text-anchor="middle">yᵢ₊₁ − yᵢ₋₁</text>
-
-                            <!-- Curva continua suave y(x) que pasa exactamente por los tres nodos -->
-                            <path d="M 106.5 257.77 Q 374.25 241.96 642 44.08" fill="none" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
-                            <text x="649" y="42" font-size="13.5" font-weight="800" fill="#334155">Curva y(x)</text>
-
-                            <!-- 1) Secante Backward: de (x_{i-1}, y_{i-1}) a (x_i, y_i) -->
-                            <line x1="180" y1="250" x2="390" y2="190" stroke="#0284c7" stroke-width="2.8"/>
-
-                            <!-- 2) Secante Forward: de (x_i, y_i) a (x_{i+1}, y_{i+1}) -->
-                            <line x1="390" y1="190" x2="600" y2="74" stroke="#d97706" stroke-width="2.8"/>
-
-                            <!-- 3) Secante Central: de (x_{i-1}, y_{i-1}) a (x_{i+1}, y_{i+1}) -->
-                            <line x1="180" y1="250" x2="600" y2="74" stroke="#2563eb" stroke-width="3.2"/>
-
-                            <!-- Recta Tangente Real en (x_i, y_i) -->
-                            <line x1="240" y1="252.86" x2="540" y2="127.14" stroke="#10b981" stroke-width="2.8" stroke-dasharray="8,5"/>
-
-                            <!-- Etiquetas directas sobre las rectas (sin traslapes) -->
-                            <text x="330" y="152" font-size="12" font-weight="800" fill="#1d4ed8" text-anchor="middle">Secante Central</text>
-                            <line x1="340" y1="156" x2="362" y2="173" stroke="#2563eb" stroke-width="1.2"/>
-
-                            <text x="515" y="155" font-size="12" font-weight="800" fill="#b45309" text-anchor="middle">Secante Forward</text>
-                            <line x1="505" y1="142" x2="495" y2="132" stroke="#d97706" stroke-width="1.2"/>
-
-                            <text x="242" y="279" font-size="11.5" font-weight="800" fill="#059669" text-anchor="middle">Tangente real en xᵢ</text>
-                            <line x1="252" y1="266" x2="264" y2="243" stroke="#10b981" stroke-width="1.2"/>
-
-                            <text x="255" y="210" font-size="11.5" font-weight="800" fill="#0369a1" text-anchor="end">Secante Backward</text>
-                            <line x1="258" y1="212" x2="276" y2="222" stroke="#0284c7" stroke-width="1.2"/>
-
-                            <!-- Los tres nodos discretos y sus pares ordenados -->
-                            <circle cx="180" cy="250" r="6.8" fill="#0ea5e9" stroke="#ffffff" stroke-width="2.2"/>
-                            <text x="172" y="236" font-size="12.5" font-weight="800" fill="#0f172a" text-anchor="end">(xᵢ₋₁, yᵢ₋₁)</text>
-
-                            <circle cx="390" cy="190" r="7.8" fill="#ef4444" stroke="#ffffff" stroke-width="2.4"/>
-                            <text x="402" y="208" font-size="12.5" font-weight="800" fill="#b91c1c" text-anchor="start">(xᵢ, yᵢ)</text>
-
-                            <circle cx="600" cy="74" r="6.8" fill="#f59e0b" stroke="#ffffff" stroke-width="2.2"/>
-                            <text x="588" y="63" font-size="12.5" font-weight="800" fill="#0f172a" text-anchor="end">(xᵢ₊₁, yᵢ₊₁)</text>
-
-                            <!-- Cotas horizontales debajo del eje X: intervalos "h" y "2h" -->
-                            <line x1="180" y1="325" x2="180" y2="392" stroke="#cbd5e1" stroke-width="1.3"/>
-                            <line x1="390" y1="325" x2="390" y2="356" stroke="#cbd5e1" stroke-width="1.3"/>
-                            <line x1="600" y1="325" x2="600" y2="392" stroke="#cbd5e1" stroke-width="1.3"/>
-
-                            <!-- Intervalo h izquierdo -->
-                            <line x1="184" y1="346" x2="386" y2="346" stroke="#475569" stroke-width="1.8" marker-start="url(#dimArrowSlate)" marker-end="url(#dimArrowSlate)"/>
-                            <rect x="267" y="335" width="36" height="21" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
-                            <text x="285" y="350" font-size="12.5" font-weight="800" fill="#0f172a" text-anchor="middle">h</text>
-
-                            <!-- Intervalo h derecho -->
-                            <line x1="394" y1="346" x2="596" y2="346" stroke="#475569" stroke-width="1.8" marker-start="url(#dimArrowSlate)" marker-end="url(#dimArrowSlate)"/>
-                            <rect x="477" y="335" width="36" height="21" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
-                            <text x="495" y="350" font-size="12.5" font-weight="800" fill="#0f172a" text-anchor="middle">h</text>
-
-                            <!-- Intervalo total 2h -->
-                            <line x1="184" y1="382" x2="596" y2="382" stroke="#2563eb" stroke-width="2.2" marker-start="url(#dimArrowBlue)" marker-end="url(#dimArrowBlue)"/>
-                            <rect x="348" y="370" width="84" height="23" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
-                            <text x="390" y="386" font-size="12.5" font-weight="800" fill="#1d4ed8" text-anchor="middle">2h (Central)</text>
-                        </svg>
+                    <div class="geo-header-bar">
+                        <div class="geo-construction-title">
+                            <span class="scheme-badge badge-blue" style="margin:0;">Construcción Paso a Paso</span>
+                            <span>Deducción geométrica desde $(x_{i-1}, y_{i-1})$, $(x_i, y_i)$ y $(x_{i+1}, y_{i+1})$</span>
+                        </div>
+                        <span id="geoStepBadgeTop" style="font-size:0.78rem; font-weight:800; color:var(--primary-dark); background:#dbeafe; padding:3px 10px; border-radius:999px;">
+                            Paso 1 de 5
+                        </span>
                     </div>
 
-                    <!-- DEDUCCIÓN PASO A PASO DESDE CADA TRIÁNGULO RECTÁNGULO -->
-                    <div class="geo-steps-grid">
-                        <div class="geo-step-card" style="border-top: 3px solid #f59e0b;">
-                            <strong class="step-head">1. Triángulo Derecho (Forward)</strong>
-                            Entre $(x_i, y_i)$ y $(x_{i+1}, y_{i+1})$, la base horizontal mide $\Delta x = h$ y el cateto vertical sube $\Delta y = y_{i+1} - y_i$. Aplicando $\text{pendiente} = \frac{\text{cambio vertical}}{\text{cambio horizontal}}$:
-                            <div style="margin-top:6px; font-weight:700; color:#92400e;">$$m_{\text{Forward}} = \frac{y_{i+1} - y_i}{h}$$</div>
+                    <!-- CONTENEDOR LADO A LADO (GRÁFICA AMPLIA A LA IZQUIERDA + EXPLICACIÓN Y BOTONES A LA DERECHA) -->
+                    <div class="geo-interactive-split">
+                        <div class="geo-svg-stage">
+                            <svg id="geoStepSvg" viewBox="28 2 798 394" width="100%" style="max-height:415px; width:100%; height:auto; display:block; margin:0 auto;" role="img" aria-label="Construcción geométrica interactiva paso a paso de las diferencias finitas">
+                                <defs>
+                                    <marker id="axisArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569"/>
+                                    </marker>
+                                    <marker id="dimArrowSlate" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+                                        <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569"/>
+                                    </marker>
+                                    <marker id="dimArrowBlue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+                                        <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb"/>
+                                    </marker>
+                                    <marker id="dimArrowAmber" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+                                        <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d97706"/>
+                                    </marker>
+                                    <marker id="dimArrowSky" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+                                        <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0284c7"/>
+                                    </marker>
+                                </defs>
+
+                                <!-- Leyenda superior interactiva (resalta la capa activa) -->
+                                <rect x="98" y="8" width="510" height="32" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+                                <g id="geoLegTan" style="cursor:pointer;" onclick="setGeoStep(1)">
+                                    <line x1="112" y1="24" x2="140" y2="24" stroke="#10b981" stroke-width="2.8" stroke-dasharray="6,4"/>
+                                    <text x="146" y="28" font-size="11.5" font-weight="700" fill="#065f46">Tangente real en xᵢ</text>
+                                </g>
+                                <g id="geoLegFwd" style="cursor:pointer; opacity:0.28;" onclick="setGeoStep(2)">
+                                    <line x1="268" y1="24" x2="296" y2="24" stroke="#d97706" stroke-width="2.8"/>
+                                    <text x="302" y="28" font-size="11.5" font-weight="700" fill="#92400e">Forward</text>
+                                </g>
+                                <g id="geoLegBwd" style="cursor:pointer; opacity:0.28;" onclick="setGeoStep(3)">
+                                    <line x1="368" y1="24" x2="396" y2="24" stroke="#0284c7" stroke-width="2.8"/>
+                                    <text x="402" y="28" font-size="11.5" font-weight="700" fill="#075985">Backward</text>
+                                </g>
+                                <g id="geoLegCen" style="cursor:pointer; opacity:0.28;" onclick="setGeoStep(4)">
+                                    <line x1="478" y1="24" x2="506" y2="24" stroke="#2563eb" stroke-width="3"/>
+                                    <text x="512" y="28" font-size="11.5" font-weight="700" fill="#1e40af">Central (2h)</text>
+                                </g>
+
+                                <!-- Ejes coordenados X e Y (siempre visibles) -->
+                                <line x1="82" y1="304" x2="82" y2="20" stroke="#475569" stroke-width="2" marker-end="url(#axisArrow)"/>
+                                <line x1="76" y1="298" x2="804" y2="298" stroke="#475569" stroke-width="2" marker-end="url(#axisArrow)"/>
+                                <text x="70" y="24" font-size="13.5" font-weight="800" fill="#0f172a" text-anchor="end">y(x)</text>
+                                <text x="814" y="303" font-size="13.5" font-weight="800" fill="#0f172a">x</text>
+
+                                <!-- Proyecciones punteadas hacia los ejes (siempre visibles) -->
+                                <line x1="82" y1="250" x2="180" y2="250" stroke="#cbd5e1" stroke-width="1.3" stroke-dasharray="4,4"/>
+                                <line x1="82" y1="190" x2="390" y2="190" stroke="#cbd5e1" stroke-width="1.3" stroke-dasharray="4,4"/>
+                                <line x1="82" y1="74"  x2="600" y2="74"  stroke="#cbd5e1" stroke-width="1.3" stroke-dasharray="4,4"/>
+
+                                <line x1="76" y1="250" x2="82" y2="250" stroke="#475569" stroke-width="2"/>
+                                <line x1="76" y1="190" x2="82" y2="190" stroke="#475569" stroke-width="2"/>
+                                <line x1="76" y1="74"  x2="82" y2="74"  stroke="#475569" stroke-width="2"/>
+
+                                <text x="71" y="254" font-size="13" font-weight="700" fill="#0369a1" text-anchor="end">yᵢ₋₁</text>
+                                <text x="71" y="194" font-size="13" font-weight="800" fill="#dc2626" text-anchor="end">yᵢ</text>
+                                <text x="71" y="78"  font-size="13" font-weight="700" fill="#b45309" text-anchor="end">yᵢ₊₁</text>
+
+                                <line x1="180" y1="250" x2="180" y2="298" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="4,4"/>
+                                <line x1="390" y1="190" x2="390" y2="298" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="4,4"/>
+                                <line x1="600" y1="74"  x2="600" y2="298" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="4,4"/>
+
+                                <line x1="180" y1="298" x2="180" y2="304" stroke="#475569" stroke-width="2"/>
+                                <line x1="390" y1="298" x2="390" y2="304" stroke="#475569" stroke-width="2"/>
+                                <line x1="600" y1="298" x2="600" y2="304" stroke="#475569" stroke-width="2"/>
+
+                                <text x="180" y="319" font-size="13" font-weight="700" fill="#334155" text-anchor="middle">xᵢ₋₁</text>
+                                <text x="390" y="319" font-size="13.5" font-weight="800" fill="#dc2626" text-anchor="middle">xᵢ</text>
+                                <text x="600" y="319" font-size="13" font-weight="700" fill="#334155" text-anchor="middle">xᵢ₊₁</text>
+
+                                <!-- Guías verticales inferiores para las cotas h y 2h -->
+                                <line x1="180" y1="325" x2="180" y2="388" stroke="#cbd5e1" stroke-width="1.3"/>
+                                <line x1="390" y1="325" x2="390" y2="356" stroke="#cbd5e1" stroke-width="1.3"/>
+                                <line x1="600" y1="325" x2="600" y2="388" stroke="#cbd5e1" stroke-width="1.3"/>
+
+                                <!-- Cotas base h izquierda y derecha -->
+                                <g id="geoDimHLeft">
+                                    <line x1="184" y1="346" x2="386" y2="346" stroke="#475569" stroke-width="1.8" marker-start="url(#dimArrowSlate)" marker-end="url(#dimArrowSlate)"/>
+                                    <rect x="267" y="335" width="36" height="21" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
+                                    <text x="285" y="350" font-size="12.5" font-weight="800" fill="#0f172a" text-anchor="middle">h</text>
+                                </g>
+                                <g id="geoDimHRight">
+                                    <line x1="394" y1="346" x2="596" y2="346" stroke="#475569" stroke-width="1.8" marker-start="url(#dimArrowSlate)" marker-end="url(#dimArrowSlate)"/>
+                                    <rect x="477" y="335" width="36" height="21" rx="5" fill="#f1f5f9" stroke="#cbd5e1"/>
+                                    <text x="495" y="350" font-size="12.5" font-weight="800" fill="#0f172a" text-anchor="middle">h</text>
+                                </g>
+
+                                <!-- ==================== CAPA PASO 2: TRIÁNGULO FORWARD ==================== -->
+                                <g id="geoLayerForward" style="display:none;">
+                                    <polygon id="geoFillForward" points="390,190 600,190 600,74" fill="#fef3c7" fill-opacity="0.55"/>
+                                    <line x1="390" y1="190" x2="656" y2="190" stroke="#d97706" stroke-width="1.6" stroke-dasharray="5,4"/>
+                                    <line x1="600" y1="74"  x2="656" y2="74"  stroke="#d97706" stroke-width="1.4" stroke-dasharray="4,4"/>
+                                    <line x1="600" y1="74"  x2="600" y2="190" stroke="#d97706" stroke-width="2.2" stroke-dasharray="4,3"/>
+                                    <polyline points="587,190 587,177 600,177" fill="none" stroke="#d97706" stroke-width="1.8"/>
+                                    <text id="geoBaseLblForward" x="500" y="208" font-size="12" font-weight="800" fill="#b45309" text-anchor="middle">Base Δx = h</text>
+                                    <!-- Cateto vertical Forward -->
+                                    <line x1="650" y1="187" x2="650" y2="77" stroke="#d97706" stroke-width="2.4" marker-start="url(#dimArrowAmber)" marker-end="url(#dimArrowAmber)"/>
+                                    <rect x="611" y="121" width="78" height="24" rx="5" fill="#fef3c7" stroke="#f59e0b"/>
+                                    <text x="650" y="137" font-size="12" font-weight="800" fill="#b45309" text-anchor="middle">yᵢ₊₁ − yᵢ</text>
+                                    <!-- Hipotenusa Secante Forward -->
+                                    <line x1="390" y1="190" x2="600" y2="74" stroke="#d97706" stroke-width="3.2"/>
+                                    <text x="482" y="122" font-size="12.5" font-weight="800" fill="#b45309" text-anchor="end">Secante Forward</text>
+                                </g>
+
+                                <!-- ==================== CAPA PASO 3: TRIÁNGULO BACKWARD ==================== -->
+                                <g id="geoLayerBackward" style="display:none;">
+                                    <polygon id="geoFillBackward" points="180,250 390,250 390,190" fill="#e0f2fe" fill-opacity="0.60"/>
+                                    <line x1="180" y1="250" x2="390" y2="250" stroke="#0284c7" stroke-width="1.8" stroke-dasharray="5,4"/>
+                                    <line x1="390" y1="190" x2="390" y2="250" stroke="#0284c7" stroke-width="2.2" stroke-dasharray="4,3"/>
+                                    <polyline points="377,250 377,237 390,237" fill="none" stroke="#0284c7" stroke-width="1.8"/>
+                                    <text id="geoBaseLblBackward" x="285" y="268" font-size="12" font-weight="800" fill="#0369a1" text-anchor="middle">Base Δx = h</text>
+                                    <!-- Cateto vertical Backward -->
+                                    <line x1="406" y1="247" x2="406" y2="193" stroke="#0284c7" stroke-width="2.4" marker-start="url(#dimArrowSky)" marker-end="url(#dimArrowSky)"/>
+                                    <rect x="414" y="209" width="76" height="23" rx="5" fill="#e0f2fe" stroke="#38bdf8"/>
+                                    <text x="452" y="225" font-size="12" font-weight="800" fill="#0369a1" text-anchor="middle">yᵢ − yᵢ₋₁</text>
+                                    <!-- Hipotenusa Secante Backward -->
+                                    <line x1="180" y1="250" x2="390" y2="190" stroke="#0284c7" stroke-width="3.2"/>
+                                    <text x="272" y="208" font-size="12.5" font-weight="800" fill="#0369a1" text-anchor="end">Secante Backward</text>
+                                </g>
+
+                                <!-- ==================== CAPA PASO 4: TRIÁNGULO CENTRAL (2h) ==================== -->
+                                <g id="geoLayerCentral" style="display:none;">
+                                    <polygon id="geoFillCentral" points="180,250 600,250 600,74" fill="#dbeafe" fill-opacity="0.42"/>
+                                    <line x1="180" y1="250" x2="754" y2="250" stroke="#2563eb" stroke-width="1.6" stroke-dasharray="5,4"/>
+                                    <line x1="600" y1="74"  x2="754" y2="74"  stroke="#2563eb" stroke-width="1.4" stroke-dasharray="4,4"/>
+                                    <line x1="600" y1="74"  x2="600" y2="250" stroke="#2563eb" stroke-width="2.0" stroke-dasharray="4,3"/>
+                                    <polyline points="587,250 587,237 600,237" fill="none" stroke="#2563eb" stroke-width="1.8"/>
+                                    <!-- Cateto vertical Central -->
+                                    <line x1="746" y1="247" x2="746" y2="77" stroke="#2563eb" stroke-width="2.5" marker-start="url(#dimArrowBlue)" marker-end="url(#dimArrowBlue)"/>
+                                    <rect x="700" y="150" width="92" height="24" rx="5" fill="#dbeafe" stroke="#60a5fa"/>
+                                    <text x="746" y="166" font-size="12" font-weight="800" fill="#1d4ed8" text-anchor="middle">yᵢ₊₁ − yᵢ₋₁</text>
+                                    <!-- Hipotenusa Secante Central -->
+                                    <line x1="180" y1="250" x2="600" y2="74" stroke="#2563eb" stroke-width="3.4"/>
+                                    <text x="355" y="146" font-size="12.5" font-weight="800" fill="#1d4ed8" text-anchor="end">Secante Central</text>
+                                    <!-- Cota inferior 2h -->
+                                    <line x1="184" y1="380" x2="596" y2="380" stroke="#2563eb" stroke-width="2.4" marker-start="url(#dimArrowBlue)" marker-end="url(#dimArrowBlue)"/>
+                                    <rect x="342" y="368" width="96" height="23" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
+                                    <text x="390" y="384" font-size="12.5" font-weight="800" fill="#1d4ed8" text-anchor="middle">Base = 2h</text>
+                                </g>
+
+                                <!-- Curva continua suave y(x) (siempre visible encima de los rellenos) -->
+                                <path d="M 106.5 257.77 Q 374.25 241.96 642 44.08" fill="none" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+                                <text x="649" y="42" font-size="13.5" font-weight="800" fill="#334155">Curva y(x)</text>
+
+                                <!-- Recta Tangente Real en (x_i, y_i) (siempre visible como referencia) -->
+                                <g id="geoLayerTangent">
+                                    <line x1="240" y1="252.86" x2="540" y2="127.14" stroke="#10b981" stroke-width="3" stroke-dasharray="8,5"/>
+                                    <text x="242" y="279" font-size="12" font-weight="800" fill="#059669" text-anchor="middle">Tangente exacta en xᵢ</text>
+                                    <line x1="252" y1="266" x2="264" y2="243" stroke="#10b981" stroke-width="1.3"/>
+                                </g>
+
+                                <!-- Callout exclusivo del Paso 1 -->
+                                <g id="geoLayerPrompt1">
+                                    <rect x="330" y="96" width="236" height="48" rx="8" fill="#ecfdf5" stroke="#34d399" stroke-width="1.5"/>
+                                    <text x="448" y="116" font-size="11.5" font-weight="800" fill="#065f46" text-anchor="middle">Meta: aproximar esta inclinación</text>
+                                    <text x="448" y="133" font-size="11" fill="#047857" text-anchor="middle">usando solo los 3 nodos discretos</text>
+                                </g>
+
+                                <!-- Los tres nodos discretos (siempre al frente) -->
+                                <circle cx="180" cy="250" r="7" fill="#0ea5e9" stroke="#ffffff" stroke-width="2.2"/>
+                                <text x="172" y="235" font-size="12.5" font-weight="800" fill="#0f172a" text-anchor="end">(xᵢ₋₁, yᵢ₋₁)</text>
+
+                                <circle cx="390" cy="190" r="8" fill="#ef4444" stroke="#ffffff" stroke-width="2.4"/>
+                                <text x="380" y="175" font-size="12.5" font-weight="800" fill="#b91c1c" text-anchor="end">(xᵢ, yᵢ)</text>
+
+                                <circle cx="600" cy="74" r="7" fill="#f59e0b" stroke="#ffffff" stroke-width="2.2"/>
+                                <text x="588" y="62" font-size="12.5" font-weight="800" fill="#0f172a" text-anchor="end">(xᵢ₊₁, yᵢ₊₁)</text>
+                            </svg>
                         </div>
 
-                        <div class="geo-step-card" style="border-top: 3px solid #0ea5e9;">
-                            <strong class="step-head">2. Triángulo Izquierdo (Backward)</strong>
-                            Entre $(x_{i-1}, y_{i-1})$ y $(x_i, y_i)$, la base horizontal también mide $\Delta x = h$ y el cateto vertical mide $\Delta y = y_i - y_{i-1}$. Su cociente directo da:
-                            <div style="margin-top:6px; font-weight:700; color:#0369a1;">$$m_{\text{Backward}} = \frac{y_i - y_{i-1}}{h}$$</div>
-                        </div>
+                        <!-- COLUMNA DERECHA: EXPLICACIÓN DEL PASO ACTIVO + BOTONES DE NAVEGACIÓN -->
+                        <div class="geo-side-column">
+                            <div>
+                                <!-- PASO 1 -->
+                                <div id="geoPane1" class="geo-step-pane green-pane">
+                                    <div class="geo-pane-head">
+                                        <h4>Paso 1: El reto de la tangente en $x_i$</h4>
+                                        <span class="scheme-badge badge-green" style="margin:0;">Meta Exacta</span>
+                                    </div>
+                                    <p style="color:var(--text-secondary);">
+                                        Buscamos la derivada $y'(x_i)$, que es la inclinación de la <strong>recta tangente verde</strong> en el nodo central $(x_i, y_i)$.
+                                    </p>
+                                    <div class="math-block">
+                                        $$y'(x_i) = \lim_{\Delta x \to 0} \frac{\Delta y}{\Delta x} \quad \text{(requiere 2 puntos en álgebra)}$$
+                                    </div>
+                                    <p style="font-size:0.81rem; color:#065f46; margin-bottom:0;">
+                                        Como un solo punto da $0/0$, nos apoyaremos en los nodos vecinos separados por el paso fijo $h$: $x_{i+1}$ (adelante) o $x_{i-1}$ (atrás).
+                                    </p>
+                                </div>
 
-                        <div class="geo-step-card" style="border-top: 3px solid #2563eb;">
-                            <strong class="step-head">3. Triángulo Grande (Central)</strong>
-                            Uniendo directamente $(x_{i-1}, y_{i-1})$ con $(x_{i+1}, y_{i+1})$, el cambio horizontal abarca <strong>dos pasos</strong> ($\Delta x = 2h$) y el cateto vertical total es $\Delta y = y_{i+1} - y_{i-1}$:
-                            <div style="margin-top:6px; font-weight:700; color:#1d4ed8;">$$m_{\text{Central}} = \frac{y_{i+1} - y_{i-1}}{2h}$$</div>
-                        </div>
-                    </div>
+                                <!-- PASO 2 -->
+                                <div id="geoPane2" class="geo-step-pane amber-pane" style="display:none;">
+                                    <div class="geo-pane-head">
+                                        <h4>Paso 2: Triángulo Derecho (Forward)</h4>
+                                        <span class="scheme-badge badge-amber" style="margin:0;">Error $\mathcal{O}(h)$</span>
+                                    </div>
+                                    <p style="color:var(--text-secondary);">
+                                        Avanzando un paso $h$ hacia $(x_{i+1}, y_{i+1})$ formamos el <strong>triángulo rectángulo ámbar</strong> de base $\Delta x = h$ y altura $\Delta y = y_{i+1} - y_i$:
+                                    </p>
+                                    <div class="math-block">
+                                        $$m_{\text{Forward}} = \frac{\Delta y}{\Delta x} = \frac{y_{i+1} - y_i}{h}$$
+                                    </div>
+                                    <p style="font-size:0.81rem; color:#92400e; margin-bottom:0;">
+                                        Al curvarse $y(x)$ hacia arriba, esta secante naranja queda <strong>más empinada</strong> que la tangente verde real (sobreestima la derivada).
+                                    </p>
+                                </div>
 
-                    <!-- EXPLICACIÓN EXPLÍCITA DE POR QUÉ SE CANCELA y_i AL PROMEDIAR -->
-                    <div class="cancellation-banner">
-                        <strong>¿Por qué promediar Forward y Backward elimina $y_i$ y coincide con el triángulo de base $2h$?</strong><br>
-                        Si calculamos el promedio aritmético de las dos pendientes laterales, ambas comparten el mismo denominador $h$; al sumar los numeradores aparece $-y_i + y_i = 0$, cancelándose exactamente el valor del nodo central:
-                        <div class="math-block" style="background:#ffffff; margin:10px 0 4px 0;">
-                            $$y'_i \approx \frac{m_{\text{Forward}} + m_{\text{Backward}}}{2} = \frac{1}{2}\left(\frac{y_{i+1} - y_i}{h} + \frac{y_i - y_{i-1}}{h}\right) = \frac{y_{i+1} \underbrace{- y_i + y_i}_{=\,0} - y_{i-1}}{2h} = \frac{y_{i+1} - y_{i-1}}{2h}$$
+                                <!-- PASO 3 -->
+                                <div id="geoPane3" class="geo-step-pane sky-pane" style="display:none;">
+                                    <div class="geo-pane-head">
+                                        <h4>Paso 3: Triángulo Izquierdo (Backward)</h4>
+                                        <span class="scheme-badge badge-sky" style="margin:0;">Error $\mathcal{O}(h)$</span>
+                                    </div>
+                                    <p style="color:var(--text-secondary);">
+                                        Mirando un paso $h$ hacia atrás desde $(x_{i-1}, y_{i-1})$ hasta $(x_i, y_i)$ formamos el <strong>triángulo celeste</strong> de base $h$ y altura $y_i - y_{i-1}$:
+                                    </p>
+                                    <div class="math-block">
+                                        $$m_{\text{Backward}} = \frac{\Delta y}{\Delta x} = \frac{y_i - y_{i-1}}{h}$$
+                                    </div>
+                                    <p style="font-size:0.81rem; color:#0369a1; margin-bottom:0;">
+                                        Aquí la secante celeste queda <strong>menos inclinada</strong> que la tangente verde real (subestima la derivada). ¿Qué pasa si promediamos ambas?
+                                    </p>
+                                </div>
+
+                                <!-- PASO 4 -->
+                                <div id="geoPane4" class="geo-step-pane blue-pane" style="display:none;">
+                                    <div class="geo-pane-head">
+                                        <h4>Paso 4: Triángulo Simétrico $2h$ (Central)</h4>
+                                        <span class="scheme-badge badge-blue" style="margin:0;">Precisión $\mathcal{O}(h^2)$</span>
+                                    </div>
+                                    <p style="color:var(--text-secondary);">
+                                        Uniendo $(x_{i-1}, y_{i-1})$ con $(x_{i+1}, y_{i+1})$ obtenemos el <strong>gran triángulo azul</strong> de base $2h$. Al promediar Forward y Backward, <strong>$-y_i + y_i$ se cancela</strong>:
+                                    </p>
+                                    <div class="cancellation-banner">
+                                        $$y'_i \approx \frac{1}{2}\!\left(\frac{y_{i+1} - y_i}{h} + \frac{y_i - y_{i-1}}{h}\right)$$
+                                        $$= \frac{y_{i+1} \underbrace{- y_i + y_i}_{=\,0} - y_{i-1}}{2h} = \frac{y_{i+1} - y_{i-1}}{2h}$$
+                                    </div>
+                                </div>
+
+                                <!-- PASO 5 -->
+                                <div id="geoPane5" class="geo-step-pane blue-pane" style="display:none;">
+                                    <div class="geo-pane-head">
+                                        <h4>Paso 5: Síntesis — Las 3 secantes juntas</h4>
+                                        <span class="scheme-badge badge-blue" style="margin:0;">Vista Global</span>
+                                    </div>
+                                    <p style="color:var(--text-secondary);">
+                                        Viendo las 3 rectas sin los triángulos de relleno se aprecia la simetría geométrica:
+                                    </p>
+                                    <ul style="font-size:0.82rem; color:var(--text-secondary); padding-left:18px; margin:6px 0; display:flex; flex-direction:column; gap:4px;">
+                                        <li><strong style="color:#b45309;">Forward:</strong> se pasa de pendiente (sesgo derecho).</li>
+                                        <li><strong style="color:#0369a1;">Backward:</strong> se queda corta (sesgo izquierdo).</li>
+                                        <li><strong style="color:#1d4ed8;">Central ($2h$):</strong> compensa ambos sesgos y queda casi paralela a la tangente verde exacta.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- BARRA DE NAVEGACIÓN ANCLADA AL PIE DE LA COLUMNA DERECHA -->
+                            <div class="geo-stepper-footer">
+                                <button type="button" class="geo-nav-btn" id="geoBtnPrev" onclick="stepGeo(-1)" disabled>
+                                    ← Anterior
+                                </button>
+                                <span id="geoStepCounterFooter" style="font-size:0.78rem; font-weight:800; color:var(--muted);">
+                                    1 / 5
+                                </span>
+                                <button type="button" class="geo-nav-btn primary" id="geoBtnNext" onclick="stepGeo(1)">
+                                    Siguiente: Forward →
+                                </button>
+                            </div>
                         </div>
-                        Geométricamente, como la curva se dobla hacia arriba, Forward sobreestima la pendiente real y Backward la subestima casi en la misma proporción; al promediarlas, esos errores opuestos se compensan y la secante central queda casi paralela a la tangente exacta en $x_i$.
                     </div>
                 </div>
 
@@ -1557,6 +1995,58 @@
                             <text x="210" y="172" font-size="12" fill="#dc2626" font-weight="bold" text-anchor="middle">xᵢ</text>
                             <text x="350" y="172" font-size="12" fill="#334155" font-weight="bold" text-anchor="middle">xᵢ₊₁</text>
                         </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ESPACIO DE DEMOSTRACIÓN MATEMÁTICA 1 (CON AUDIO Y ELEMENTOS EN MOVIMIENTO) -->
+            <div class="math-demo-spotlight">
+                <div class="math-demo-header">
+                    <div>
+                        <span class="math-demo-badge">🔊 Pizarrón de Demostración 1 • Con Voz y Elementos en Movimiento (1:17 min)</span>
+                        <h3 style="font-size:1.05rem; font-weight:800; color:var(--text); margin:6px 0 0 0;">
+                            Deducción Animada: De Forward y Backward a la Diferencia Central y 2da Derivada
+                        </h3>
+                    </div>
+                    <span style="font-size:0.78rem; color:var(--muted); font-weight:700;">
+                        💡 Haz clic en cualquier paso a la derecha para saltar a ese instante del pizarrón
+                    </span>
+                </div>
+                <div class="math-demo-grid">
+                    <div class="math-demo-player">
+                        <video id="demoVideo1" controls preload="metadata" playsinline>
+                            <source src="videos/demo_01_central_y_segunda_derivada.mp4?v=2" type="video/mp4">
+                            Tu navegador no soporta video HTML5.
+                        </video>
+                    </div>
+                    <div class="math-demo-steps">
+                        <button type="button" class="math-demo-step-btn" onclick="seekDemoVideo('demoVideo1', 0)">
+                            <div class="math-demo-step-top">
+                                <span>▶ Paso 1: Viajan los numeradores y chocan −yᵢ + yᵢ = 0</span>
+                                <span class="math-demo-step-time">00:00</span>
+                            </div>
+                            <div class="math-demo-step-desc">
+                                Los numeradores de Forward y Backward viajan hacia el denominador $2h$; en el centro $-y_i$ y $+y_i$ chocan y se anulan.
+                            </div>
+                        </button>
+                        <button type="button" class="math-demo-step-btn" onclick="seekDemoVideo('demoVideo1', 34)">
+                            <div class="math-demo-step-top">
+                                <span>▶ Paso 2: Serie de Taylor columna por columna ($\mathcal{O}(h^2)$)</span>
+                                <span class="math-demo-step-time">00:34</span>
+                            </div>
+                            <div class="math-demo-step-desc">
+                                Resta alineada sin traslapes donde se cancelan $y_i$ y el término cuadrático $\frac{h^2}{2}y''_i$, dejando $2h y'_i$.
+                            </div>
+                        </button>
+                        <button type="button" class="math-demo-step-btn" onclick="seekDemoVideo('demoVideo1', 55)">
+                            <div class="math-demo-step-top">
+                                <span>▶ Paso 3: Fusión de $-2y_i$ y viaje a la molécula $[+1, -2, +1]$</span>
+                                <span class="math-demo-step-time">00:55</span>
+                            </div>
+                            <div class="math-demo-step-desc">
+                                Los dos términos centrales $-y_i$ se fusionan en $-2y_i$ y los coeficientes viajan a los 3 nodos de la molécula 1D.
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1743,27 +2233,94 @@
                 </div>
             </div>
 
+            <!-- ESPACIO DE DEMOSTRACIÓN MATEMÁTICA 2 (CON AUDIO Y ELEMENTOS EN MOVIMIENTO) -->
+            <div class="math-demo-spotlight amber-theme">
+                <div class="math-demo-header">
+                    <div>
+                        <span class="math-demo-badge" style="background:#78350f;">🔊 Pizarrón de Demostración 2 • Con Voz y Elementos en Movimiento (0:46 min)</span>
+                        <h3 style="font-size:1.05rem; font-weight:800; color:var(--text); margin:6px 0 0 0;">
+                            De la Malla a la Ecuación y a la Matriz: Sustitución de Fronteras Dirichlet
+                        </h3>
+                    </div>
+                    <span style="font-size:0.78rem; color:var(--muted); font-weight:700;">
+                        💡 Observa cómo los números viajan desde la malla hasta la ecuación y la matriz
+                    </span>
+                </div>
+                <div class="math-demo-grid">
+                    <div class="math-demo-player">
+                        <video id="demoVideo2" controls preload="metadata" playsinline>
+                            <source src="videos/demo_02_sustitucion_molecula_dirichlet.mp4?v=2" type="video/mp4">
+                            Tu navegador no soporta video HTML5.
+                        </video>
+                    </div>
+                    <div class="math-demo-steps">
+                        <button type="button" class="math-demo-step-btn" onclick="seekDemoVideo('demoVideo2', 0)">
+                            <div class="math-demo-step-top">
+                                <span>▶ Paso 1: Los 5 nodos de la cruz viajan a la ecuación</span>
+                                <span class="math-demo-step-time">00:00</span>
+                            </div>
+                            <div class="math-demo-step-desc">
+                                Desde el nodo $(1,1)$ y sus 4 vecinos viajan las fichas para formar $u_{2,1} + u_{0,1} + u_{1,2} + u_{1,0} - 4u_{1,1} = 0$.
+                            </div>
+                        </button>
+                        <button type="button" class="math-demo-step-btn" onclick="seekDemoVideo('demoVideo2', 11)">
+                            <div class="math-demo-step-top">
+                                <span>▶ Paso 2: El $50$ y el $0$ viajan desde el borde Dirichlet</span>
+                                <span class="math-demo-step-time">00:11</span>
+                            </div>
+                            <div class="math-demo-step-desc">
+                                Los valores conocidos de frontera ($u_{0,1}=50$ y $u_{1,0}=0$) vuelan desde la malla para sustituir a sus símbolos.
+                            </div>
+                        </button>
+                        <button type="button" class="math-demo-step-btn" onclick="seekDemoVideo('demoVideo2', 29)">
+                            <div class="math-demo-step-top">
+                                <span>▶ Paso 3: El $50$ salta el '$=$' y los pesos viajan a $[A]\{u\}=\{b\}$</span>
+                                <span class="math-demo-step-time">00:29</span>
+                            </div>
+                            <div class="math-demo-step-desc">
+                                El $50$ cruza al lado derecho y los coeficientes $[4, -1, -1, 0]$ viajan directo a sus celdas en la Fila 1 de la matriz.
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- LABORATORIO INTERACTIVO PÁGINA 2 -->
             <div class="lab-shell">
                 <div class="lab-banner">
                     <div class="lab-banner-left">
                         <span class="lab-tag">Interactivo 2</span>
-                        <h3>Explorador de la Molécula de Cálculo y Armado del Sistema</h3>
+                        <h3>De la Molécula de Cálculo al Sistema Matricial Resuelto $[A]\{u\} = \{b\}$</h3>
                     </div>
                     <div class="mode-switch">
-                        <button id="btnMode2D" class="active" onclick="setPage2Mode('2d')">Cuadrícula 2D (Molécula en Cruz)</button>
-                        <button id="btnMode1D" onclick="setPage2Mode('1d')">Viga 1D ($y'' = M/EI$)</button>
+                        <button id="btnMode2D" class="active" onclick="setPage2Mode('2d')">1. Cuadrícula 2D (Molécula en Cruz)</button>
+                        <button id="btnMode1D" onclick="setPage2Mode('1d')">2. Viga 1D ($y'' = M/EI$)</button>
+                    </div>
+                </div>
+
+                <!-- BANDA EXPLICATIVA DEL PROPÓSITO DEL INTERACTIVO -->
+                <div class="lab-purpose-strip">
+                    <div>
+                        <strong style="color:var(--text);">🎯 ¿Cuál es el fin de este módulo?</strong>
+                        Ver cómo cada nodo interno aporta <strong>una fila</strong> a la matriz global $[A]\{u\}=\{b\}$ y cómo, al resolverla, obtenemos la solución física.
+                    </div>
+                    <div class="lab-purpose-steps">
+                        <span class="lab-step-pill">① Elige un nodo interno</span>
+                        <span>→</span>
+                        <span class="lab-step-pill">② Separa incógnitas $[A]$ y bordes $\{b\}$</span>
+                        <span>→</span>
+                        <span class="lab-step-pill" style="border-color:#6ee7b7; color:#065f46; background:#ecfdf5;">③ Resuelve $\{u\} = [A]^{-1}\{b\}$</span>
                     </div>
                 </div>
 
                 <!-- SUB-VISTA 2D -->
-                <div id="p2View2D" class="lab-body">
-                    <div class="controls-panel">
+                <div id="p2View2D" class="lab-body" style="padding:16px 18px; gap:16px;">
+                    <div class="controls-panel" style="padding:14px;">
                         <div class="control-group">
                             <label class="control-label" for="p2GridSize">Tamaño de cuadrícula</label>
                             <select id="p2GridSize" onchange="initPage2Grid()">
-                                <option value="4">4 × 4 nodos (4 incógnitas internas — matriz compacta)</option>
-                                <option value="5" selected>5 × 5 nodos (9 incógnitas internas)</option>
+                                <option value="4" selected>4 × 4 nodos (4 incógnitas — ideal para ver la matriz 4×4)</option>
+                                <option value="5">5 × 5 nodos (9 incógnitas internas — matriz 9×9)</option>
                             </select>
                         </div>
 
@@ -1777,110 +2334,192 @@
                         </div>
 
                         <div class="control-group">
-                            <span class="control-label">Condiciones de Frontera (Dirichlet)</span>
+                            <span class="control-label">Fronteras Conocidas (Dirichlet — Naranjas)</span>
                             <div class="border-inputs-cross">
                                 <div class="border-input-box">
-                                    <label>Borde Superior ($u_{\text{sup}}$)</label>
+                                    <label>Arriba ($u_{\text{sup}}$)</label>
                                     <input type="number" id="p2Top" value="100" step="10" oninput="updatePage2()">
                                 </div>
                                 <div class="border-input-box">
-                                    <label>Borde Inferior ($u_{\text{inf}}$)</label>
+                                    <label>Abajo ($u_{\text{inf}}$)</label>
                                     <input type="number" id="p2Bottom" value="0" step="10" oninput="updatePage2()">
                                 </div>
                                 <div class="border-input-box">
-                                    <label>Borde Izquierdo ($u_{\text{izq}}$)</label>
+                                    <label>Izquierda ($u_{\text{izq}}$)</label>
                                     <input type="number" id="p2Left" value="50" step="10" oninput="updatePage2()">
                                 </div>
                                 <div class="border-input-box">
-                                    <label>Borde Derecho ($u_{\text{der}}$)</label>
+                                    <label>Derecha ($u_{\text{der}}$)</label>
                                     <input type="number" id="p2Right" value="20" step="10" oninput="updatePage2()">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="insight-callout blue" style="margin-top:2px; font-size:0.81rem;">
-                            <strong>Cómo interactuar:</strong> Pasa el cursor sobre cualquier <strong>nodo interno azul $(i, j)$</strong> (o haz clic para dejarlo fijo) y observa cómo sus vecinos de borde pasan con valor numérico al lado derecho de la ecuación.
+                        <div class="insight-callout blue" style="margin-top:0; font-size:0.79rem; padding:9px 11px;">
+                            <strong>Recorrido guiado:</strong> Usa <strong>Siguiente nodo →</strong> debajo de la malla para recorrer cada incógnita y ver cómo se llena su fila en la matriz, y luego pulsa <strong>Mostrar solución $u_{i,j}$</strong>.
                         </div>
                     </div>
 
-                    <div class="stencil-board-wrap">
-                        <div class="grid-molecule-stage">
-                            <div style="font-size:0.82rem; font-weight:700; color:var(--text-secondary); margin-bottom:8px;">
-                                Pasa el cursor o haz clic en un nodo interior $(i, j)$
+                    <div class="stencil-board-wrap" style="gap:16px;">
+                        <div class="grid-molecule-stage" style="padding:12px 14px;">
+                            <div style="font-size:0.8rem; font-weight:800; color:var(--text); margin-bottom:6px; text-align:center;">
+                                Malla 2D y Molécula Activa
                             </div>
-                            <canvas id="canvasMolecule2D" width="350" height="350" class="interactive-grid-canvas"></canvas>
-                            <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; font-size:0.75rem; color:var(--muted); margin-top:10px;">
-                                <span>🟠 <strong>Naranja:</strong> Frontera Dirichlet (conocida)</span>
-                                <span>🔵 <strong>Azul:</strong> Nodo interno (incógnita)</span>
+                            <canvas id="canvasMolecule2D" width="330" height="310" class="interactive-grid-canvas"></canvas>
+
+                            <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; font-size:0.73rem; color:var(--muted); margin-top:6px;">
+                                <span>🟠 <strong>Borde fijo</strong> (va a $\{b\}$)</span>
+                                <span>🔵 <strong>Incógnita</strong> (va a $[A]$)</span>
                             </div>
+
+                            <!-- NAVEGADOR PASO A PASO POR NODOS INTERNOS -->
+                            <div class="node-stepper-bar">
+                                <button type="button" class="geo-nav-btn" style="padding:5px 10px; font-size:0.76rem;" onclick="stepP2Node(-1)">
+                                    ← Nodo ant.
+                                </button>
+                                <span id="p2NodeCounterBadge" style="font-size:0.76rem; font-weight:800; color:var(--primary-dark);">
+                                    Nodo 1 de 4: (1,1)
+                                </span>
+                                <button type="button" class="geo-nav-btn primary" style="padding:5px 10px; font-size:0.76rem;" onclick="stepP2Node(1)">
+                                    Sig. nodo →
+                                </button>
+                            </div>
+
+                            <!-- BOTÓN PARA VER LOS VALORES RESUELTOS EN LA MALLA -->
+                            <button type="button" id="btnToggleP2Solved" class="solve-toggle-btn" onclick="toggleP2ShowSolved()">
+                                ⚡ Mostrar solución numérica u(i,j) en la malla
+                            </button>
                         </div>
 
-                        <div class="eq-builder-card">
-                            <h4 id="p2NodeTitle" style="font-size:1.02rem; color:var(--primary); margin-bottom:10px;">
-                                Ecuación Algebraica en el Nodo Interno (1, 1)
-                            </h4>
-
-                            <div class="eq-step">
-                                <div class="eq-step-title">1. Sustitución de la molécula en cruz</div>
-                                <div class="eq-code" id="p2EqSymbolic">--</div>
+                        <div class="eq-builder-card" style="padding:14px 16px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                                <h4 id="p2NodeTitle" style="font-size:0.98rem; color:var(--primary); margin:0;">
+                                    Armado de la Ecuación en el Nodo (1, 1)
+                                </h4>
+                                <span id="p2NodeSolvedPill" class="scheme-badge badge-green" style="margin:0; font-size:0.76rem;">
+                                    Solución: u₁,₁ = 42.50
+                                </span>
                             </div>
 
-                            <div class="eq-step">
-                                <div class="eq-step-title">2. Evaluación de vecinos con frontera Dirichlet</div>
-                                <div class="eq-code" id="p2EqSubstituted">--</div>
+                            <div class="eq-step" style="padding:7px 10px; margin-bottom:7px;">
+                                <div class="eq-step-title">Paso 1 • Plantilla de la molécula en cruz centrada en $(i,j)$</div>
+                                <div class="eq-code" id="p2EqSymbolic" style="font-size:0.84rem;">--</div>
                             </div>
 
-                            <div class="eq-step" style="background:#eff6ff; border-color:#93c5fd;">
-                                <div class="eq-step-title" style="color:#1d4ed8;">3. Ecuación lineal lista (Incógnitas = Constantes conocidas)</div>
-                                <div class="eq-code" id="p2EqFinal" style="color:#1e3a8a;">--</div>
+                            <div class="eq-step" style="padding:7px 10px; margin-bottom:7px;">
+                                <div class="eq-step-title">Paso 2 • Sustituir vecinos que tocan el borde <span style="color:#d97706;">(Naranja = dato conocido)</span></div>
+                                <div class="eq-code" id="p2EqSubstituted" style="font-size:0.84rem;">--</div>
                             </div>
 
-                            <div style="margin-top:12px;">
-                                <div style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">
-                                    Fila destacada dentro del sistema matricial global $[A]\{u\} = \{b\}$:
+                            <div class="eq-step" style="background:#eff6ff; border-color:#93c5fd; padding:7px 10px; margin-bottom:8px;">
+                                <div class="eq-step-title" style="color:#1d4ed8;">Paso 3 • Fila lista para la matriz: <span style="color:#1e3a8a;">[Incógnitas azules]</span> = <span style="color:#b45309;">[Suma de bordes naranjas]</span></div>
+                                <div class="eq-code" id="p2EqFinal" style="color:#1e3a8a; font-size:0.85rem;">--</div>
+                            </div>
+
+                            <div>
+                                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; margin-bottom:4px;">
+                                    <span style="font-size:0.78rem; font-weight:800; color:var(--text-secondary);">
+                                        Sistema Global $[A]\{u\} = \{b\}$ y Solución $\{u\}$ (fila activa resaltada en azul):
+                                    </span>
+                                    <span style="font-size:0.73rem; color:#047857; font-weight:700;">
+                                        ✓ Cada fila es 1 nodo interno
+                                    </span>
                                 </div>
-                                <div class="mini-matrix-wrap" id="p2MatrixContainer"></div>
+                                <div class="mini-matrix-wrap" id="p2MatrixContainer" style="margin-top:4px;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SUB-VISTA 1D (DEFLEXIÓN DE VIGA) -->
-                <div id="p2View1D" class="lab-body" style="display:none;">
-                    <div class="controls-panel">
+                <!-- SUB-VISTA 1D (DEFLEXIÓN DE VIGA PASO A PASO CON MATRIZ TRIDIAGONAL) -->
+                <div id="p2View1D" class="lab-body" style="display:none; padding:16px 18px; gap:16px;">
+                    <div class="controls-panel" style="padding:14px;">
                         <div class="control-group">
                             <div class="control-label">
                                 <span>Subintervalos en la viga ($N$)</span>
-                                <span class="control-val" id="p2BeamValN">6</span>
+                                <span class="control-val" id="p2BeamValN">4 tramos (3 nodos internos)</span>
                             </div>
-                            <input type="range" id="p2BeamN" min="3" max="12" step="1" value="6" oninput="updatePage2Beam()">
+                            <span class="control-hint">Con $N=4$ la matriz tridiagonal es de $3\times 3$ (muy fácil de leer).</span>
+                            <input type="range" id="p2BeamN" min="4" max="10" step="1" value="4" oninput="updatePage2Beam()">
                         </div>
 
                         <div class="control-group">
                             <div class="control-label">
-                                <span>Carga uniforme $q$ sobre viga apoyada</span>
+                                <span>Carga distribuida $q$</span>
                                 <span class="control-val" id="p2BeamValQ">12 kN/m</span>
                             </div>
-                            <span class="control-hint">Momento flector $M(x) = -\frac{q}{2}x(L-x)$, con $L=4\text{ m},\; EI=100\text{ kN·m}^2$</span>
+                            <span class="control-hint">Viga apoyada de $L=4\text{ m},\; EI=100\text{ kN·m}^2,\; y_0 = 0,\; y_N = 0$.</span>
                             <input type="range" id="p2BeamQ" min="4" max="30" step="2" value="12" oninput="updatePage2Beam()">
                         </div>
 
                         <div class="control-group">
                             <div class="control-label">
-                                <span>Inspeccionar nodo interno $i$</span>
-                                <span class="control-val" id="p2BeamValNode">i = 3</span>
+                                <span>Posición de la molécula $[1, -2, 1]$</span>
+                                <span class="control-val" id="p2BeamValNode">Nodo i = 2</span>
                             </div>
-                            <input type="range" id="p2BeamNode" min="1" max="5" step="1" value="3" oninput="updatePage2Beam()">
+                            <input type="range" id="p2BeamNode" min="1" max="3" step="1" value="2" oninput="updatePage2Beam()">
+                            <div class="node-stepper-bar" style="margin-top:6px; padding-top:6px;">
+                                <button type="button" class="geo-nav-btn" style="padding:5px 10px; font-size:0.76rem;" onclick="stepBeamNode(-1)">
+                                    ← Nodo i−1
+                                </button>
+                                <span id="p2BeamStepLabel" style="font-size:0.75rem; font-weight:800; color:var(--primary-dark);">
+                                    Fila 2 de 3
+                                </span>
+                                <button type="button" class="geo-nav-btn primary" style="padding:5px 10px; font-size:0.76rem;" onclick="stepBeamNode(1)">
+                                    Nodo i+1 →
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="eq-step" style="background:#eff6ff; border-color:#93c5fd; margin:0;">
-                            <div class="eq-step-title" style="color:#1d4ed8;">Ecuación discreta en el nodo seleccionado</div>
-                            <div class="eq-code" id="p2BeamEqText" style="font-size:0.83rem; color:#1e3a8a;">--</div>
+                        <!-- DESGLOSE EN 3 PASOS PARA EL NODO i DE LA VIGA -->
+                        <div class="eq-step" style="padding:8px 10px; margin-bottom:6px;">
+                            <div class="eq-step-title">1. Ecuación diferencial discretizada en $x_i$</div>
+                            <div class="eq-code" id="p2BeamEqStep1" style="font-size:0.8rem;">--</div>
+                        </div>
+
+                        <div class="eq-step" style="padding:8px 10px; margin-bottom:6px;">
+                            <div class="eq-step-title">2. Aplicación de apoyos Dirichlet ($y_0=0,\; y_N=0$)</div>
+                            <div class="eq-code" id="p2BeamEqStep2" style="font-size:0.8rem;">--</div>
+                        </div>
+
+                        <div class="eq-step" style="background:#ecfdf5; border-color:#6ee7b7; padding:8px 10px; margin:0;">
+                            <div class="eq-step-title" style="color:#065f46;">3. Deflexión obtenida al resolver el sistema</div>
+                            <div class="eq-code" id="p2BeamEqStep3" style="font-size:0.81rem; color:#065f46;">--</div>
                         </div>
                     </div>
 
-                    <div>
-                        <div id="plotPage2Beam" class="plot-box"></div>
+                    <!-- COLUMNA DERECHA 1D: ESQUEMA FÍSICO ARRIBA + (GRÁFICA Y MATRIZ TRIDIAGONAL ABAJO) -->
+                    <div class="beam-viz-column">
+                        <div class="beam-schematic-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:4px;">
+                                <span style="font-size:0.8rem; font-weight:800; color:var(--text);">
+                                    Esquema Físico de la Viga 1D y Molécula Activa $[+1, -2, +1]$ en el nodo $x_i$
+                                </span>
+                                <span style="font-size:0.74rem; color:var(--muted);">
+                                    🔺 Apoyos fijos en los extremos ($y_0 = 0,\; y_N = 0$) • Haz clic en cualquier nodo interno
+                                </span>
+                            </div>
+                            <svg id="svgBeamSchematic1D" viewBox="0 0 760 118" width="100%" style="max-height:115px; display:block; margin:0 auto;"></svg>
+                        </div>
+
+                        <div class="beam-Bottom-split">
+                            <div id="plotPage2Beam" class="plot-box" style="min-height:270px; height:275px; padding:6px;"></div>
+
+                            <div class="beam-matrix-card">
+                                <div>
+                                    <div style="font-size:0.8rem; font-weight:800; color:var(--text); margin-bottom:4px;">
+                                        Sistema Tridiagonal $[A]\{y\} = \{b\}$ (Incógnitas internas)
+                                    </div>
+                                    <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:6px; line-height:1.35;">
+                                        La molécula $[1, -2, 1]$ llena únicamente la diagonal principal ($-2$) y sus dos vecinas ($+1$). Al invertir $[A]$ obtenemos la deflexión $y_i$:
+                                    </p>
+                                    <div class="mini-matrix-wrap" id="p2BeamMatrixContainer" style="margin-top:4px;"></div>
+                                </div>
+                                <div id="p2BeamSummaryBanner" style="margin-top:8px; padding:7px 10px; border-radius:8px; background:#eff6ff; border:1px solid #bfdbfe; font-size:0.76rem; color:#1e3a8a;">
+                                    --
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1953,6 +2592,58 @@
                     <p>El ciclo iterativo se detiene automáticamente cuando en <strong>todos</strong> los nodos el cambio respecto a la iteración previa es menor que una tolerancia $\epsilon$:</p>
                     <div class="math-block">
                         $$\max_{i,j} \left| T_{i,j}^{(k)} - T_{i,j}^{(k-1)} \right| < \epsilon$$
+                    </div>
+                </div>
+            </div>
+
+            <!-- ESPACIO DE DEMOSTRACIÓN MATEMÁTICA 3 (CON AUDIO Y ELEMENTOS EN MOVIMIENTO) -->
+            <div class="math-demo-spotlight green-theme">
+                <div class="math-demo-header">
+                    <div>
+                        <span class="math-demo-badge" style="background:#064e3b;">🔊 Pizarrón de Demostración 3 • Con Voz y Elementos en Movimiento (1:18 min)</span>
+                        <h3 style="font-size:1.05rem; font-weight:800; color:var(--text); margin:6px 0 0 0;">
+                            De las Derivadas Parciales ($\nabla^2 T = 0$) al Promedio de los 4 Vecinos en la Placa
+                        </h3>
+                    </div>
+                    <span style="font-size:0.78rem; color:var(--muted); font-weight:700;">
+                        💡 Haz clic en cada paso a la derecha para saltar a ese momento de la deducción
+                    </span>
+                </div>
+                <div class="math-demo-grid">
+                    <div class="math-demo-player">
+                        <video id="demoVideo3" controls preload="metadata" playsinline>
+                            <source src="videos/demo_03_sustitucion_gauss_seidel_calor.mp4?v=3" type="video/mp4">
+                            Tu navegador no soporta video HTML5.
+                        </video>
+                    </div>
+                    <div class="math-demo-steps">
+                        <button type="button" class="math-demo-step-btn" onclick="seekDemoVideo('demoVideo3', 0)">
+                            <div class="math-demo-step-top">
+                                <span>▶ Paso 1: Sustitución de $\frac{\partial^2 T}{\partial x^2}$ y $\frac{\partial^2 T}{\partial y^2}$ por Diferencias Finitas</span>
+                                <span class="math-demo-step-time">00:00</span>
+                            </div>
+                            <div class="math-demo-step-desc">
+                                Reemplaza cada segunda derivada parcial por su diferencia central variando $i$ en $x$ ($\div \Delta x^2$) y variando $j$ en $y$ ($\div \Delta y^2$).
+                            </div>
+                        </button>
+                        <button type="button" class="math-demo-step-btn" onclick="seekDemoVideo('demoVideo3', 32)">
+                            <div class="math-demo-step-top">
+                                <span>▶ Paso 2: Malla cuadrada ($\Delta x = \Delta y = h$) y fusión en $-4T_{i,j}$</span>
+                                <span class="math-demo-step-time">00:32</span>
+                            </div>
+                            <div class="math-demo-step-desc">
+                                Multiplica por $h^2$ para eliminar los denominadores y fusiona los dos términos centrales $-2T_{i,j} - 2T_{i,j} = -4T_{i,j}$.
+                            </div>
+                        </button>
+                        <button type="button" class="math-demo-step-btn" onclick="seekDemoVideo('demoVideo3', 60)">
+                            <div class="math-demo-step-top">
+                                <span>▶ Paso 3: Despeje de $+4T_{i,j}$ hasta el promedio de los 4 vecinos</span>
+                                <span class="math-demo-step-time">01:00</span>
+                            </div>
+                            <div class="math-demo-step-desc">
+                                El $-4T_{i,j}$ cruza el signo '$=$' y el $4$ baja dividiendo para llegar a $T_{i,j} = (T_{i+1,j}+T_{i-1,j}+T_{i,j+1}+T_{i,j-1})/4$.
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2733,12 +3424,14 @@
         }
 
         // =====================================================================
-        // PÁGINA 2: MOLÉCULA DE CÁLCULO 2D Y VIGA 1D
+        // PÁGINA 2: MOLÉCULA DE CÁLCULO 2D Y VIGA 1D (FASE 2 PULIDA)
         // =====================================================================
         let page2Mode = '2d';
         let p2SelectedNode = { i: 1, j: 1 };
         let p2Pinned = false;
+        let p2ShowSolvedOnMesh = false;
         let p2NodeHitboxes = [];
+        let p2LastSolvedMap = new Map();
 
         function setPage2Mode(mode) {
             page2Mode = mode;
@@ -2757,8 +3450,64 @@
             updatePage2();
         }
 
+        function toggleP2ShowSolved() {
+            p2ShowSolvedOnMesh = !p2ShowSolvedOnMesh;
+            const btn = document.getElementById('btnToggleP2Solved');
+            if (btn) {
+                btn.classList.toggle('active', p2ShowSolvedOnMesh);
+                btn.innerText = p2ShowSolvedOnMesh
+                    ? '✓ Mostrando solución u(i,j) en la malla (clic para ver índices i,j)'
+                    : '⚡ Mostrar solución numérica u(i,j) en la malla';
+            }
+            updatePage2();
+        }
+
+        function stepP2Node(delta) {
+            const N = parseInt(document.getElementById('p2GridSize').value);
+            const internals = [];
+            for (let j = 1; j <= N - 2; j++) {
+                for (let i = 1; i <= N - 2; i++) {
+                    internals.push({ i, j });
+                }
+            }
+            let idx = internals.findIndex(nd => nd.i === p2SelectedNode.i && nd.j === p2SelectedNode.j);
+            if (idx < 0) idx = 0;
+            idx = (idx + delta + internals.length) % internals.length;
+            p2SelectedNode = { i: internals[idx].i, j: internals[idx].j };
+            p2Pinned = true;
+            updatePage2();
+        }
+
+        // Solver lineal Gauss con pivoteo parcial (usado tanto en 2D como en Viga 1D)
+        function solveLinearSystem(A_in, b_in) {
+            const n = b_in.length;
+            if (n === 0) return [];
+            const A = A_in.map(r => [...r]);
+            const b = [...b_in];
+            for (let i = 0; i < n; i++) {
+                let pivot = i;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(A[k][i]) > Math.abs(A[pivot][i])) pivot = k;
+                }
+                [A[i], A[pivot]] = [A[pivot], A[i]];
+                [b[i], b[pivot]] = [b[pivot], b[i]];
+                for (let k = i + 1; k < n; k++) {
+                    const f = A[k][i] / A[i][i];
+                    for (let j = i; j < n; j++) A[k][j] -= f * A[i][j];
+                    b[k] -= f * b[i];
+                }
+            }
+            const x = Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                let s = 0;
+                for (let j = i + 1; j < n; j++) s += A[i][j] * x[j];
+                x[i] = (b[i] - s) / A[i][i];
+            }
+            return x;
+        }
+
         function updatePage2() {
-            const N = parseInt(document.getElementById('p2GridSize').value); // total nodes per side (4 or 5)
+            const N = parseInt(document.getElementById('p2GridSize').value); // 4 o 5
             const ratio = parseFloat(document.getElementById('p2Ratio').value);
             const r = +(ratio * ratio).toFixed(4);
             document.getElementById('p2ValR').innerText = `r = ${r.toFixed(2)}`;
@@ -2772,146 +3521,9 @@
             p2SelectedNode.i = Math.max(1, Math.min(maxIdx - 1, p2SelectedNode.i));
             p2SelectedNode.j = Math.max(1, Math.min(maxIdx - 1, p2SelectedNode.j));
 
-            drawMolecule2DCanvas(N, r, { uTop, uBottom, uLeft, uRight });
+            // Primero armamos y resolvemos el sistema [A]{u} = {b} para tener u(i,j) disponible en el canvas
             buildMoleculeEquationAndMatrix(N, r, { uTop, uBottom, uLeft, uRight });
-        }
-
-        function drawMolecule2DCanvas(N, r, borders) {
-            const canvas = document.getElementById('canvasMolecule2D');
-            const ctx = canvas.getContext('2d');
-            const W = canvas.width;
-            const H = canvas.height;
-            ctx.clearRect(0, 0, W, H);
-
-            const pad = 44;
-            const stepX = (W - 2 * pad) / (N - 1);
-            const stepY = (H - 2 * pad) / (N - 1);
-
-            // Coordenada cartesiana: i = 0..N-1 (izq a der), j = 0..N-1 (abajo hacia arriba)
-            const toXY = (i, j) => ({
-                x: pad + i * stepX,
-                y: H - pad - j * stepY
-            });
-
-            // Líneas de la malla y etiquetas de ejes (i, j)
-            ctx.strokeStyle = '#cbd5e1';
-            ctx.lineWidth = 1.5;
-            ctx.fillStyle = '#64748b';
-            ctx.font = 'bold 10.5px Segoe UI';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            for (let i = 0; i < N; i++) {
-                const p0 = toXY(i, 0);
-                const p1 = toXY(i, N - 1);
-                ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
-                ctx.fillText(`i=${i}`, p0.x, H - 14);
-            }
-            for (let j = 0; j < N; j++) {
-                const p0 = toXY(0, j);
-                const p1 = toXY(N - 1, j);
-                ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
-                ctx.fillText(`j=${j}`, 16, p0.y);
-            }
-
-            // Brazos iluminados de la molécula de cálculo alrededor de p2SelectedNode
-            const ci = p2SelectedNode.i;
-            const cj = p2SelectedNode.j;
-            const centerPt = toXY(ci, cj);
-            const neighbors = [
-                { i: ci - 1, j: cj, w: '+1' },
-                { i: ci + 1, j: cj, w: '+1' },
-                { i: ci, j: cj - 1, w: `+${Number(r.toFixed(2))}` },
-                { i: ci, j: cj + 1, w: `+${Number(r.toFixed(2))}` }
-            ];
-
-            ctx.save();
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 5;
-            neighbors.forEach(nb => {
-                const np = toXY(nb.i, nb.j);
-                ctx.beginPath();
-                ctx.moveTo(centerPt.x, centerPt.y);
-                ctx.lineTo(np.x, np.y);
-                ctx.stroke();
-
-                // Etiqueta de peso en la mitad del brazo
-                const mx = (centerPt.x + np.x) / 2;
-                const my = (centerPt.y + np.y) / 2;
-                ctx.fillStyle = '#eff6ff';
-                ctx.fillRect(mx - 14, my - 9, 28, 18);
-                ctx.fillStyle = '#1d4ed8';
-                ctx.font = 'bold 11px Segoe UI';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(nb.w, mx, my);
-            });
-            ctx.restore();
-
-            // Dibujar todos los nodos
-            p2NodeHitboxes = [];
-            for (let j = 0; j < N; j++) {
-                for (let i = 0; i < N; i++) {
-                    const pt = toXY(i, j);
-                    const isBorder = (i === 0 || i === N - 1 || j === 0 || j === N - 1);
-                    const isCorner = (i === 0 || i === N - 1) && (j === 0 || j === N - 1);
-                    const isCenter = (i === ci && j === cj);
-                    const isNeighbor = neighbors.some(nb => nb.i === i && nb.j === j);
-
-                    let radius = isCenter ? 19 : (isNeighbor ? 17 : 14);
-                    ctx.beginPath();
-                    ctx.arc(pt.x, pt.y, radius, 0, Math.PI * 2);
-
-                    if (isCorner) {
-                        ctx.fillStyle = '#e2e8f0';
-                        ctx.strokeStyle = '#94a3b8';
-                    } else if (isBorder) {
-                        ctx.fillStyle = isNeighbor ? '#f59e0b' : '#fef3c7';
-                        ctx.strokeStyle = '#d97706';
-                    } else if (isCenter) {
-                        ctx.fillStyle = '#2563eb';
-                        ctx.strokeStyle = '#1e3a8a';
-                    } else if (isNeighbor) {
-                        ctx.fillStyle = '#dbeafe';
-                        ctx.strokeStyle = '#2563eb';
-                    } else {
-                        ctx.fillStyle = '#ffffff';
-                        ctx.strokeStyle = '#64748b';
-                    }
-                    ctx.lineWidth = (isCenter || isNeighbor) ? 3 : 1.8;
-                    ctx.fill();
-                    ctx.stroke();
-
-                    // Texto dentro del nodo
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    if (isCorner) {
-                        ctx.fillStyle = '#94a3b8';
-                        ctx.font = '10px Segoe UI';
-                        ctx.fillText('—', pt.x, pt.y);
-                    } else if (isBorder) {
-                        let bVal = 0;
-                        if (j === N - 1) bVal = borders.uTop;
-                        else if (j === 0) bVal = borders.uBottom;
-                        else if (i === 0) bVal = borders.uLeft;
-                        else if (i === N - 1) bVal = borders.uRight;
-                        ctx.fillStyle = isNeighbor ? '#ffffff' : '#92400e';
-                        ctx.font = 'bold 10.5px Segoe UI';
-                        ctx.fillText(String(bVal), pt.x, pt.y);
-                    } else {
-                        ctx.fillStyle = isCenter ? '#ffffff' : '#0f172a';
-                        ctx.font = 'bold 10.5px Segoe UI';
-                        ctx.fillText(`${i},${j}`, pt.x, pt.y);
-                        p2NodeHitboxes.push({ i, j, x: pt.x, y: pt.y, r: 22 });
-                    }
-                }
-            }
-
-            // Etiqueta del peso central
-            const centerWeight = -2 * (1 + r);
-            ctx.fillStyle = '#1e3a8a';
-            ctx.font = 'bold 11px Segoe UI';
-            ctx.textAlign = 'center';
-            ctx.fillText(`Centro: ${Number(centerWeight.toFixed(2))}`, centerPt.x, centerPt.y - 26);
+            drawMolecule2DCanvas(N, r, { uTop, uBottom, uLeft, uRight });
         }
 
         function buildMoleculeEquationAndMatrix(N, r, borders) {
@@ -2920,15 +3532,31 @@
             const centerCoeff = +(2 * (1 + r)).toFixed(2);
             const rFmt = +r.toFixed(2);
 
+            // Lista ordenada de nodos internos
+            const internals = [];
+            for (let j = 1; j <= N - 2; j++) {
+                for (let i = 1; i <= N - 2; i++) {
+                    internals.push({ i, j, key: `${i},${j}` });
+                }
+            }
+            const idxMap = new Map();
+            internals.forEach((nd, k) => idxMap.set(nd.key, k));
+            const activeOrdinal = (idxMap.get(`${ci},${cj}`) ?? 0) + 1;
+
+            const counterBadge = document.getElementById('p2NodeCounterBadge');
+            if (counterBadge) {
+                counterBadge.innerText = `Nodo ${activeOrdinal} de ${internals.length}: (${ci},${cj})`;
+            }
+
             document.getElementById('p2NodeTitle').innerText =
-                `Ecuación Algebraica en el Nodo Interno (${ci}, ${cj})` + (p2Pinned ? ' 📌 [Fijado]' : '');
+                `Ecuación de la Fila ${activeOrdinal} — Nodo Interno (${ci}, ${cj})` + (p2Pinned ? ' 📌' : '');
 
             // Paso 1: simbólica directa
             const rStr = rFmt === 1 ? '' : `${rFmt}·`;
             document.getElementById('p2EqSymbolic').innerHTML =
                 `u<sub>${ci + 1},${cj}</sub> + u<sub>${ci - 1},${cj}</sub> + ${rStr}u<sub>${ci},${cj + 1}</sub> + ${rStr}u<sub>${ci},${cj - 1}</sub> − ${centerCoeff}·u<sub>${ci},${cj}</sub> = 0`;
 
-            // Evaluar vecinos
+            // Evaluar vecinos del nodo activo
             const nbs = [
                 { i: ci - 1, j: cj, coeff: 1, dir: 'izq' },
                 { i: ci + 1, j: cj, coeff: 1, dir: 'der' },
@@ -2950,7 +3578,7 @@
                     else if (nb.j === 0) val = borders.uBottom;
                     else if (nb.i === 0) val = borders.uLeft;
                     else if (nb.i === N - 1) val = borders.uRight;
-                    subParts.push(`<span style="color:#d97706;">${cPrefix}(${val})</span>`);
+                    subParts.push(`<span style="color:#d97706; font-weight:800;">${cPrefix}(${val})</span>`);
                     rhsSum += nb.coeff * val;
                     rhsParts.push(`${nb.coeff === 1 ? val : nb.coeff + '×' + val}`);
                 } else {
@@ -2962,25 +3590,15 @@
             document.getElementById('p2EqSubstituted').innerHTML =
                 `${subParts.join(' + ')} − ${centerCoeff}·u<sub>${ci},${cj}</sub> = 0`;
 
-            const rhsExplain = rhsParts.length > 0 ? `${+rhsSum.toFixed(2)}  <span style="font-weight:400;font-size:0.8rem;color:#475569;">(de bordes: ${rhsParts.join(' + ')})</span>` : '0  <span style="font-weight:400;font-size:0.8rem;color:#475569;">(sin contacto directo con el borde)</span>';
+            const rhsExplain = rhsParts.length > 0
+                ? `<span style="color:#b45309; font-weight:800;">${+rhsSum.toFixed(2)}</span> <span style="font-weight:400;font-size:0.78rem;color:#475569;">(borde conocido: ${rhsParts.join(' + ')})</span>`
+                : `<span style="color:#b45309; font-weight:800;">0</span> <span style="font-weight:400;font-size:0.78rem;color:#475569;">(no toca bordes exteriores)</span>`;
             document.getElementById('p2EqFinal').innerHTML = `${lhsUnknowns.join(' ')} = ${rhsExplain}`;
 
-            // Construir tabla del sistema lineal para los nodos internos
-            const internals = [];
-            for (let j = 1; j <= N - 2; j++) {
-                for (let i = 1; i <= N - 2; i++) {
-                    internals.push({ i, j, key: `${i},${j}` });
-                }
-            }
-            const idxMap = new Map();
-            internals.forEach((nd, k) => idxMap.set(nd.key, k));
-
+            // Construir y resolver el sistema lineal global [A]{u} = {b}
             const mSize = internals.length;
-            let html = `<table class="matrix-tbl"><thead><tr><th>Nodo</th>`;
-            internals.forEach(nd => {
-                html += `<th>u<sub>${nd.key}</sub></th>`;
-            });
-            html += `<th>= b</th></tr></thead><tbody>`;
+            const A_mat = [];
+            const b_vec = [];
 
             internals.forEach((nd, rowIdx) => {
                 const row = Array(mSize).fill(0);
@@ -3006,17 +3624,184 @@
                         bVal += ln.c * bv;
                     }
                 });
+                A_mat.push(row);
+                b_vec.push(bVal);
+            });
 
+            const uSolved = solveLinearSystem(A_mat, b_vec);
+            p2LastSolvedMap = new Map();
+            internals.forEach((nd, k) => {
+                p2LastSolvedMap.set(nd.key, uSolved[k]);
+            });
+
+            const activeSolvedVal = p2LastSolvedMap.get(`${ci},${cj}`) ?? 0;
+            const solvedPill = document.getElementById('p2NodeSolvedPill');
+            if (solvedPill) {
+                solvedPill.innerHTML = `Solución: u<sub>${ci},${cj}</sub> = ${activeSolvedVal.toFixed(2)}`;
+            }
+
+            let html = `<table class="matrix-tbl"><thead><tr><th>Fila</th>`;
+            internals.forEach(nd => {
+                html += `<th>u<sub>${nd.key}</sub></th>`;
+            });
+            html += `<th>= b</th><th class="sol-head">u resuelto</th></tr></thead><tbody>`;
+
+            internals.forEach((nd, rowIdx) => {
+                const row = A_mat[rowIdx];
+                const bVal = b_vec[rowIdx];
+                const uVal = uSolved[rowIdx];
                 const isSelectedRow = (nd.i === ci && nd.j === cj);
-                html += `<tr class="${isSelectedRow ? 'active-row' : ''}"><td><strong>(${nd.key})</strong></td>`;
+                html += `<tr class="${isSelectedRow ? 'active-row' : ''}" style="cursor:pointer;" onclick="p2SelectedNode={i:${nd.i},j:${nd.j}};p2Pinned=true;updatePage2();">`;
+                html += `<td><strong>(${nd.key})</strong></td>`;
                 row.forEach((val, colIdx) => {
                     const cls = colIdx === rowIdx ? 'diag-cell' : (val !== 0 ? 'off-cell' : '');
                     html += `<td class="${cls}">${val === 0 ? '0' : +val.toFixed(2)}</td>`;
                 });
-                html += `<td><strong>${+bVal.toFixed(2)}</strong></td></tr>`;
+                html += `<td><strong>${+bVal.toFixed(2)}</strong></td>`;
+                html += `<td class="sol-cell">${uVal.toFixed(2)}</td></tr>`;
             });
             html += `</tbody></table>`;
             document.getElementById('p2MatrixContainer').innerHTML = html;
+        }
+
+        function drawMolecule2DCanvas(N, r, borders) {
+            const canvas = document.getElementById('canvasMolecule2D');
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width;
+            const H = canvas.height;
+            ctx.clearRect(0, 0, W, H);
+
+            const padX = 44;
+            const padY = 38;
+            const stepX = (W - 2 * padX) / (N - 1);
+            const stepY = (H - 2 * padY) / (N - 1);
+
+            const toXY = (i, j) => ({
+                x: padX + i * stepX,
+                y: H - padY - j * stepY
+            });
+
+            // Líneas de la malla y etiquetas de ejes (i, j)
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1.5;
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'bold 10px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            for (let i = 0; i < N; i++) {
+                const p0 = toXY(i, 0);
+                const p1 = toXY(i, N - 1);
+                ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+                ctx.fillText(`i=${i}`, p0.x, H - 12);
+            }
+            for (let j = 0; j < N; j++) {
+                const p0 = toXY(0, j);
+                const p1 = toXY(N - 1, j);
+                ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+                ctx.fillText(`j=${j}`, 16, p0.y);
+            }
+
+            // Brazos iluminados de la molécula de cálculo alrededor de p2SelectedNode
+            const ci = p2SelectedNode.i;
+            const cj = p2SelectedNode.j;
+            const centerPt = toXY(ci, cj);
+            const neighbors = [
+                { i: ci - 1, j: cj, w: '+1' },
+                { i: ci + 1, j: cj, w: '+1' },
+                { i: ci, j: cj - 1, w: `+${Number(r.toFixed(2))}` },
+                { i: ci, j: cj + 1, w: `+${Number(r.toFixed(2))}` }
+            ];
+
+            ctx.save();
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 4.5;
+            neighbors.forEach(nb => {
+                const np = toXY(nb.i, nb.j);
+                ctx.beginPath();
+                ctx.moveTo(centerPt.x, centerPt.y);
+                ctx.lineTo(np.x, np.y);
+                ctx.stroke();
+
+                const mx = (centerPt.x + np.x) / 2;
+                const my = (centerPt.y + np.y) / 2;
+                ctx.fillStyle = '#eff6ff';
+                ctx.fillRect(mx - 13, my - 8, 26, 16);
+                ctx.fillStyle = '#1d4ed8';
+                ctx.font = 'bold 10px Segoe UI';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(nb.w, mx, my);
+            });
+            ctx.restore();
+
+            // Dibujar todos los nodos
+            p2NodeHitboxes = [];
+            for (let j = 0; j < N; j++) {
+                for (let i = 0; i < N; i++) {
+                    const pt = toXY(i, j);
+                    const isBorder = (i === 0 || i === N - 1 || j === 0 || j === N - 1);
+                    const isCorner = (i === 0 || i === N - 1) && (j === 0 || j === N - 1);
+                    const isCenter = (i === ci && j === cj);
+                    const isNeighbor = neighbors.some(nb => nb.i === i && nb.j === j);
+
+                    let radius = isCenter ? 19 : (isNeighbor ? 17 : 15);
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, radius, 0, Math.PI * 2);
+
+                    if (isCorner) {
+                        ctx.fillStyle = '#e2e8f0';
+                        ctx.strokeStyle = '#94a3b8';
+                    } else if (isBorder) {
+                        ctx.fillStyle = isNeighbor ? '#f59e0b' : '#fef3c7';
+                        ctx.strokeStyle = '#d97706';
+                    } else if (isCenter) {
+                        ctx.fillStyle = p2ShowSolvedOnMesh ? '#059669' : '#2563eb';
+                        ctx.strokeStyle = p2ShowSolvedOnMesh ? '#064e3b' : '#1e3a8a';
+                    } else if (isNeighbor) {
+                        ctx.fillStyle = p2ShowSolvedOnMesh ? '#d1fae5' : '#dbeafe';
+                        ctx.strokeStyle = p2ShowSolvedOnMesh ? '#059669' : '#2563eb';
+                    } else {
+                        ctx.fillStyle = p2ShowSolvedOnMesh ? '#ecfdf5' : '#ffffff';
+                        ctx.strokeStyle = p2ShowSolvedOnMesh ? '#10b981' : '#64748b';
+                    }
+                    ctx.lineWidth = (isCenter || isNeighbor) ? 2.8 : 1.6;
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    if (isCorner) {
+                        ctx.fillStyle = '#94a3b8';
+                        ctx.font = '10px Segoe UI';
+                        ctx.fillText('—', pt.x, pt.y);
+                    } else if (isBorder) {
+                        let bVal = 0;
+                        if (j === N - 1) bVal = borders.uTop;
+                        else if (j === 0) bVal = borders.uBottom;
+                        else if (i === 0) bVal = borders.uLeft;
+                        else if (i === N - 1) bVal = borders.uRight;
+                        ctx.fillStyle = isNeighbor ? '#ffffff' : '#92400e';
+                        ctx.font = 'bold 10px Segoe UI';
+                        ctx.fillText(String(bVal), pt.x, pt.y);
+                    } else {
+                        ctx.fillStyle = isCenter ? '#ffffff' : '#0f172a';
+                        ctx.font = 'bold 10px Segoe UI';
+                        if (p2ShowSolvedOnMesh) {
+                            const sVal = p2LastSolvedMap.get(`${i},${j}`);
+                            ctx.fillText(sVal !== undefined ? sVal.toFixed(1) : `${i},${j}`, pt.x, pt.y);
+                        } else {
+                            ctx.fillText(`${i},${j}`, pt.x, pt.y);
+                        }
+                        p2NodeHitboxes.push({ i, j, x: pt.x, y: pt.y, r: 22 });
+                    }
+                }
+            }
+
+            const centerWeight = -2 * (1 + r);
+            ctx.fillStyle = '#1e3a8a';
+            ctx.font = 'bold 10.5px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Centro: ${Number(centerWeight.toFixed(2))}`, centerPt.x, centerPt.y - 24);
         }
 
         // Eventos del canvas de la molécula 2D
@@ -3058,31 +3843,91 @@
             });
         })();
 
-        // Sub-modo 1D: Deflexión de viga simplemente apoyada y'' = M(x)/(EI)
-        function solveLinear1D(A_in, b_in) {
-            const n = b_in.length;
-            const A = A_in.map(r => [...r]);
-            const b = [...b_in];
-            for (let i = 0; i < n; i++) {
-                let pivot = i;
-                for (let k = i + 1; k < n; k++) {
-                    if (Math.abs(A[k][i]) > Math.abs(A[pivot][i])) pivot = k;
-                }
-                [A[i], A[pivot]] = [A[pivot], A[i]];
-                [b[i], b[pivot]] = [b[pivot], b[i]];
-                for (let k = i + 1; k < n; k++) {
-                    const f = A[k][i] / A[i][i];
-                    for (let j = i; j < n; j++) A[k][j] -= f * A[i][j];
-                    b[k] -= f * b[i];
-                }
+        // =====================================================================
+        // SUB-MODO 1D: DEFLEXIÓN DE VIGA SIMPLEMENTE APOYADA y'' = M(x)/(EI)
+        // =====================================================================
+        function stepBeamNode(delta) {
+            const N = parseInt(document.getElementById('p2BeamN').value);
+            const nodeSlider = document.getElementById('p2BeamNode');
+            let curr = parseInt(nodeSlider.value) + delta;
+            if (curr < 1) curr = N - 1;
+            if (curr > N - 1) curr = 1;
+            nodeSlider.value = curr;
+            updatePage2Beam();
+        }
+
+        function selectBeamNodeDirect(i) {
+            const nodeSlider = document.getElementById('p2BeamNode');
+            nodeSlider.value = i;
+            updatePage2Beam();
+        }
+
+        function drawBeamSchematicSVG(N, idx, xs, q) {
+            const svg = document.getElementById('svgBeamSchematic1D');
+            if (!svg) return;
+            const W = 760;
+            const x0 = 58;
+            const x1 = W - 58;
+            const beamY = 54;
+            const toX = (i) => x0 + (i / N) * (x1 - x0);
+
+            let out = `
+                <defs>
+                    <marker id="qArrow" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="4.5" markerHeight="4.5" orient="auto">
+                        <path d="M 1 1 L 5 8 L 9 1 z" fill="#64748b"/>
+                    </marker>
+                </defs>
+                <!-- Carga distribuida q (flechas verticales superiores) -->
+                <line x1="${x0}" y1="14" x2="${x1}" y2="14" stroke="#64748b" stroke-width="1.5"/>
+                <text x="${(x0 + x1) / 2}" y="10" font-size="10.5" font-weight="800" fill="#475569" text-anchor="middle">Carga uniforme q = ${q} kN/m</text>
+            `;
+            const nArrows = 13;
+            for (let k = 0; k <= nArrows; k++) {
+                const ax = x0 + (k / nArrows) * (x1 - x0);
+                out += `<line x1="${ax}" y1="14" x2="${ax}" y2="${beamY - 12}" stroke="#94a3b8" stroke-width="1.3" marker-end="url(#qArrow)"/>`;
             }
-            const x = Array(n).fill(0);
-            for (let i = n - 1; i >= 0; i--) {
-                let s = 0;
-                for (let j = i + 1; j < n; j++) s += A[i][j] * x[j];
-                x[i] = (b[i] - s) / A[i][i];
+
+            // Cuerpo de la viga
+            out += `<line x1="${x0}" y1="${beamY}" x2="${x1}" y2="${beamY}" stroke="#334155" stroke-width="5" stroke-linecap="round"/>`;
+
+            // Apoyo fijo izquierdo (triángulo) y móvil derecho (triángulo + rodillo)
+            out += `<polygon points="${x0},${beamY + 4} ${x0 - 11},${beamY + 22} ${x0 + 11},${beamY + 22}" fill="#f59e0b" stroke="#92400e" stroke-width="1.6"/>`;
+            out += `<polygon points="${x1},${beamY + 4} ${x1 - 11},${beamY + 20} ${x1 + 11},${beamY + 20}" fill="#f59e0b" stroke="#92400e" stroke-width="1.6"/>`;
+            out += `<line x1="${x1 - 12}" y1="${beamY + 23}" x2="${x1 + 12}" y2="${beamY + 23}" stroke="#92400e" stroke-width="2"/>`;
+
+            // Resaltar el trío activo [1, -2, 1] centrado en idx
+            const xPrev = toX(idx - 1);
+            const xCurr = toX(idx);
+            const xNext = toX(idx + 1);
+            out += `<rect x="${xPrev - 18}" y="${beamY - 22}" width="${(xNext - xPrev) + 36}" height="44" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+            out += `<line x1="${xPrev}" y1="${beamY}" x2="${xNext}" y2="${beamY}" stroke="#2563eb" stroke-width="6"/>`;
+
+            // Pesos de la molécula 1D [ +1, -2, +1 ]
+            out += `<text x="${xPrev}" y="${beamY - 13}" font-size="10.5" font-weight="800" fill="#1d4ed8" text-anchor="middle">+1</text>`;
+            out += `<text x="${xCurr}" y="${beamY - 14}" font-size="11.5" font-weight="900" fill="#dc2626" text-anchor="middle">−2</text>`;
+            out += `<text x="${xNext}" y="${beamY - 13}" font-size="10.5" font-weight="800" fill="#1d4ed8" text-anchor="middle">+1</text>`;
+
+            // Dibujar todos los nodos 0..N
+            for (let i = 0; i <= N; i++) {
+                const cx = toX(i);
+                const isEnd = (i === 0 || i === N);
+                const isCenter = (i === idx);
+                const isNb = (i === idx - 1 || i === idx + 1);
+                const r = isCenter ? 10 : (isNb || isEnd ? 8.5 : 6.5);
+                const fill = isEnd ? '#f59e0b' : (isCenter ? '#ef4444' : (isNb ? '#2563eb' : '#ffffff'));
+                const stroke = isEnd ? '#92400e' : (isCenter ? '#991b1b' : '#1e3a8a');
+                const clickAttr = isEnd ? '' : `style="cursor:pointer;" onclick="selectBeamNodeDirect(${i})"`;
+
+                out += `<g ${clickAttr}>`;
+                out += `<circle cx="${cx}" cy="${beamY}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2.2"/>`;
+                const lbl = isEnd ? `y_${i}=0` : `y_${i}`;
+                const lblColor = isEnd ? '#b45309' : (isCenter ? '#dc2626' : '#1e293b');
+                out += `<text x="${cx}" y="${beamY + 36}" font-size="10.5" font-weight="800" fill="${lblColor}" text-anchor="middle">${lbl}</text>`;
+                out += `<text x="${cx}" y="${beamY + 49}" font-size="9.5" fill="#64748b" text-anchor="middle">x=${xs[i].toFixed(2)}m</text>`;
+                out += `</g>`;
             }
-            return x;
+
+            svg.innerHTML = out;
         }
 
         function updatePage2Beam() {
@@ -3094,40 +3939,99 @@
             const nodeSlider = document.getElementById('p2BeamNode');
             nodeSlider.max = N - 1;
             if (parseInt(nodeSlider.value) > N - 1) nodeSlider.value = N - 1;
+            if (parseInt(nodeSlider.value) < 1) nodeSlider.value = 1;
             const idx = parseInt(nodeSlider.value);
 
-            document.getElementById('p2BeamValN').innerText = N;
+            document.getElementById('p2BeamValN').innerText = `${N} tramos (${N - 1} incógnitas)`;
             document.getElementById('p2BeamValQ').innerText = `${q} kN/m`;
-            document.getElementById('p2BeamValNode').innerText = `i = ${idx}`;
+            document.getElementById('p2BeamValNode').innerText = `Nodo i = ${idx} (x = ${(idx * L / N).toFixed(2)} m)`;
+            const stepLbl = document.getElementById('p2BeamStepLabel');
+            if (stepLbl) stepLbl.innerText = `Fila ${idx} de ${N - 1}`;
 
             const h = L / N;
             const nn = N + 1;
             const xs = Array.from({ length: nn }, (_, i) => i * h);
 
-            // M(x) = - (q/2) * x * (L - x) para que la viga deflecte hacia abajo (y < 0)
-            const A = Array.from({ length: nn }, () => Array(nn).fill(0));
-            const b = Array(nn).fill(0);
-            A[0][0] = 1; b[0] = 0;
-            A[N][N] = 1; b[N] = 0;
+            // Armar sistema reducido únicamente para las (N-1) incógnitas internas i = 1..N-1
+            const nInt = N - 1;
+            const A_int = Array.from({ length: nInt }, () => Array(nInt).fill(0));
+            const b_int = Array(nInt).fill(0);
 
             for (let i = 1; i < N; i++) {
+                const row = i - 1;
                 const M_xi = -0.5 * q * xs[i] * (L - xs[i]);
-                A[i][i - 1] = 1;
-                A[i][i] = -2;
-                A[i][i + 1] = 1;
-                b[i] = (h * h * M_xi) / EI;
+                A_int[row][row] = -2;
+                if (i - 1 >= 1) A_int[row][row - 1] = 1;
+                if (i + 1 <= N - 1) A_int[row][row + 1] = 1;
+                b_int[row] = (h * h * M_xi) / EI; // en metros
             }
 
-            const yMeters = solveLinear1D(A, b);
-            const yMM = yMeters.map(v => v * 1000); // en milímetros
+            const yIntMeters = solveLinearSystem(A_int, b_int);
+            const yMeters = [0, ...yIntMeters, 0];
+            const yMM = yMeters.map(v => v * 1000);
 
+            // Solución analítica exacta en cada nodo para comparar
+            const exactAt = (x) => -((q * x * (Math.pow(L, 3) - 2 * L * x * x + Math.pow(x, 3))) / (24 * EI)) * 1000;
+            const yExactMM = xs.map(exactAt);
+
+            // Actualizar esquema físico superior
+            drawBeamSchematicSVG(N, idx, xs, q);
+
+            // Actualizar los 3 pasos algebraicos del nodo seleccionado idx
             const xi = xs[idx];
             const Mi = -0.5 * q * xi * (L - xi);
-            const rhs = (h * h * Mi) / EI;
-            document.getElementById('p2BeamEqText').innerHTML =
-                `En x<sub>${idx}</sub> = ${xi.toFixed(2)} m:<br>` +
-                `y<sub>${idx - 1}</sub> − 2y<sub>${idx}</sub> + y<sub>${idx + 1}</sub> = ${rhs.toFixed(5)} m<br>` +
-                `<span style="color:#047857;">Deflexión calculada: y<sub>${idx}</sub> = ${yMM[idx].toFixed(2)} mm</span>`;
+            const rhsMeters = (h * h * Mi) / EI;
+            const rhsMM = rhsMeters * 1000;
+
+            document.getElementById('p2BeamEqStep1').innerHTML =
+                `y<sub>${idx - 1}</sub> − 2y<sub>${idx}</sub> + y<sub>${idx + 1}</sub> = (h²/EI)·M(${xi.toFixed(2)}) = <strong>${rhsMM.toFixed(2)} mm</strong>`;
+
+            const leftTerm = (idx - 1 === 0)
+                ? `<span style="color:#d97706;font-weight:800;">0 (apoyo y₀)</span>`
+                : `<span style="color:#2563eb;">y<sub>${idx - 1}</sub></span>`;
+            const rightTerm = (idx + 1 === N)
+                ? `<span style="color:#d97706;font-weight:800;">0 (apoyo y<sub>${N}</sub>)</span>`
+                : `<span style="color:#2563eb;">y<sub>${idx + 1}</sub></span>`;
+
+            const cleanLHS = [
+                (idx - 1 >= 1) ? `y<sub>${idx - 1}</sub>` : '',
+                `− 2y<sub>${idx}</sub>`,
+                (idx + 1 <= N - 1) ? `+ y<sub>${idx + 1}</sub>` : ''
+            ].filter(Boolean).join(' ');
+
+            document.getElementById('p2BeamEqStep2').innerHTML =
+                `${leftTerm} − 2y<sub>${idx}</sub> + ${rightTerm} = ${rhsMM.toFixed(2)} mm  ⇒  <strong>${cleanLHS} = ${rhsMM.toFixed(2)} mm</strong>`;
+
+            const errAbs = Math.abs(yMM[idx] - yExactMM[idx]);
+            document.getElementById('p2BeamEqStep3').innerHTML =
+                `y<sub>${idx}</sub> (MDF) = <strong>${yMM[idx].toFixed(2)} mm</strong> &nbsp;|&nbsp; Exacta = ${yExactMM[idx].toFixed(2)} mm (Δ = ${errAbs.toFixed(2)} mm)`;
+
+            // Renderizar tabla de la matriz tridiagonal [A]{y} = {b} + solución en mm
+            let mHtml = `<table class="matrix-tbl"><thead><tr><th>Fila</th>`;
+            for (let i = 1; i < N; i++) mHtml += `<th>y<sub>${i}</sub></th>`;
+            mHtml += `<th>= b [mm]</th><th class="sol-head">y<sub>MDF</sub></th><th>y<sub>Exacta</sub></th></tr></thead><tbody>`;
+
+            for (let i = 1; i < N; i++) {
+                const rIdx = i - 1;
+                const isAct = (i === idx);
+                mHtml += `<tr class="${isAct ? 'active-row' : ''}" style="cursor:pointer;" onclick="selectBeamNodeDirect(${i})">`;
+                mHtml += `<td><strong>i=${i}</strong></td>`;
+                for (let cIdx = 0; cIdx < nInt; cIdx++) {
+                    const val = A_int[rIdx][cIdx];
+                    const cls = (cIdx === rIdx) ? 'diag-cell' : (val !== 0 ? 'off-cell' : '');
+                    mHtml += `<td class="${cls}">${val}</td>`;
+                }
+                mHtml += `<td><strong>${(b_int[rIdx] * 1000).toFixed(2)}</strong></td>`;
+                mHtml += `<td class="sol-cell">${yMM[i].toFixed(2)} mm</td>`;
+                mHtml += `<td style="color:#475569;">${yExactMM[i].toFixed(2)} mm</td></tr>`;
+            }
+            mHtml += `</tbody></table>`;
+            document.getElementById('p2BeamMatrixContainer').innerHTML = mHtml;
+
+            const minMDF = Math.min(...yMM);
+            const minEx = exactAt(L / 2);
+            document.getElementById('p2BeamSummaryBanner').innerHTML =
+                `<strong>Flecha máxima al centro ($x=2\\text{ m}$):</strong> MDF = <strong>${minMDF.toFixed(2)} mm</strong> vs. Exacta = <strong>${minEx.toFixed(2)} mm</strong>. Haz clic en cualquier fila de la matriz para inspeccionar su nodo.`;
 
             if (!window.Plotly) return;
             const fineX = [];
@@ -3135,9 +4039,7 @@
             for (let k = 0; k <= 100; k++) {
                 const x = (k / 100) * L;
                 fineX.push(x);
-                // Solución exacta Euler-Bernoulli: y(x) = - q*x*(L^3 - 2*L*x^2 + x^3) / (24*EI)
-                const yEx = -(q * x * (Math.pow(L, 3) - 2 * L * x * x + Math.pow(x, 3))) / (24 * EI);
-                fineY.push(yEx * 1000);
+                fineY.push(exactAt(x));
             }
 
             Plotly.react('plotPage2Beam', [
@@ -3145,40 +4047,40 @@
                     x: fineX,
                     y: fineY,
                     mode: 'lines',
-                    name: 'Curva elástica exacta',
+                    name: 'Elástica exacta (Euler-Bernoulli)',
                     line: { color: '#94a3b8', width: 2.5, dash: 'dash' }
                 },
                 {
                     x: xs,
                     y: yMM,
                     mode: 'lines+markers',
-                    name: 'Nodos MDF 1D',
+                    name: 'Solución MDF 1D',
                     line: { color: '#2563eb', width: 3 },
-                    marker: { size: 9, color: '#2563eb' }
+                    marker: { size: 8, color: '#2563eb' }
                 },
                 {
                     x: [xs[idx - 1], xs[idx], xs[idx + 1]],
                     y: [yMM[idx - 1], yMM[idx], yMM[idx + 1]],
                     mode: 'lines+markers+text',
-                    name: 'Trío activo [1, -2, 1]',
+                    name: 'Molécula activa [1, -2, 1]',
                     text: [`y_${idx - 1}`, `y_${idx}`, `y_${idx + 1}`],
                     textposition: 'bottom center',
-                    line: { color: '#ef4444', width: 4 },
-                    marker: { size: [12, 16, 12], color: ['#f59e0b', '#ef4444', '#f59e0b'] }
+                    line: { color: '#ef4444', width: 3.8 },
+                    marker: { size: [11, 15, 11], color: ['#f59e0b', '#ef4444', '#f59e0b'] }
                 }
             ], {
                 title: {
-                    text: 'Deflexión de Viga Simplemente Apoyada (en mm)',
+                    text: 'Curva de Deflexión Resuelta y(x) [mm]',
                     y: 0.96,
                     x: 0.5,
                     xanchor: 'center',
                     yanchor: 'top',
-                    font: { size: 13.5, color: '#0f172a' }
+                    font: { size: 12.8, color: '#0f172a' }
                 },
-                margin: { t: 76, r: 20, b: 48, l: 60 },
-                xaxis: { title: 'Posición en la viga x [m]' },
-                yaxis: { title: 'Deflexión y(x) [mm]' },
-                legend: { orientation: 'h', y: 1.02, yanchor: 'bottom', x: 0.5, xanchor: 'center', font: { size: 11.5 } },
+                margin: { t: 58, r: 16, b: 40, l: 52 },
+                xaxis: { title: 'Posición x [m]' },
+                yaxis: { title: 'Deflexión y [mm]' },
+                legend: { orientation: 'h', y: 1.02, yanchor: 'bottom', x: 0.5, xanchor: 'center', font: { size: 10.5 } },
                 plot_bgcolor: '#f8fafc',
                 paper_bgcolor: '#ffffff'
             }, { displayModeBar: false, responsive: true });
@@ -4031,6 +4933,89 @@
     </script>
 
     <script>
+
+        // ================= CONSTRUCTOR GEOMÉTRICO PASO A PASO (FASE 1) =================
+        var currentGeoStep = 1;
+        var geoNextLabels = [
+            "",
+            "Siguiente: Forward →",
+            "Siguiente: Backward →",
+            "Siguiente: Central (2h) →",
+            "Siguiente: Ver todas →",
+            "Completado ✓"
+        ];
+
+        function setGeoStep(step) {
+            if (step < 1 || step > 5) return;
+            currentGeoStep = step;
+
+            for (var k = 1; k <= 5; k++) {
+                var tab = document.getElementById('geoTab' + k);
+                var pane = document.getElementById('geoPane' + k);
+                if (tab) tab.classList.toggle('active', k === step);
+                if (pane) pane.style.display = (k === step) ? 'block' : 'none';
+            }
+
+            var prompt1 = document.getElementById('geoLayerPrompt1');
+            var lFwd = document.getElementById('geoLayerForward');
+            var lBwd = document.getElementById('geoLayerBackward');
+            var lCen = document.getElementById('geoLayerCentral');
+
+            var fillFwd = document.getElementById('geoFillForward');
+            var fillBwd = document.getElementById('geoFillBackward');
+            var fillCen = document.getElementById('geoFillCentral');
+            var baseFwd = document.getElementById('geoBaseLblForward');
+            var baseBwd = document.getElementById('geoBaseLblBackward');
+
+            if (prompt1) prompt1.style.display = (step === 1) ? 'block' : 'none';
+            if (lFwd) lFwd.style.display = (step === 2 || step === 5) ? 'block' : 'none';
+            if (lBwd) lBwd.style.display = (step === 3 || step === 5) ? 'block' : 'none';
+            if (lCen) lCen.style.display = (step === 4 || step === 5) ? 'block' : 'none';
+
+            // En el paso 5 ocultamos los rellenos de triángulos y textos de base internos para máxima limpieza
+            if (fillFwd) fillFwd.style.display = (step === 2) ? 'block' : 'none';
+            if (fillBwd) fillBwd.style.display = (step === 3) ? 'block' : 'none';
+            if (fillCen) fillCen.style.display = (step === 4) ? 'block' : 'none';
+            if (baseFwd) baseFwd.style.display = (step === 2) ? 'block' : 'none';
+            if (baseBwd) baseBwd.style.display = (step === 3) ? 'block' : 'none';
+
+            // Resaltar leyenda superior según capa activa
+            var legFwd = document.getElementById('geoLegFwd');
+            var legBwd = document.getElementById('geoLegBwd');
+            var legCen = document.getElementById('geoLegCen');
+            if (legFwd) legFwd.style.opacity = (step === 2 || step === 5) ? '1' : '0.28';
+            if (legBwd) legBwd.style.opacity = (step === 3 || step === 5) ? '1' : '0.28';
+            if (legCen) legCen.style.opacity = (step === 4 || step === 5) ? '1' : '0.28';
+
+            var badgeTop = document.getElementById('geoStepBadgeTop');
+            if (badgeTop) badgeTop.textContent = 'Paso ' + step + ' de 5';
+
+            var footerTxt = document.getElementById('geoStepCounterFooter');
+            if (footerTxt) footerTxt.textContent = step + ' / 5';
+
+            var btnPrev = document.getElementById('geoBtnPrev');
+            var btnNext = document.getElementById('geoBtnNext');
+            if (btnPrev) btnPrev.disabled = (step === 1);
+            if (btnNext) {
+                btnNext.disabled = (step === 5);
+                btnNext.textContent = geoNextLabels[step];
+            }
+        }
+
+        function seekDemoVideo(videoId, seconds) {
+            var v = document.getElementById(videoId);
+            if (!v) return;
+            try {
+                v.muted = false;
+                v.currentTime = seconds;
+                v.play();
+            } catch (e) {}
+        }
+
+        function stepGeo(delta) {
+            setGeoStep(currentGeoStep + delta);
+        }
+
         function updateThemeButton() {
             var dark = document.documentElement.getAttribute('data-theme') === 'dark';
             var b = document.getElementById('themeToggleBtn');

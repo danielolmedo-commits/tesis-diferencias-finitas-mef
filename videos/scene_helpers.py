@@ -32,22 +32,11 @@ def setup_chalkboard(scene: Scene):
 
 
 def build_header(title_str: str, capsule_label: str, accent: str = "#3b82f6") -> VGroup:
-    """Construye la cabecera estilo Khan Academy + píldora de serie a la derecha."""
-    header_txt = Text(
-        title_str,
-        font="Segoe UI",
-        font_size=24,
-        weight=BOLD,
-        color="#f8fafc",
-    )
-    if header_txt.width > 9.8:
-        header_txt.scale_to_fit_width(9.8)
-    header_txt.move_to(np.array([-6.55 + header_txt.width / 2.0, 3.52, 0.0]))
-
-    pill_txt = Text(capsule_label, font="Segoe UI", font_size=16, weight=BOLD, color="#e2e8f0")
+    """Construye la cabecera estilo Khan Academy + píldora de serie a la derecha sin colisión."""
+    pill_txt = Text(capsule_label, font="Segoe UI", font_size=15, weight=BOLD, color="#e2e8f0")
     pill_bg = RoundedRectangle(
         corner_radius=0.15,
-        width=pill_txt.width + 0.44,
+        width=pill_txt.width + 0.42,
         height=0.38,
         fill_color="#1e293b",
         fill_opacity=0.95,
@@ -57,6 +46,18 @@ def build_header(title_str: str, capsule_label: str, accent: str = "#3b82f6") ->
     pill = VGroup(pill_bg, pill_txt)
     pill_txt.move_to(pill_bg.get_center())
     pill.move_to(np.array([6.55 - pill.width / 2.0, 3.52, 0.0]))
+
+    header_txt = Text(
+        title_str,
+        font="Segoe UI",
+        font_size=23,
+        weight=BOLD,
+        color="#f8fafc",
+    )
+    max_title_w = (6.55 - pill.width - 0.45) - (-6.55)
+    if header_txt.width > max_title_w:
+        header_txt.scale_to_fit_width(max_title_w)
+    header_txt.move_to(np.array([-6.55 + header_txt.width / 2.0, 3.52, 0.0]))
 
     underline = Line(
         np.array([-6.58, 3.16, 0.0]),
